@@ -3,8 +3,13 @@ package org.project.ttokttok.domain.admin.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.admin.controller.dto.request.AdminLoginRequest;
+import org.project.ttokttok.domain.admin.controller.dto.response.AdminLoginResponse;
 import org.project.ttokttok.domain.admin.service.AdminService;
-import org.project.ttokttok.domain.admin.service.dto.AdminLoginServiceRequest;
+import org.project.ttokttok.global.jwt.dto.TokenResponse;
+import org.project.ttokttok.global.util.CookieUtil;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,11 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminApiController {
 
     private final AdminService adminService;
+    private final CookieUtil cookieUtil;
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<Void> login(@RequestBody @Valid AdminLoginRequest request) {
-        adminService.login(request.toServiceRequest());
+        AdminLoginResponse response = AdminLoginResponse.from(adminService.login(request.toServiceRequest()));
+        ResponseCookie refreshCookie = CookieUtil.createRefreshTokenCookie(response.refreshToken());
 
-        return null;
+        return ResponseEntity.ok()
+                .header("Authorization", response.accessToken())
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .build();
     }
 }

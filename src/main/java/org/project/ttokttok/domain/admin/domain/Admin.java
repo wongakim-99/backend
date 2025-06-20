@@ -1,6 +1,7 @@
 package org.project.ttokttok.domain.admin.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.project.ttokttok.domain.admin.exception.AdminPasswordNotMatchException;
 import org.project.ttokttok.global.entity.BaseTimeEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,9 +20,11 @@ public class Admin extends BaseTimeEntity {
     }
 
     @Id
+    @Getter
     @Column(length = 36, updatable = false, unique = true)
     private String id;
 
+    @Getter
     @Column(nullable = false, updatable = false, unique = true)
     private String username;
 
@@ -37,4 +40,5 @@ public class Admin extends BaseTimeEntity {
         if (!pe.matches(password, this.password))
             throw new AdminPasswordNotMatchException();
     }
+
 }
