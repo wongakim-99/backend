@@ -1,4 +1,4 @@
-package org.project.ttokttok.domain.admin.service;
+package org.project.ttokttok.domain.admin.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.admin.domain.Admin;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AdminService {
+public class AdminAuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final AdminRepository adminRepository;

@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum SecurityWhiteList {
     // 필요한 endPoint 추가하여 사용
     ALLOW_URLS(new String[]{
-            "/api/admin/auth/login"
+            "/api/auth/admin/login"
     });
 
     final String[] endPoints;

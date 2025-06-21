@@ -1,4 +1,4 @@
-package org.project.ttokttok.global.redis;
+package org.project.ttokttok.global.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
