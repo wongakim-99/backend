@@ -13,7 +13,7 @@ public class CookieUtil {
     private static final String ROOT = "/";
 
     public static ResponseCookie createRefreshTokenCookie(String token) {
-        return ResponseCookie.from("refreshToken", token)
+        return ResponseCookie.from("ttref", token)
                 .httpOnly(true)
                 .secure(true)
                 .path(ROOT)
