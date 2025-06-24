@@ -54,7 +54,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(ALLOW_URLS.getEndPoints()).permitAll()
-                                // todo: 나중에 관리자, 사용자 간 차등 두어 API 제한
+                                .requestMatchers("/api/admin").hasRole("ROLE_ADMIN")
                                 .anyRequest().permitAll()
                 )
                 .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

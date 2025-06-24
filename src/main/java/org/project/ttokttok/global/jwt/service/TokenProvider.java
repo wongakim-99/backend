@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.UUID;
 
 import static org.project.ttokttok.global.jwt.TokenExpiry.ACCESS_TOKEN_EXPIRY_TIME;
-import static org.project.ttokttok.global.jwt.TokenExpiry.REFRESH_TOKEN_EXPIRY_TIME;
 
 @Slf4j
 @Service

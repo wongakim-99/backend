@@ -18,7 +18,7 @@ import static org.project.ttokttok.global.jwt.TokenProperties.AUTH_HEADER;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth/admin")
+@RequestMapping("/api/admin/auth")
 public class AdminAuthApiController {
 
     private final AdminAuthService adminAuthService;
