@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.admin.controller.dto.request.AdminLoginRequest;
 import org.project.ttokttok.domain.admin.controller.dto.response.AdminLoginResponse;
 import org.project.ttokttok.domain.admin.service.auth.AdminAuthService;
+import org.project.ttokttok.global.annotation.AuthUserInfo;
 import org.project.ttokttok.global.jwt.TokenExpiry;
 import org.project.ttokttok.global.jwt.TokenProperties;
 import org.project.ttokttok.global.util.CookieUtil;
@@ -45,5 +46,22 @@ public class AdminAuthApiController {
                 .body("Admin Login Success");
     }
 
-    //reissue, 로그아웃 api 구현하기
+    public ResponseEntity<Void> logout(@AuthUserInfo String adminName) {
+        adminAuthService.logout(adminName);
+        // 쿠키 만료시키기
+        ResponseCookie exiredResponseCookie = CookieUtil.exireResponseCookie(adminName);
+
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, exiredResponseCookie.toString())
+                .build();
+    }
+
+    public ResponseEntity<Void> reissue() {
+        return null;
+    }
+
+    // 관리자 계정 생성용 api, 프론트 측 구현 필요 X
+    public ResponseEntity<Void> join() {
+        return null;
+    }
 }

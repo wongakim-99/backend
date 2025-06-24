@@ -1,7 +1,9 @@
 package org.project.ttokttok.domain.admin.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.project.ttokttok.domain.admin.exception.AdminPasswordNotMatchException;
 import org.project.ttokttok.global.entity.BaseTimeEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.UUID;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Admin extends BaseTimeEntity {
 
     // UUID 생성 전략
@@ -20,7 +23,6 @@ public class Admin extends BaseTimeEntity {
     }
 
     @Id
-    @Getter
     @Column(length = 36, updatable = false, unique = true)
     private String id;
 

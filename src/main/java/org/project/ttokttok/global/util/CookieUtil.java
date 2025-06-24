@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
-import static org.project.ttokttok.global.jwt.TokenExpiry.REFRESH_TOKEN_EXPIRY_TIME;
-
 @Service
 public class CookieUtil {
 
@@ -19,5 +17,9 @@ public class CookieUtil {
                 .path(ROOT)
                 .maxAge(expiry)
                 .build();
+    }
+
+    public static ResponseCookie exireResponseCookie(String key) {
+        return createResponseCookie(key, "", Duration.ZERO);
     }
 }

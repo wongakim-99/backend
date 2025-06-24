@@ -16,7 +16,8 @@ public enum ErrorMessage {
     INVALID_TOKEN_ISSUER("유효하지 않은 토큰 발급자입니다.", HttpStatus.UNAUTHORIZED),
     REFRESH_TOKEN_NOT_FOUND("토큰이 만료되었거나, 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     REFRESH_TOKEN_EXISTS("리프레시 토큰이 이미 존재합니다.", HttpStatus.CONFLICT),
-    INVALID_ROLE("잘못된 역할 값이 토큰에 존재합니다.", HttpStatus.UNAUTHORIZED);
+    INVALID_ROLE("잘못된 역할 값이 토큰에 존재합니다.", HttpStatus.UNAUTHORIZED),
+    ALREADY_LOGOUT("이미 로그아웃하였거나, 존재하지 않는 토큰입니다.", HttpStatus.NOT_FOUND);
 
     private final String message;
     private final HttpStatus status;

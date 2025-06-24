@@ -31,13 +31,13 @@ public class AdminAuthService {
 
         targetAdmin.validatePassword(request.password(), passwordEncoder);
 
-        TokenResponse tokenResponse = getTokenResponse(targetAdmin.getId(), targetAdmin.getUsername());
+        TokenResponse tokenResponse = getTokenResponse(targetAdmin.getUsername());
 
         return AdminLoginServiceResponse.from(tokenResponse);
     }
 
     public void logout(String username) {
-
+        refreshTokenRedisService.deleteRefreshToken(username);
     }
 
     private TokenResponse getTokenResponse(String username) {
