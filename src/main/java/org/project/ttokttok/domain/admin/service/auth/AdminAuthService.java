@@ -36,9 +36,13 @@ public class AdminAuthService {
         return AdminLoginServiceResponse.from(tokenResponse);
     }
 
-    private TokenResponse getTokenResponse(String id, String username) {
-        TokenResponse tokenResponse = tokenProvider.generateToken(TokenRequest.of(id, username, ROLE_ADMIN));
-        refreshTokenRedisService.save(id, tokenResponse.refreshToken());
+    public void logout(String username) {
+
+    }
+
+    private TokenResponse getTokenResponse(String username) {
+        TokenResponse tokenResponse = tokenProvider.generateToken(TokenRequest.of(username, ROLE_ADMIN));
+        refreshTokenRedisService.save(username, tokenResponse.refreshToken());
 
         return tokenResponse;
     }

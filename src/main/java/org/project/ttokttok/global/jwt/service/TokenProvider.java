@@ -62,7 +62,7 @@ public class TokenProvider {
 
     // 토큰 생성
     public TokenResponse generateToken(TokenRequest request) {
-        String accessToken = generateAccessToken(request.id(), request.username(), request.role());
+        String accessToken = generateAccessToken(request.username(), request.role());
         String refreshToken = generateRefreshToken();
 
         return TokenResponse.builder()
@@ -95,7 +95,7 @@ public class TokenProvider {
             throw new InvalidIssuerException();
     }
 
-    private String generateAccessToken(String userId, String username, Role role) {
+    private String generateAccessToken(String username, Role role) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + ACCESS_TOKEN_EXPIRY_TIME.getExpiry());
 
@@ -104,7 +104,6 @@ public class TokenProvider {
                 .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(expiry)
-                .claim("id", userId)
                 .claim("role", role.toString())
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
