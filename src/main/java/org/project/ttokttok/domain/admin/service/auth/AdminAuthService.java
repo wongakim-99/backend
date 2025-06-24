@@ -6,11 +6,15 @@ import org.project.ttokttok.domain.admin.exception.AdminNotFoundException;
 import org.project.ttokttok.domain.admin.repository.AdminRepository;
 import org.project.ttokttok.domain.admin.service.dto.request.AdminLoginServiceRequest;
 import org.project.ttokttok.domain.admin.service.dto.response.AdminLoginServiceResponse;
-import org.project.ttokttok.global.jwt.dto.TokenResponse;
+import org.project.ttokttok.global.entity.Role;
+import org.project.ttokttok.global.jwt.dto.request.TokenRequest;
+import org.project.ttokttok.global.jwt.dto.response.TokenResponse;
 import org.project.ttokttok.global.jwt.service.RefreshTokenRedisService;
 import org.project.ttokttok.global.jwt.service.TokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import static org.project.ttokttok.global.entity.Role.ROLE_ADMIN;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +37,7 @@ public class AdminAuthService {
     }
 
     private TokenResponse getTokenResponse(String id, String username) {
-        TokenResponse tokenResponse = tokenProvider.generateToken(id, username);
+        TokenResponse tokenResponse = tokenProvider.generateToken(TokenRequest.of(id, username, ROLE_ADMIN));
         refreshTokenRedisService.save(id, tokenResponse.refreshToken());
 
         return tokenResponse;

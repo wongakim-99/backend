@@ -4,7 +4,10 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.project.ttokttok.global.jwt.dto.TokenResponse;
+import org.project.ttokttok.global.entity.Role;
+import org.project.ttokttok.global.jwt.dto.request.TokenRequest;
+import org.project.ttokttok.global.jwt.dto.response.TokenResponse;
+import org.project.ttokttok.global.jwt.dto.response.UserProfileResponse;
 import org.project.ttokttok.global.jwt.exception.InvalidIssuerException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -57,17 +60,9 @@ public class TokenProvider {
         return false;
     }
 
-    private void isValidIssuer(String issuer) {
-        // 이슈 발급자도 base64 인코딩되어 있기에 디코딩
-        String decodedIssuer = Arrays.toString(Decoders.BASE64.decode(this.issuer));
-
-        if (!issuer.equals(decodedIssuer))
-            throw new InvalidIssuerException();
-    }
-
     // 토큰 생성
-    public TokenResponse generateToken(String id, String username) {
-        String accessToken = generateAccessToken(id, username);
+    public TokenResponse generateToken(TokenRequest request) {
+        String accessToken = generateAccessToken(request.id(), request.username(), request.role());
         String refreshToken = generateRefreshToken();
 
         return TokenResponse.builder()
@@ -76,8 +71,31 @@ public class TokenProvider {
                 .build();
     }
 
-    //todo: Role 추가 필요
-    private String generateAccessToken(String userId, String username) {
+    // 토큰에서 사용자 정보 추출
+    public UserProfileResponse getUserProfile(String token) {
+        return UserProfileResponse.builder()
+                .username(getUsernameFromToken(token))
+                .role(getRoleFromToken(token))
+                .build();
+    }
+
+    private String getUsernameFromToken(String token) {
+        return getClaims(token).getSubject();
+    }
+
+    private String getRoleFromToken(String token) {
+        return getClaims(token).get("role", String.class);
+    }
+
+    private void isValidIssuer(String issuer) {
+        // 이슈 발급자도 base64 인코딩되어 있기에 디코딩
+        String decodedIssuer = Arrays.toString(Decoders.BASE64.decode(this.issuer));
+
+        if (!issuer.equals(decodedIssuer))
+            throw new InvalidIssuerException();
+    }
+
+    private String generateAccessToken(String userId, String username, Role role) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + ACCESS_TOKEN_EXPIRY_TIME.getExpiry());
 
@@ -87,6 +105,7 @@ public class TokenProvider {
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .claim("id", userId)
+                .claim("role", role.toString())
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }

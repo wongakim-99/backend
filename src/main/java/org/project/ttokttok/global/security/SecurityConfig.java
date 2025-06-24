@@ -1,6 +1,7 @@
 package org.project.ttokttok.global.security;
 
 import lombok.RequiredArgsConstructor;
+import org.project.ttokttok.global.jwt.filter.JwtAuthenticationManager;
 import org.project.ttokttok.global.jwt.filter.TokenAuthenticationFilter;
 import org.project.ttokttok.global.jwt.service.TokenProvider;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,7 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
+    private final JwtAuthenticationManager jwtAuthenticationManager;
 
     // h2 db 접근용 security 비활성화
     @Bean
@@ -39,7 +41,7 @@ public class SecurityConfig {
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticationFilter(tokenProvider);
+        return new TokenAuthenticationFilter(tokenProvider, jwtAuthenticationManager);
     }
 
     // todo: 추후에 보안 사항에 맞게 수정
@@ -54,7 +56,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(ALLOW_URLS.getEndPoints()).permitAll()
-                                .requestMatchers("/api/admin").hasRole("ROLE_ADMIN")
+                                .requestMatchers("/api/admin/*").hasRole("ADMIN")
                                 .anyRequest().permitAll()
                 )
                 .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
