@@ -79,7 +79,7 @@ public class TokenProvider {
                 .build();
     }
 
-    private String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) {
         return getClaims(token).getSubject();
     }
 
