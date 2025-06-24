@@ -9,7 +9,9 @@ import java.time.Duration;
 public class CookieUtil {
 
     private static final String ROOT = "/";
+    private static final String EXPIRE_COOKIE_VALUE = "";
 
+    // 쿠키 생성
     public static ResponseCookie createResponseCookie(String key, String content, Duration expiry) {
         return ResponseCookie.from(key, content)
                 .httpOnly(true)
@@ -19,7 +21,8 @@ public class CookieUtil {
                 .build();
     }
 
+    // 쿠키 만료 시키기
     public static ResponseCookie exireResponseCookie(String key) {
-        return createResponseCookie(key, "", Duration.ZERO);
+        return createResponseCookie(key, EXPIRE_COOKIE_VALUE, Duration.ZERO);
     }
 }

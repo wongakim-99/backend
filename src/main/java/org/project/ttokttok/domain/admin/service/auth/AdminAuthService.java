@@ -3,16 +3,20 @@ package org.project.ttokttok.domain.admin.service.auth;
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.admin.domain.Admin;
 import org.project.ttokttok.domain.admin.exception.AdminNotFoundException;
+import org.project.ttokttok.domain.admin.exception.InvalidAdminNameException;
 import org.project.ttokttok.domain.admin.repository.AdminRepository;
 import org.project.ttokttok.domain.admin.service.dto.request.AdminLoginServiceRequest;
 import org.project.ttokttok.domain.admin.service.dto.response.AdminLoginServiceResponse;
-import org.project.ttokttok.global.entity.Role;
+import org.project.ttokttok.domain.admin.service.dto.response.ReissueServiceResponse;
 import org.project.ttokttok.global.jwt.dto.request.TokenRequest;
 import org.project.ttokttok.global.jwt.dto.response.TokenResponse;
+import org.project.ttokttok.global.jwt.exception.InvalidRefreshTokenException;
+import org.project.ttokttok.global.jwt.exception.InvalidTokenFromCookieException;
 import org.project.ttokttok.global.jwt.service.RefreshTokenRedisService;
 import org.project.ttokttok.global.jwt.service.TokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.project.ttokttok.global.entity.Role.ROLE_ADMIN;
 
@@ -38,6 +42,38 @@ public class AdminAuthService {
 
     public void logout(String username) {
         refreshTokenRedisService.deleteRefreshToken(username);
+    }
+
+    @Transactional
+    public ReissueServiceResponse reissue(String username, String refreshToken) {
+        validateAdmin(username);
+        validateTokenFromCookie(refreshToken);
+        isRefreshSame(username, refreshToken);
+
+        TokenResponse tokens = tokenProvider.reissueToken(username, ROLE_ADMIN);
+        refreshTokenRedisService.updateRefreshToken(username, tokens.refreshToken());
+
+        return ReissueServiceResponse.of(tokens);
+    }
+
+    private void isRefreshSame(String username, String refreshToken) {
+        String targetRefresh = refreshTokenRedisService.getRefreshToken(username);
+
+        if (!refreshToken.equals(targetRefresh)) {
+            throw new InvalidRefreshTokenException();
+        }
+    }
+
+    private void validateTokenFromCookie(String refreshToken) {
+        if (refreshToken == null) {
+            throw new InvalidTokenFromCookieException();
+        }
+    }
+
+    private void validateAdmin(String username) {
+        if (!adminRepository.existsByUsername(username)) {
+            throw new InvalidAdminNameException();
+        }
     }
 
     private TokenResponse getTokenResponse(String username) {

@@ -79,6 +79,12 @@ public class TokenProvider {
                 .build();
     }
 
+    public TokenResponse reissueToken(String username, Role role) {
+        TokenRequest request = TokenRequest.of(username, role);
+
+        return generateToken(request);
+    }
+
     public String getUsernameFromToken(String token) {
         return getClaims(token).getSubject();
     }
