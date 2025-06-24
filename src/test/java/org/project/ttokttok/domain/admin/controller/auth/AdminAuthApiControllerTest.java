@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.project.ttokttok.domain.admin.controller.dto.request.AdminLoginRequest;
 import org.project.ttokttok.domain.admin.domain.Admin;
 import org.project.ttokttok.domain.admin.repository.AdminRepository;
+import org.project.ttokttok.infrastructure.jwt.JwtFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,7 +46,11 @@ class AdminAuthApiControllerTest {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    @Autowired
+    private JwtFactory jwtFactory;
+
     private static final String LOGIN_ENDPOINT = "/api/admin/auth/login";
+    private static final String LOGOUT_ENDPOINT = "/api/admin/auth/logout";
 
     @BeforeEach
     void clearRedisBeforeEach() {
@@ -113,35 +120,14 @@ class AdminAuthApiControllerTest {
                 .andExpect(jsonPath("$.details").exists());
     }
 
-    @DisplayName("login(): 어드민 id가 너무 짧으면 400 Bad Request가 반환된다.")
-    @Test
-    void loginFail_shortUsername() throws Exception {
+    @DisplayName("login(): id, 비밀번호가 너무 짧으면 400 Bad Request가 반환된다.")
+    @ParameterizedTest
+    @CsvSource({"admin, validPassword1234", "validadmin, wrongpw"})
+    void loginFail_shortValue(String username, String rawPassword) throws Exception {
         // given
-        String shortUsername = "admin";
-        String password = "validPassword1234";
+        createAdmin(username, rawPassword);
 
-        createAdmin(shortUsername, password);
-
-        AdminLoginRequest request = new AdminLoginRequest(shortUsername, password);
-        String requestBody = objectMapper.writeValueAsString(request);
-
-        // when & then
-        mockMvc.perform(post(LOGIN_ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isBadRequest());
-    }
-
-    @DisplayName("login(): 비밀번호가 너무 짧으면 400 Bad Request가 반환된다.")
-    @Test
-    void loginFail_ShortPassword() throws Exception {
-        // given
-        String username = "admin1234";
-        String shortPassword = "123";
-
-        createAdmin(username, "validPassword123");
-
-        AdminLoginRequest request = new AdminLoginRequest(username, shortPassword);
+        AdminLoginRequest request = new AdminLoginRequest(username, rawPassword);
         String requestBody = objectMapper.writeValueAsString(request);
 
         // when & then
@@ -165,8 +151,20 @@ class AdminAuthApiControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    // ======= 유틸 메서드 =======
+    @DisplayName("logout(): Redis에 있는 리프레시 토큰을 삭제하고 로그아웃에 성공한다.")
+    @Test
+    void logoutSuccess() throws Exception {
+        //given
 
+
+        //when
+
+
+        //then
+
+    }
+
+    // ======= 유틸 메서드 =======
     private void createAdmin(String username, String rawPassword) {
         String encodedPassword = passwordEncoder.encode(rawPassword);
         Admin admin = Admin.adminJoin(username, encodedPassword);
