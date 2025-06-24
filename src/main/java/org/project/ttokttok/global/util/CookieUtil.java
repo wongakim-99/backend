@@ -12,12 +12,12 @@ public class CookieUtil {
 
     private static final String ROOT = "/";
 
-    public static ResponseCookie createRefreshTokenCookie(String token) {
-        return ResponseCookie.from("ttref", token)
+    public static ResponseCookie createResponseCookie(String key, String content, Duration expiry) {
+        return ResponseCookie.from(key, content)
                 .httpOnly(true)
                 .secure(true)
                 .path(ROOT)
-                .maxAge(Duration.ofDays(REFRESH_TOKEN_EXPIRY_TIME.getExpiry()))
+                .maxAge(expiry)
                 .build();
     }
 }

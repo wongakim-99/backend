@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum TokenProperties {
     AUTH_HEADER("Authorization"),
-    BEARER_PREFIX("Bearer ");
+    BEARER_PREFIX("Bearer "),
+    REFRESH_KEY("ttref");
 
     final String value;
 }
