@@ -13,6 +13,9 @@ import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    // 들어오는 예외들을 캐치하여 처리하는 클래스
+    // 메서드에 달리는 @Valid 어노테이션이나
+    // 커스텀 예외 발생 시 응답 핸들링에 자동 적용된다.
 
     @ExceptionHandler({CustomException.class})
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {

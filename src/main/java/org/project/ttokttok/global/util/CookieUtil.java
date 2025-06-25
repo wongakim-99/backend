@@ -8,6 +8,7 @@ import java.time.Duration;
 @Service
 public class CookieUtil {
 
+    // 리프레시 토큰을 내려주는 응답 쿠키를 생성, 삭제 할 때 활용(로그인 or 로그아웃)
     private static final String ROOT = "/";
     private static final String EXPIRE_COOKIE_VALUE = "";
 

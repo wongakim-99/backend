@@ -14,6 +14,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private final AuthUserInfoResolver authUserInfoResolver;
 
+    // Spring Mvc 기능 중 하나.
+    // AuthUserInfoResolver 클래스를 파라미터 리스트에 추가함으로써
+    // 작동하도록 설정(추가 안하면 작동 안함)
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(authUserInfoResolver);

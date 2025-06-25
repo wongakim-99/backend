@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static org.project.ttokttok.global.entity.Role.ROLE_ADMIN;
-
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationManager {
+
+    // jwt의 인증 권한을 반환해주는 클래스
 
     //private final UserRepository userRepository;
     private final AdminRepository adminRepository;
@@ -34,6 +34,7 @@ public class JwtAuthenticationManager {
             default -> throw new InvalidRoleException();
         };
 
+        // 최종적으로 인증 권한을 반환하게 된다.
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
         return new UsernamePasswordAuthenticationToken(principal, null, authorities);
     }

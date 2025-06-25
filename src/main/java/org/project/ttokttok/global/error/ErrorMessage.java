@@ -8,6 +8,10 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ErrorMessage {
 
+    /* 에러 메시지와 HTTP 상태 반환하는 열거형.
+    *  꼭 어떤 예외 인지 주석으로 파트를 구분하여 작성 및 추가 할 것.
+    * */
+
     //관리자 에러메시지
     ADMIN_NOT_FOUND("관리자를 찾을 수 없음.", HttpStatus.NOT_FOUND),
     ADMIN_PASSWORD_NOT_MATCH("비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED),

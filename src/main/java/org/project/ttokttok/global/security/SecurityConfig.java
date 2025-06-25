@@ -44,11 +44,13 @@ public class SecurityConfig {
                 .requestMatchers(toH2Console());
     }
 
+    // 패스워드 인코더 빈 등록
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+    // 커스텀 토큰 필터 빈 등록
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
         return new TokenAuthenticationFilter(tokenProvider, jwtAuthenticationManager);
@@ -58,26 +60,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfig()))
-                .sessionManagement(sessionManagement ->
+                .httpBasic(AbstractHttpConfigurer::disable) // 기본 http 비활성화
+                .csrf(AbstractHttpConfigurer::disable) // csrf 비활성화
+                .formLogin(AbstractHttpConfigurer::disable) // 폼 로그인 비활성화
+                .cors(cors -> cors.configurationSource(corsConfig())) // cors 설정 추가
+                .sessionManagement(sessionManagement -> // jwt 방식이기에, 세션 무상태로 설정
                                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .authorizeHttpRequests(request ->
+                .authorizeHttpRequests(request -> // 요청 권한 관련 설정
                         request
-                                .requestMatchers(ALLOW_URLS.getEndPoints()).permitAll()
+                                .requestMatchers(ALLOW_URLS.getEndPoints()).permitAll() // JWT를 가질 수 없는 요청은 허용
                                 .requestMatchers(SWAGGER_URLS.getEndPoints()).permitAll()
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN") // ADMIN 권한이 필요한 요청은 검증
                                 // 일단 admin 제외, 다 열어둠
                                 .anyRequest().permitAll()
                 )
                 //.exceptionHandling()
-                .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class) // 필터 적용 전에 커스텀 필터 거치게 함
                 .build();
     }
 
+    //CORS 설정
     private CorsConfigurationSource corsConfig() {
         CorsConfiguration config = new CorsConfiguration();
         final String swaggerUrl = serverUrl + "/swagger-ui/index.html";
@@ -87,10 +90,10 @@ public class SecurityConfig {
                 List.of("http://localhost:5173",
                         swaggerUrl)
         );
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        config.setAllowCredentials(true);
-        config.setAllowedHeaders(List.of("*"));
-        config.setMaxAge(3600L);
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); //허용 HTTP 메서드
+        config.setAllowCredentials(true); // 쿠키 등 허용 설정
+        config.setAllowedHeaders(List.of("*")); // todo: 추후 수정
+        config.setMaxAge(3600L); // CORS 살아있는 시간
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

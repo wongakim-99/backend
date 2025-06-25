@@ -17,6 +17,7 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class RedisConfig {
 
+    // YAML 파일 Redis 환경 설정 변수들
     @Value("${spring.data.redis.host}")
     private String redisHost;
 
@@ -29,10 +30,13 @@ public class RedisConfig {
     @Value("${spring.config.activate.on-profile}")
     private String activeProfile;
 
+    // 배포 환경 시
     private final String PROD = "prod";
 
+    // Redis 클라이언트 생성 클래스 빈으로 등록
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
+        //Redis의 작동 방식 중 하나인 StandAlone 방식 이용
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
 
         if (activeProfile.equals(PROD)) {
@@ -42,9 +46,11 @@ public class RedisConfig {
             }
         }
 
+        // Redis 연결 설정
         redisConfig.setHostName(redisHost);
         redisConfig.setPort(redisPort);
 
+        // Redis 클라이언트 설정
         LettuceClientConfiguration lettuceClientConfig = createLettuceClientConfig();
 
         return new LettuceConnectionFactory(redisConfig, lettuceClientConfig);
@@ -55,6 +61,7 @@ public class RedisConfig {
                 LettuceClientConfiguration.builder()
                         .commandTimeout(Duration.ofSeconds(5));
 
+        // 운영환경일 때만 암호화 등록
         if (activeProfile.equals(PROD)) {
             builder.useSsl();
         }
@@ -62,9 +69,13 @@ public class RedisConfig {
         return builder.build();
     }
 
+    // Redis 템플릿 설정.
+    // 당장은 사용하는 곳이 리프레시 토큰 쪽 밖에 없기에, key-value 타입에 value는
+    // 단순 String으로 설정
     @Bean
     public RedisTemplate<String, String> redisTemplate() {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        // 연결 설정으로, 기존에 등록해둔 빈 이용
         redisTemplate.setConnectionFactory(redisConnectionFactory());
 
         // 문자열 직렬화 설정
