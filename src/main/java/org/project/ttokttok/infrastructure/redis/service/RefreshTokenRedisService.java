@@ -60,7 +60,7 @@ public class RefreshTokenRedisService {
     }
 
     // 액세스 토큰 리이슈 시 사용
-    public void updateRefreshToken(String username, String refreshToken) {
+    public Long updateRefreshToken(String username, String refreshToken) {
         // 토큰 남은 시간
         Long refreshTTL = redisTemplate.getExpire(REFRESH_REDIS_KEY + username, TimeUnit.MILLISECONDS);
 
@@ -69,6 +69,8 @@ public class RefreshTokenRedisService {
 
         // 새로운 리프레시 토큰으로 다시 내려줌.
         redisTemplate.opsForValue().set(REFRESH_REDIS_KEY + username, refreshToken, refreshTTL);
+
+        return refreshTTL; // 리프레시 토큰의 남은 TTL 반환
     }
 
     private void tokenAliveValidate(Long refreshTTL) {

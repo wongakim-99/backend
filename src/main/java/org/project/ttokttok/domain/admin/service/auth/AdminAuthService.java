@@ -46,14 +46,18 @@ public class AdminAuthService {
 
     @Transactional
     public ReissueServiceResponse reissue(String username, String refreshToken) {
+        reissueValidate(username, refreshToken);
+
+        TokenResponse tokens = tokenProvider.reissueToken(username, ROLE_ADMIN);
+        Long ttl = refreshTokenRedisService.updateRefreshToken(username, tokens.refreshToken());
+
+        return ReissueServiceResponse.of(tokens, ttl);
+    }
+
+    private void reissueValidate(String username, String refreshToken) {
         validateAdmin(username);
         validateTokenFromCookie(refreshToken);
         isRefreshSame(username, refreshToken);
-
-        TokenResponse tokens = tokenProvider.reissueToken(username, ROLE_ADMIN);
-        refreshTokenRedisService.updateRefreshToken(username, tokens.refreshToken());
-
-        return ReissueServiceResponse.of(tokens);
     }
 
     private void isRefreshSame(String username, String refreshToken) {
