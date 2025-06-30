@@ -1,7 +1,7 @@
 package org.project.ttokttok.global.config;
 
 import lombok.RequiredArgsConstructor;
-import org.project.ttokttok.global.annotationresolver.AuthUserInfoResolver;
+import org.project.ttokttok.global.annotationresolver.auth.AuthUserInfoResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

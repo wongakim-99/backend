@@ -6,7 +6,7 @@ import org.project.ttokttok.domain.admin.controller.dto.request.AdminLoginReques
 import org.project.ttokttok.domain.admin.service.auth.AdminAuthService;
 import org.project.ttokttok.domain.admin.service.dto.response.AdminLoginServiceResponse;
 import org.project.ttokttok.domain.admin.service.dto.response.ReissueServiceResponse;
-import org.project.ttokttok.global.annotation.AuthUserInfo;
+import org.project.ttokttok.global.annotation.auth.AuthUserInfo;
 import org.project.ttokttok.global.util.CookieUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
