@@ -33,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class AdminAuthApiControllerTest {
-
     @Autowired
     protected MockMvc mockMvc;
 
@@ -49,9 +48,6 @@ class AdminAuthApiControllerTest {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    @Autowired
-    private JwtFactory jwtFactory;
-
     private static final String LOGIN_ENDPOINT = "/api/admin/auth/login";
     private static final String LOGOUT_ENDPOINT = "/api/admin/auth/logout";
     private static final String REISSUE_ENDPOINT = "/api/admin/auth/re-issue";
@@ -59,25 +55,21 @@ class AdminAuthApiControllerTest {
 
     @BeforeEach
     void clearRedisBeforeEach() {
-
-        Set<String> keys = redisTemplate.keys("refresh:*");
+        var keys = redisTemplate.keys("refresh:*");
         if (keys != null && !keys.isEmpty()) {
             redisTemplate.delete(keys);
         }
     }
 
-    @DisplayName("login(): 올바른 아이디와 비밀번호로 로그인하면 성공한다.")
     @Test
+    @DisplayName("login(): 올바른 아이디와 비밀번호로 로그인하면 성공한다.")
     void loginSuccess() throws Exception {
-        // given
-        final String username = "admin1234";
-        final String password = "testpasswordover12";
+        String username = "admin1234";
+        String password = "testpasswordover12";
         createAdmin(username, password);
 
-        AdminLoginRequest request = new AdminLoginRequest(username, password);
-        String requestBody = objectMapper.writeValueAsString(request);
+        var requestBody = objectMapper.writeValueAsString(new AdminLoginRequest(username, password));
 
-        // when & then
         mockMvc.perform(post(LOGIN_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -87,20 +79,16 @@ class AdminAuthApiControllerTest {
                 .andExpect(jsonPath("$").value("Admin Login Success"));
     }
 
-    @DisplayName("login(): 잘못된 비밀번호로 로그인하면 401 Unauthorized가 반환된다.")
     @Test
+    @DisplayName("login(): 잘못된 비밀번호로 로그인하면 401 Unauthorized가 반환된다.")
     void loginFail_InvalidPassword() throws Exception {
-        // given
-        final String username = "admin1234";
-        final String correctPassword = "testpasswordover12";
-        final String wrongPassword = "wrongpassword12";
-
+        String username = "admin1234";
+        String correctPassword = "testpasswordover12";
+        String wrongPassword = "wrongpassword12";
         createAdmin(username, correctPassword);
 
-        AdminLoginRequest request = new AdminLoginRequest(username, wrongPassword);
-        String requestBody = objectMapper.writeValueAsString(request);
+        var requestBody = objectMapper.writeValueAsString(new AdminLoginRequest(username, wrongPassword));
 
-        // when & then
         mockMvc.perform(post(LOGIN_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -109,14 +97,11 @@ class AdminAuthApiControllerTest {
                 .andExpect(jsonPath("$.details").exists());
     }
 
-    @DisplayName("login(): 존재하지 않는 사용자로 로그인하면 404 Not Found가 반환된다.")
     @Test
+    @DisplayName("login(): 존재하지 않는 사용자로 로그인하면 404 Not Found가 반환된다.")
     void loginFail_UserNotFound() throws Exception {
-        // given
-        AdminLoginRequest request = new AdminLoginRequest("nonexistent", "somepassword1234");
-        String requestBody = objectMapper.writeValueAsString(request);
+        var requestBody = objectMapper.writeValueAsString(new AdminLoginRequest("nonexistent", "somepassword1234"));
 
-        // when & then
         mockMvc.perform(post(LOGIN_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -125,48 +110,41 @@ class AdminAuthApiControllerTest {
                 .andExpect(jsonPath("$.details").exists());
     }
 
-    @DisplayName("login(): id, 비밀번호가 너무 짧으면 400 Bad Request가 반환된다.")
     @ParameterizedTest
-    @CsvSource({"admin, validPassword1234", "validadmin, wrongpw"})
+    @CsvSource(
+            {"admin, validPassword1234", "validadmin, wrongpw"}
+    )
+    @DisplayName("login(): id, 비밀번호가 너무 짧으면 400 Bad Request가 반환된다.")
     void loginFail_shortValue(String username, String rawPassword) throws Exception {
-        // given
         createAdmin(username, rawPassword);
 
-        AdminLoginRequest request = new AdminLoginRequest(username, rawPassword);
-        String requestBody = objectMapper.writeValueAsString(request);
+        var requestBody = objectMapper.writeValueAsString(new AdminLoginRequest(username, rawPassword));
 
-        // when & then
         mockMvc.perform(post(LOGIN_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
     @DisplayName("login(): username과 password가 누락되면 400 Bad Request가 반환된다.")
-    @Test
     void loginFail_MissingFields() throws Exception {
-        // given
-        AdminLoginRequest request = new AdminLoginRequest(null, null);
-        String requestBody = objectMapper.writeValueAsString(request);
+        var requestBody = objectMapper.writeValueAsString(new AdminLoginRequest(null, null));
 
-        // when & then
         mockMvc.perform(post(LOGIN_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest());
     }
 
-    @DisplayName("logout(): Redis에 있는 리프레시 토큰을 삭제하고 로그아웃에 성공한다.")
     @Test
+    @DisplayName("logout(): Redis에 있는 리프레시 토큰을 삭제하고 로그아웃에 성공한다.")
     void logoutSuccess() throws Exception {
-        // given
-        final String username = "adminlogout";
-        final String password = "logoutpassword123";
+        String username = "adminlogout";
+        String password = "logoutpassword123";
         createAdmin(username, password);
 
-        // 로그인하여 토큰 및 쿠키 발급
-        AdminLoginRequest request = new AdminLoginRequest(username, password);
-        String requestBody = objectMapper.writeValueAsString(request);
+        var requestBody = objectMapper.writeValueAsString(new AdminLoginRequest(username, password));
 
         var loginResult = mockMvc.perform(post(LOGIN_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -177,29 +155,24 @@ class AdminAuthApiControllerTest {
         String accessToken = BEARER_PREFIX + loginResult.getResponse().getHeader("Authorization");
         String refreshCookie = loginResult.getResponse().getCookie("ttref").getValue();
 
-        // when & then
         mockMvc.perform(post(LOGOUT_ENDPOINT)
                         .header("Authorization", accessToken)
                         .cookie(new Cookie("ttref", refreshCookie)))
                 .andExpect(status().isNoContent())
                 .andExpect(header().exists("Set-Cookie"));
 
-        // Redis에서 리프레시 토큰이 삭제되었는지 확인
         String redisKey = "refresh:" + username;
         assertNull(redisTemplate.opsForValue().get(redisKey));
     }
 
-    @DisplayName("logout(): 이미 로그아웃했거나 토큰이 존재하지 않을 경우 409 Conflict가 반환된다.")
     @Test
+    @DisplayName("logout(): 이미 로그아웃했거나 토큰이 존재하지 않을 경우 409 Conflict가 반환된다.")
     void logoutFail_TokenNotFound() throws Exception {
-        // given
-        final String username = "adminlogoutfail";
-        final String password = "logoutfailpassword123";
+        String username = "adminlogoutfail";
+        String password = "logoutfailpassword123";
         createAdmin(username, password);
 
-        // 로그인하여 토큰 및 쿠키 발급
-        AdminLoginRequest request = new AdminLoginRequest(username, password);
-        String requestBody = objectMapper.writeValueAsString(request);
+        var requestBody = objectMapper.writeValueAsString(new AdminLoginRequest(username, password));
 
         var loginResult = mockMvc.perform(post(LOGIN_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -210,11 +183,9 @@ class AdminAuthApiControllerTest {
         String accessToken = BEARER_PREFIX + loginResult.getResponse().getHeader("Authorization");
         String refreshCookie = loginResult.getResponse().getCookie("ttref").getValue();
 
-        // Redis에서 리프레시 토큰 삭제
         String redisKey = "refresh:" + username;
         redisTemplate.delete(redisKey);
 
-        // when & then
         mockMvc.perform(post(LOGOUT_ENDPOINT)
                         .header("Authorization", accessToken)
                         .cookie(new Cookie("ttref", refreshCookie)))
@@ -223,17 +194,14 @@ class AdminAuthApiControllerTest {
                 .andExpect(jsonPath("$.details").exists());
     }
 
-    @DisplayName("reissue(): 유효한 리프레시 토큰으로 액세스 토큰과 리프레시 토큰을 재발급받는다.")
     @Test
+    @DisplayName("reissue(): 유효한 리프레시 토큰으로 액세스 토큰과 리프레시 토큰을 재발급받는다.")
     void reissueSuccess() throws Exception {
-        // given
-        final String username = "adminreissue";
-        final String password = "reissuepassword123";
+        String username = "adminreissue";
+        String password = "reissuepassword123";
         createAdmin(username, password);
 
-        // 로그인하여 토큰 및 쿠키 발급
-        AdminLoginRequest request = new AdminLoginRequest(username, password);
-        String requestBody = objectMapper.writeValueAsString(request);
+        var requestBody = objectMapper.writeValueAsString(new AdminLoginRequest(username, password));
 
         var loginResult = mockMvc.perform(post(LOGIN_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -244,8 +212,7 @@ class AdminAuthApiControllerTest {
         String accessToken = BEARER_PREFIX + loginResult.getResponse().getHeader("Authorization");
         String refreshCookie = loginResult.getResponse().getCookie("ttref").getValue();
 
-        // when & then
-        mockMvc.perform(post("/api/admin/auth/re-issue")
+        mockMvc.perform(post(REISSUE_ENDPOINT)
                         .header("Authorization", accessToken)
                         .cookie(new Cookie("ttref", refreshCookie)))
                 .andExpect(status().isOk())
@@ -254,17 +221,14 @@ class AdminAuthApiControllerTest {
                 .andExpect(jsonPath("$").value("re-issue Success"));
     }
 
-    @DisplayName("reissue(): 리프레시 토큰이 존재하지 않거나 만료된 경우 404 Not Found가 반환된다.")
     @Test
+    @DisplayName("reissue(): 리프레시 토큰이 존재하지 않거나 만료된 경우 404 Not Found가 반환된다.")
     void reissueFail_TokenNotFoundOrExpired() throws Exception {
-        // given
-        final String username = "adminreissuefail";
-        final String password = "reissuefailpassword123";
+        String username = "adminreissuefail";
+        String password = "reissuefailpassword123";
         createAdmin(username, password);
 
-        // 로그인하여 토큰 및 쿠키 발급
-        AdminLoginRequest request = new AdminLoginRequest(username, password);
-        String requestBody = objectMapper.writeValueAsString(request);
+        var requestBody = objectMapper.writeValueAsString(new AdminLoginRequest(username, password));
 
         var loginResult = mockMvc.perform(post(LOGIN_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -275,12 +239,10 @@ class AdminAuthApiControllerTest {
         String accessToken = BEARER_PREFIX + loginResult.getResponse().getHeader("Authorization");
         String refreshCookie = loginResult.getResponse().getCookie("ttref").getValue();
 
-        // Redis에서 리프레시 토큰 삭제
         String redisKey = "refresh:" + username;
         redisTemplate.delete(redisKey);
 
-        // when & then
-        mockMvc.perform(post("/api/admin/auth/re-issue")
+        mockMvc.perform(post(REISSUE_ENDPOINT)
                         .header("Authorization", accessToken)
                         .cookie(new Cookie("ttref", refreshCookie)))
                 .andExpect(status().isNotFound())
@@ -288,17 +250,14 @@ class AdminAuthApiControllerTest {
                 .andExpect(jsonPath("$.details").exists());
     }
 
-    @DisplayName("reissue(): 쿠키에 리프레시 토큰이 없을 경우 reissueValidate에서 예외가 발생하면 400 Bad Request가 반환된다.")
     @Test
+    @DisplayName("reissue(): 쿠키에 리프레시 토큰이 없을 경우 reissueValidate에서 예외가 발생하면 400 Bad Request가 반환된다.")
     void reissueFail_InvalidTokenFromCookie() throws Exception {
-        // given
-        final String username = "admin1234";
-        final String password = "validpassword123";
+        String username = "admin1234";
+        String password = "validpassword123";
         createAdmin(username, password);
 
-        // 로그인하여 토큰 발급
-        AdminLoginRequest request = new AdminLoginRequest(username, password);
-        String requestBody = objectMapper.writeValueAsString(request);
+        var requestBody = objectMapper.writeValueAsString(new AdminLoginRequest(username, password));
 
         var loginResult = mockMvc.perform(post(LOGIN_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -308,25 +267,21 @@ class AdminAuthApiControllerTest {
 
         String accessToken = BEARER_PREFIX + loginResult.getResponse().getHeader("Authorization");
 
-        // when & then
-        mockMvc.perform(post("/api/admin/auth/re-issue")
+        mockMvc.perform(post(REISSUE_ENDPOINT)
                         .header("Authorization", accessToken))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value(400))
                 .andExpect(jsonPath("$.details").exists());
     }
 
-    @DisplayName("reissue(): Redis에 저장된 리프레시 토큰과 요청된 리프레시 토큰이 다를 경우 reissueValidate에서 예외가 발생하면 401 Unauthorized가 반환된다.")
     @Test
+    @DisplayName("reissue(): Redis에 저장된 리프레시 토큰과 요청된 리프레시 토큰이 다를 경우 reissueValidate에서 예외가 발생하면 401 Unauthorized가 반환된다.")
     void reissueFail_InvalidRefreshToken() throws Exception {
-        // given
-        final String username = "admin1234";
-        final String password = "validpassword123";
+        String username = "admin1234";
+        String password = "validpassword123";
         createAdmin(username, password);
 
-        // 로그인하여 토큰 및 쿠키 발급
-        AdminLoginRequest request = new AdminLoginRequest(username, password);
-        String requestBody = objectMapper.writeValueAsString(request);
+        var requestBody = objectMapper.writeValueAsString(new AdminLoginRequest(username, password));
 
         var loginResult = mockMvc.perform(post(LOGIN_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -334,14 +289,12 @@ class AdminAuthApiControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String accessToken = "Bearer " + loginResult.getResponse().getHeader("Authorization");
+        String accessToken = BEARER_PREFIX + loginResult.getResponse().getHeader("Authorization");
         String refreshCookie = loginResult.getResponse().getCookie("ttref").getValue();
 
-        // Redis에 저장된 리프레시 토큰을 변경
         redisTemplate.opsForValue().set("refresh:" + username, "differentRefreshToken");
 
-        // when & then
-        mockMvc.perform(post("/api/admin/auth/re-issue")
+        mockMvc.perform(post(REISSUE_ENDPOINT)
                         .header("Authorization", accessToken)
                         .cookie(new Cookie("ttref", refreshCookie)))
                 .andExpect(status().isUnauthorized())
@@ -349,11 +302,9 @@ class AdminAuthApiControllerTest {
                 .andExpect(jsonPath("$.details").exists());
     }
 
-    // ======= 유틸 메서드 =======
     private void createAdmin(String username, String rawPassword) {
         String encodedPassword = passwordEncoder.encode(rawPassword);
         Admin admin = Admin.adminJoin(username, encodedPassword);
-
         adminRepository.save(admin);
     }
 }
