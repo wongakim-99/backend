@@ -1,4 +1,4 @@
-package org.project.ttokttok.global.validation.annotation;
+package org.project.ttokttok.global.annotation.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -8,7 +8,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import org.project.ttokttok.global.validation.validator.StrongPasswordValidator;
+import org.project.ttokttok.global.annotationresolver.validation.StrongPasswordValidator;
 
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

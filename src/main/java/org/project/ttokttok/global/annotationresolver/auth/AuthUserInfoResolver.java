@@ -1,8 +1,8 @@
-package org.project.ttokttok.global.annotationresolver;
+package org.project.ttokttok.global.annotationresolver.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.project.ttokttok.global.annotation.AuthUserInfo;
+import org.project.ttokttok.global.annotation.auth.AuthUserInfo;
 import org.project.ttokttok.global.auth.jwt.service.TokenProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;

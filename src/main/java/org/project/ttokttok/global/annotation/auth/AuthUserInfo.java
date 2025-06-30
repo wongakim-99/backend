@@ -1,4 +1,4 @@
-package org.project.ttokttok.global.annotation;
+package org.project.ttokttok.global.annotation.auth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

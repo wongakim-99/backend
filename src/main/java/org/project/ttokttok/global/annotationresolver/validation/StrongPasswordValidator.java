@@ -1,9 +1,9 @@
-package org.project.ttokttok.global.validation.validator;
+package org.project.ttokttok.global.annotationresolver.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import org.project.ttokttok.global.validation.annotation.StrongPassword;
+import org.project.ttokttok.global.annotation.validation.StrongPassword;
 import org.springframework.stereotype.Component;
 
 @Component
