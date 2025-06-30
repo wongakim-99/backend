@@ -2,7 +2,7 @@ package org.project.ttokttok.domain.admin.controller.auth;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.project.ttokttok.domain.admin.controller.dto.request.AdminLoginRequest;
+import org.project.ttokttok.domain.admin.controller.auth.dto.request.AdminLoginRequest;
 import org.project.ttokttok.domain.admin.service.auth.AdminAuthService;
 import org.project.ttokttok.domain.admin.service.dto.response.AdminLoginServiceResponse;
 import org.project.ttokttok.domain.admin.service.dto.response.ReissueServiceResponse;
