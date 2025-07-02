@@ -1,4 +1,4 @@
-package org.project.ttokttok.domain.admin.service.dto.request;
+package org.project.ttokttok.domain.admin.service.auth.dto.request;
 
 import lombok.Builder;
 
