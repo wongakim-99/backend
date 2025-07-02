@@ -1,8 +1,8 @@
-package org.project.ttokttok.domain.admin.controller.auth.dto.request;
+package org.project.ttokttok.domain.admin.controller.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.project.ttokttok.domain.admin.service.auth.dto.request.AdminLoginServiceRequest;
+import org.project.ttokttok.domain.admin.service.dto.request.AdminLoginServiceRequest;
 
 public record AdminLoginRequest(
         @NotBlank(message = "아이디가 비어 있습니다.")

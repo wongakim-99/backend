@@ -1,4 +1,4 @@
-package org.project.ttokttok.domain.club.domain;
+package org.project.ttokttok.domain.club.domain.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

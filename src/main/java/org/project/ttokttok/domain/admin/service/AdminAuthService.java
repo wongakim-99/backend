@@ -1,12 +1,12 @@
-package org.project.ttokttok.domain.admin.service.auth;
+package org.project.ttokttok.domain.admin.service;
 
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.admin.domain.Admin;
 import org.project.ttokttok.domain.admin.exception.AdminNotFoundException;
 import org.project.ttokttok.domain.admin.repository.AdminRepository;
-import org.project.ttokttok.domain.admin.service.auth.dto.request.AdminLoginServiceRequest;
-import org.project.ttokttok.domain.admin.service.auth.dto.response.AdminLoginServiceResponse;
-import org.project.ttokttok.domain.admin.service.auth.dto.response.ReissueServiceResponse;
+import org.project.ttokttok.domain.admin.service.dto.request.AdminLoginServiceRequest;
+import org.project.ttokttok.domain.admin.service.dto.response.AdminLoginServiceResponse;
+import org.project.ttokttok.domain.admin.service.dto.response.ReissueServiceResponse;
 import org.project.ttokttok.global.auth.jwt.dto.request.TokenRequest;
 import org.project.ttokttok.global.auth.jwt.dto.response.TokenResponse;
 import org.project.ttokttok.global.auth.jwt.exception.InvalidRefreshTokenException;
