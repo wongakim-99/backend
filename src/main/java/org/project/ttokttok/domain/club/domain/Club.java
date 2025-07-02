@@ -2,12 +2,14 @@ package org.project.ttokttok.domain.club.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.project.ttokttok.global.entity.BaseTimeEntity;
 
 import java.util.UUID;
 
 @Entity
+@Getter
 @Table(name = "clubs")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Club extends BaseTimeEntity {
@@ -27,7 +29,7 @@ public class Club extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column
+    @Column(name = "profile_img")
     private String profileImageUrl;
 
     private String summary; // 한줄 소개
