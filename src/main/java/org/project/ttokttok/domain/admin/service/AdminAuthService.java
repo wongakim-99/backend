@@ -1,4 +1,4 @@
-package org.project.ttokttok.domain.admin.service.auth;
+package org.project.ttokttok.domain.admin.service;
 
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.admin.domain.Admin;

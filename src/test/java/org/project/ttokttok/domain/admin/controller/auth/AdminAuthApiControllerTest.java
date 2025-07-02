@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.project.ttokttok.domain.admin.controller.auth.dto.request.AdminLoginRequest;
+import org.project.ttokttok.domain.admin.controller.dto.request.AdminLoginRequest;
 import org.project.ttokttok.domain.admin.domain.Admin;
 import org.project.ttokttok.domain.admin.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;

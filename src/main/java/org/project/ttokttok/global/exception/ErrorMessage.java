@@ -25,7 +25,16 @@ public enum ErrorMessage {
     ALREADY_LOGOUT("이미 로그아웃하였거나, 존재하지 않는 토큰입니다.", HttpStatus.CONFLICT),
     INVALID_TOKEN_AT_COOKIE("쿠키 측 리프레시 토큰이 Null입니다.", HttpStatus.BAD_REQUEST),
     INVALID_REFRESH_TOKEN("잘못된 리프레시 토큰입니다.", HttpStatus.UNAUTHORIZED),
-    REFRESH_TOKEN_EXPIRED("리프레시 토큰 유효 기간 만료, 다시 로그인 필요", HttpStatus.FORBIDDEN);
+    REFRESH_TOKEN_EXPIRED("리프레시 토큰 유효 기간 만료, 다시 로그인 필요", HttpStatus.FORBIDDEN),
+
+    //동아리 에러 메시지
+    CLUB_NOT_FOUND("동아리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    NOT_CLUB_ADMIN("해당 동아리의 관리자가 아닙니다.", HttpStatus.FORBIDDEN),
+    INVALID_IMAGE_TYPE("지원되는 이미지 형식이 아닙니다.", HttpStatus.BAD_REQUEST),
+    IMAGE_MAX_SIZE_OVER("이미지 크기는 5MB 이하만 가능합니다.", HttpStatus.BAD_REQUEST),
+
+    // S3 에러 메시지
+    S3_FILE_UPLOAD_ERROR("S3 파일 업로드 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String message;
     private final HttpStatus status;

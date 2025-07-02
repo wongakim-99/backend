@@ -1,4 +1,4 @@
-package org.project.ttokttok.domain.admin.controller.auth.dto.request;
+package org.project.ttokttok.domain.admin.controller.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.project.ttokttok.domain.admin.domain.Admin;
 import org.project.ttokttok.domain.admin.exception.AdminNotFoundException;
 import org.project.ttokttok.domain.admin.exception.AdminPasswordNotMatchException;
 import org.project.ttokttok.domain.admin.repository.AdminRepository;
+import org.project.ttokttok.domain.admin.service.AdminAuthService;
 import org.project.ttokttok.domain.admin.service.dto.request.AdminLoginServiceRequest;
 import org.project.ttokttok.domain.admin.service.dto.response.AdminLoginServiceResponse;
 import org.project.ttokttok.domain.admin.service.dto.response.ReissueServiceResponse;
@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -89,7 +90,8 @@ class AdminAuthServiceTest {
                 .thenReturn(Optional.empty());
 
         // Then
-        assertThrows(AdminNotFoundException.class, () -> adminAuthService.login(request));
+        assertThatThrownBy(() -> adminAuthService.login(request))
+                .isInstanceOf(AdminNotFoundException.class);
     }
 
     @Test
@@ -106,7 +108,8 @@ class AdminAuthServiceTest {
         doThrow(new AdminPasswordNotMatchException()).when(mockAdmin).validatePassword(eq(password), any());
 
         // Then
-        assertThrows(AdminPasswordNotMatchException.class, () -> adminAuthService.login(request));
+        assertThatThrownBy(() -> adminAuthService.login(request))
+                .isInstanceOf(AdminPasswordNotMatchException.class);
     }
 
     @Test
@@ -117,9 +120,8 @@ class AdminAuthServiceTest {
         String nullRefreshToken = null;
 
         // When & Then
-        assertThrows(InvalidTokenFromCookieException.class, () -> {
-            adminAuthService.reissue(username, nullRefreshToken);
-        });
+        assertThatThrownBy(() -> adminAuthService.reissue(username, nullRefreshToken))
+                .isInstanceOf(InvalidTokenFromCookieException.class);
     }
 
     @Test
@@ -134,8 +136,8 @@ class AdminAuthServiceTest {
                 .thenThrow(new RefreshTokenNotFoundException());
 
         // Then
-        assertThrows(RefreshTokenNotFoundException.class, () ->
-                adminAuthService.reissue(username, refreshToken));
+        assertThatThrownBy(() -> adminAuthService.reissue(username, refreshToken))
+                .isInstanceOf(RefreshTokenNotFoundException.class);
     }
 
     @Test
@@ -151,8 +153,8 @@ class AdminAuthServiceTest {
                 .thenReturn(storedToken);
 
         // Then
-        assertThrows(InvalidRefreshTokenException.class, () ->
-                adminAuthService.reissue(username, requestToken));
+        assertThatThrownBy(() -> adminAuthService.reissue(username, requestToken))
+                .isInstanceOf(InvalidRefreshTokenException.class);
     }
 
     @Test
