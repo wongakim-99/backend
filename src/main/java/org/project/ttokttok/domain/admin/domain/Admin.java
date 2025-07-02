@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.UUID;
 
 @Entity
+@Table(name = "admins")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Admin extends BaseTimeEntity {
 
