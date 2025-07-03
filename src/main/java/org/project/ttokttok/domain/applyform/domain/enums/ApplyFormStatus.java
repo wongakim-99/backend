@@ -1,4 +1,4 @@
-package org.project.ttokttok.domain.applyform.domain;
+package org.project.ttokttok.domain.applyform.domain.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

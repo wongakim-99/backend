@@ -3,6 +3,8 @@ package org.project.ttokttok.domain.applyform.domain;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.project.ttokttok.domain.applyform.domain.enums.ApplicableGrade;
+import org.project.ttokttok.domain.applyform.domain.enums.ApplyFormStatus;
 import org.project.ttokttok.domain.club.domain.Club;
 import org.project.ttokttok.global.entity.BaseTimeEntity;
 
