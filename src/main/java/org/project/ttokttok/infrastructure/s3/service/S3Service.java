@@ -25,8 +25,8 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public String uploadFile(MultipartFile file) {
-        String key = "profile-images/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
+    public String uploadFile(MultipartFile file, String dirName) {
+        String key = dirName + UUID.randomUUID() + "_" + file.getOriginalFilename();
 
         try {
             s3Client.putObject(

@@ -29,6 +29,8 @@ public class ClubAdminService {
 
     private static final long MAX_IMAGE_SIZE = 5 * 1024 * 1024L; // 5MB
 
+    private static final String PROFILE_IMAGE_DIR = "profile-images/";
+
     //todo: 모집 마감 상태 변경 시 Form 비활성화 고려
     @Transactional
     public void updateContent(String username, ClubContentUpdateServiceRequest request) {
@@ -41,7 +43,7 @@ public class ClubAdminService {
         if (request.profileImage() != null && request.profileImage().isPresent()) {
             // s3에 저장하고 url를 받아와서 저장.
             MultipartFile profileImage = request.profileImage().get();
-            String profileImgKey = s3Service.uploadFile(profileImage);
+            String profileImgKey = s3Service.uploadFile(profileImage, PROFILE_IMAGE_DIR);
 
             // 이미지 검증
             validateImageContentType(profileImage);
