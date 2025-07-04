@@ -6,6 +6,7 @@ import org.project.ttokttok.domain.club.exception.ClubNotFoundException;
 import org.project.ttokttok.domain.club.repository.ClubRepository;
 import org.project.ttokttok.domain.clubboard.domain.ClubBoard;
 import org.project.ttokttok.domain.clubboard.exception.ClubAdminNameNotMatchException;
+import org.project.ttokttok.domain.clubboard.exception.ClubBoardNotFoundException;
 import org.project.ttokttok.domain.clubboard.repository.ClubBoardRepository;
 import org.project.ttokttok.domain.clubboard.service.dto.request.CreateBoardServiceRequest;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,21 @@ public class ClubBoardAdminService {
 
         return clubBoardRepository.save(clubBoard)
                 .getId();
+    }
+
+    // 게시글 삭제 로직
+    public void deleteBoard(String clubId, String boardId, String requestAdminName) {
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(ClubNotFoundException::new);
+
+        // 관리자가 동일한지 확인.
+        validateAdmin(club.getAdmin().getUsername(), requestAdminName);
+
+        ClubBoard clubBoard = clubBoardRepository.findById(boardId)
+                .orElseThrow(ClubBoardNotFoundException::new);
+
+        // 게시글 삭제 로직
+        clubBoardRepository.delete(clubBoard);
     }
 
     private void validateAdmin(String clubAdminName, String requestAdminName) {

@@ -38,6 +38,7 @@ public enum ErrorMessage {
     CLUB_NULL_POINTER("클럽 객체가 Null입니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     CONTENT_NULL_OR_BLANK("내용이 Null 이거나 비어있습니다.", HttpStatus.BAD_REQUEST),
     TITLE_NULL_OR_BLANK("Title이 Null 이거나 비어있습니다.", HttpStatus.BAD_REQUEST),
+    CLUB_BOARD_NOT_FOUND("게시글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
     // S3 에러 메시지
     S3_FILE_UPLOAD_ERROR("S3 파일 업로드 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
