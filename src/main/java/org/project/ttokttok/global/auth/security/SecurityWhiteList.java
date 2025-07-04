@@ -17,7 +17,7 @@ public enum SecurityWhiteList {
             "/api/user/auth/signup",
             "/api/user/auth/login",
             "/api/user/auth/send-reset-code",
-            "/api/user/auth/reset-password"
+            "/api/user/auth/reset-password",
             "/api/admin/auth/reissue"
     }),
 
