@@ -5,6 +5,8 @@ import org.project.ttokttok.domain.applyform.domain.ApplyForm;
 import org.project.ttokttok.domain.applyform.repository.ApplyFormRepository;
 import org.project.ttokttok.domain.club.exception.ClubNotFoundException;
 import org.project.ttokttok.domain.club.repository.ClubRepository;
+import org.project.ttokttok.domain.club.repository.dto.ClubDetailQueryResponse;
+import org.project.ttokttok.domain.club.service.dto.response.ClubDetailServiceResponse;
 import org.project.ttokttok.domain.club.service.dto.response.ClubIntroductionServiceResponse;
 import org.project.ttokttok.domain.favorite.repository.FavoriteRepository;
 import org.project.ttokttok.infrastructure.s3.service.S3Service;
@@ -19,10 +21,10 @@ public class ClubService {
 
     private final S3Service s3Service;
 
-    public ClubIntroductionServiceResponse getClubIntroduction(String clubId) {
+    public ClubDetailServiceResponse getClubIntroduction(String username, String clubId) {
         if (!clubRepository.existsById(clubId))
             throw new ClubNotFoundException();
 
-        return null;
+        return ClubDetailServiceResponse.from(clubRepository.getClubIntroduction(clubId, username));
     }
 }
