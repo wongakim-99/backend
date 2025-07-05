@@ -12,4 +12,13 @@ public enum ApplicableGrade {
     FOURTH_GRADE(4);  // 4학년
 
     final int grade;
+
+    public static ApplicableGrade from(int grade) {
+        for (ApplicableGrade applicableGrade : values()) {
+            if (applicableGrade.grade == grade) {
+                return applicableGrade;
+            }
+        }
+        throw new IllegalArgumentException("잘못된 학년입니다." + grade);
+    }
 }
