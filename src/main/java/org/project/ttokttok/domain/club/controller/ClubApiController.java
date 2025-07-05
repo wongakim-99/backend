@@ -3,7 +3,6 @@ package org.project.ttokttok.domain.club.controller;
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.club.controller.dto.response.ClubDetailResponse;
 import org.project.ttokttok.domain.club.service.ClubService;
-import org.project.ttokttok.domain.club.service.dto.response.ClubIntroductionServiceResponse;
 import org.project.ttokttok.global.annotation.auth.AuthUserInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

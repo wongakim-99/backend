@@ -1,14 +1,9 @@
 package org.project.ttokttok.domain.club.service;
 
 import lombok.RequiredArgsConstructor;
-import org.project.ttokttok.domain.applyform.domain.ApplyForm;
-import org.project.ttokttok.domain.applyform.repository.ApplyFormRepository;
 import org.project.ttokttok.domain.club.exception.ClubNotFoundException;
 import org.project.ttokttok.domain.club.repository.ClubRepository;
-import org.project.ttokttok.domain.club.repository.dto.ClubDetailQueryResponse;
 import org.project.ttokttok.domain.club.service.dto.response.ClubDetailServiceResponse;
-import org.project.ttokttok.domain.club.service.dto.response.ClubIntroductionServiceResponse;
-import org.project.ttokttok.domain.favorite.repository.FavoriteRepository;
 import org.project.ttokttok.infrastructure.s3.service.S3Service;
 import org.springframework.stereotype.Service;
 
