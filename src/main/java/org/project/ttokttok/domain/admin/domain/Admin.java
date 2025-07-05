@@ -18,7 +18,7 @@ public class Admin extends BaseTimeEntity {
 
     // UUID 생성 전략
     @PrePersist
-    public void generateId() {
+    private void generateId() {
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();
         }

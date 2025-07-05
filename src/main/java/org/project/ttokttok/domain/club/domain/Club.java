@@ -5,8 +5,11 @@ import lombok.*;
 import org.project.ttokttok.domain.admin.domain.Admin;
 import org.project.ttokttok.domain.club.domain.enums.ClubCategory;
 import org.project.ttokttok.domain.club.domain.enums.ClubType;
+import org.project.ttokttok.domain.clubMember.domain.ClubMember;
 import org.project.ttokttok.global.entity.BaseTimeEntity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -15,17 +18,9 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Club extends BaseTimeEntity {
 
-    //UUID 생성 전략
-    @PrePersist
-    public void generateId() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID().toString();
-        }
-    }
-
     @Id
     @Column(length = 36, updatable = false, unique = true)
-    private String id;
+    private String id = UUID.randomUUID().toString();
 
     @Setter
     @Column(length = 50, nullable = false, unique = true)
@@ -62,6 +57,9 @@ public class Club extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id", nullable = false)
     private Admin admin;
+
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ClubMember> clubMembers = new ArrayList<>();
 
     // todo: 추후에 안내 메시지 등으로 변경 필요.
     @Builder

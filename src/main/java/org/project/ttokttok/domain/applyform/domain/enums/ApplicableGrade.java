@@ -1,4 +1,4 @@
-package org.project.ttokttok.domain.applyform.domain;
+package org.project.ttokttok.domain.applyform.domain.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,5 +11,6 @@ public enum ApplicableGrade {
     THIRD_GRADE("3학년"),   // 3학년
     FOURTH_GRADE("4학년");  // 4학년
 
+    // 숫자로 바꾸기
     final String grade;
 }

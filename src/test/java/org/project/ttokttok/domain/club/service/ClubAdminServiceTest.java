@@ -26,6 +26,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.project.ttokttok.infrastructure.s3.enums.S3FileDirectory.PROFILE_IMAGE;
 
 @ExtendWith(MockitoExtension.class)
 class ClubAdminServiceTest {
@@ -71,6 +72,10 @@ class ClubAdminServiceTest {
                 JsonNullable.of("new summary"),
                 JsonNullable.undefined(),
                 JsonNullable.of("new content"),
+                JsonNullable.undefined(),
+                JsonNullable.undefined(),
+                JsonNullable.undefined(),
+                JsonNullable.undefined(),
                 JsonNullable.undefined()
         );
 
@@ -93,7 +98,9 @@ class ClubAdminServiceTest {
         ClubContentUpdateServiceRequest request = new ClubContentUpdateServiceRequest(
                 CLUB_ID, JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.undefined(), JsonNullable.undefined(), JsonNullable.undefined(),
-                JsonNullable.undefined(), JsonNullable.undefined(), JsonNullable.undefined()
+                JsonNullable.undefined(), JsonNullable.undefined(), JsonNullable.undefined(),
+                JsonNullable.undefined(), JsonNullable.undefined(), JsonNullable.undefined(),
+                JsonNullable.undefined()
         );
 
         given(clubRepository.findById(CLUB_ID)).willReturn(Optional.of(club));
@@ -116,11 +123,12 @@ class ClubAdminServiceTest {
                 JsonNullable.undefined(), JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.of(image),
-                JsonNullable.undefined(), JsonNullable.undefined()
+                JsonNullable.undefined(), JsonNullable.undefined(), JsonNullable.undefined(),
+                JsonNullable.undefined(), JsonNullable.undefined(), JsonNullable.undefined()
         );
 
         given(clubRepository.findById(CLUB_ID)).willReturn(Optional.of(club));
-        given(s3Service.uploadFile(image)).willThrow(new RuntimeException("S3 업로드 실패"));
+        given(s3Service.uploadFile(image, PROFILE_IMAGE.getDirectoryName())).willThrow(new RuntimeException("S3 업로드 실패"));
 
         // when & then
         assertThatThrownBy(() -> clubAdminService.updateContent(ADMIN_USERNAME, request))
@@ -138,6 +146,8 @@ class ClubAdminServiceTest {
                 CLUB_ID,
                 JsonNullable.undefined(), JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.undefined(), JsonNullable.of("요약만 수정"),
+                JsonNullable.undefined(), JsonNullable.undefined(),
+                JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.undefined()
         );
@@ -169,18 +179,20 @@ class ClubAdminServiceTest {
                 JsonNullable.undefined(), JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.of(image),
+                JsonNullable.undefined(), JsonNullable.undefined(),
+                JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.undefined(), JsonNullable.undefined()
         );
 
         given(clubRepository.findById(CLUB_ID)).willReturn(Optional.of(club));
-        given(s3Service.uploadFile(image)).willReturn(newKey);
+        given(s3Service.uploadFile(image, PROFILE_IMAGE.getDirectoryName())).willReturn(newKey);
 
         // when
         clubAdminService.updateContent(ADMIN_USERNAME, request);
 
         // then
         verify(s3Service).deleteFile("old/image.png");
-        verify(s3Service).uploadFile(image);
+        verify(s3Service).uploadFile(image, PROFILE_IMAGE.getDirectoryName());
         assertThat(club.getProfileImageUrl()).isEqualTo(newKey);
     }
 
@@ -199,11 +211,13 @@ class ClubAdminServiceTest {
                 JsonNullable.undefined(), JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.of(image),
+                JsonNullable.undefined(), JsonNullable.undefined(),
+                JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.undefined(), JsonNullable.undefined()
         );
 
         given(clubRepository.findById(CLUB_ID)).willReturn(Optional.of(club));
-        given(s3Service.uploadFile(image)).willReturn("some/key.png");
+        given(s3Service.uploadFile(image, PROFILE_IMAGE.getDirectoryName())).willReturn("some/key.png");
 
         // when & then
         assertThatThrownBy(() -> clubAdminService.updateContent(ADMIN_USERNAME, request))
@@ -224,11 +238,13 @@ class ClubAdminServiceTest {
                 JsonNullable.undefined(), JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.of(image),
+                JsonNullable.undefined(), JsonNullable.undefined(),
+                JsonNullable.undefined(), JsonNullable.undefined(),
                 JsonNullable.undefined(), JsonNullable.undefined()
         );
 
         given(clubRepository.findById(CLUB_ID)).willReturn(Optional.of(club));
-        given(s3Service.uploadFile(image)).willReturn("some/key.png");
+        given(s3Service.uploadFile(image, PROFILE_IMAGE.getDirectoryName())).willReturn("some/key.png");
 
         // when & then
         assertThatThrownBy(() -> clubAdminService.updateContent(ADMIN_USERNAME, request))
