@@ -36,6 +36,6 @@ public class User extends BaseTimeEntity {
     // 약관 동의
     private boolean termsAgreed = false;  // 새로 추가
 
-    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ClubMember> clubMembers = new ArrayList<>();
 }

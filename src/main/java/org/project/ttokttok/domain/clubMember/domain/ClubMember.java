@@ -2,12 +2,14 @@ package org.project.ttokttok.domain.clubMember.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.project.ttokttok.domain.club.domain.Club;
 import org.project.ttokttok.domain.user.domain.User;
 import org.project.ttokttok.global.entity.BaseTimeEntity;
 
 @Entity
+@Getter
 @Table(name = "club_members")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ClubMember extends BaseTimeEntity {
