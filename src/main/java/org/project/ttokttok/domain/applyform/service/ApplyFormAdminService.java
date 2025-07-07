@@ -3,6 +3,7 @@ package org.project.ttokttok.domain.applyform.service;
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.applyform.domain.ApplyForm;
 import org.project.ttokttok.domain.applyform.domain.enums.ApplicableGrade;
+import org.project.ttokttok.domain.applyform.exception.InvalidDateRangeException;
 import org.project.ttokttok.domain.applyform.repository.ApplyFormRepository;
 import org.project.ttokttok.domain.applyform.service.dto.request.ApplyFormCreateServiceRequest;
 import org.project.ttokttok.domain.club.domain.Club;
@@ -11,7 +12,7 @@ import org.project.ttokttok.domain.club.exception.NotClubAdminException;
 import org.project.ttokttok.domain.club.repository.ClubRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,9 @@ public class ApplyFormAdminService {
 
         // 관리자 권한 검증
         validateAdmin(club.getAdmin().getUsername(), request.username());
+
+        // 날짜 범위 검증
+        validateDateRange(request.recruitStartDate(), request.recruitEndDate());
 
         // 숫자 입력으로 들어온 set을 ApplicableGrade로 변환
         Set<ApplicableGrade> applicableGrades = request.applicableGrades()
@@ -58,6 +62,12 @@ public class ApplyFormAdminService {
     private void validateAdmin(String adminName, String requestAdminName) {
         if (!adminName.equals(requestAdminName)) {
             throw new NotClubAdminException();
+        }
+    }
+
+    private void validateDateRange(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(endDate)) {
+            throw new InvalidDateRangeException();
         }
     }
 }
