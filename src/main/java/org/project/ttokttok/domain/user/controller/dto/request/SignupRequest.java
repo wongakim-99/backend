@@ -11,7 +11,7 @@ import org.project.ttokttok.domain.user.service.dto.request.SignupServiceRequest
 
 public record SignupRequest(
         @NotBlank(message = "이메일이 비어 있습니다.")
-        @Schema(description = "상명대학교 이메일", example = "20221000@sangmyung.kr")
+        @Schema(description = "상명대학교 이메일", example = "202021000@sangmyung.kr")
         @Email(message = "올바른 이메일 형식이 아닙니다.")
         String email,
 

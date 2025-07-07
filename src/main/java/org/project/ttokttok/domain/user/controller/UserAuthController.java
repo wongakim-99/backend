@@ -129,6 +129,24 @@ public class UserAuthController {
     /**
      * 로그인
      */
+    @Operation(
+            summary = "로그인",
+            description = "이메일과 비밀번호로 로그인합니다. 로그인 유지 옵션 선택 시 리프레시 토큰이 쿠키로 설정됩니다."
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "로그인 성공, 액세스 토큰 헤더로 반환"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 이메일 또는 비밀번호"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 사용자"
+            )
+    })
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(
             @RequestBody @Valid LoginRequest request) {
@@ -157,6 +175,24 @@ public class UserAuthController {
     /**
      * 비밀번호 재설정 코드 발송
      */
+    @Operation(
+            summary = "비밀번호 재설정 코드 발송",
+            description = "가입된 이메일로 6자리 비밀번호 재설정 코드를 발송합니다."
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "비밀번호 재설정 코드 발송 성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 이메일 형식"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 사용자"
+            )
+    })
     @PostMapping("/send-reset-code")
     public ResponseEntity<ApiResponse<Void>> sendPasswordResetCode(
             @RequestBody @Valid SendVerificationRequest request) {
@@ -171,6 +207,24 @@ public class UserAuthController {
     /**
      * 비밀번호 재설정
      */
+    @Operation(
+            summary = "비밀번호 재설정",
+            description = "발송된 재설정 코드와 새 비밀번호로 비밀번호를 재설정합니다. 강력한 비밀번호 필요."
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "비밀번호 재설정 성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 재설정 코드 또는 비밀번호 형식 오류"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 사용자"
+            )
+    })
     @PostMapping("/reset-password")
     public ResponseEntity<ApiResponse<Void>> resetPassword(
             @RequestBody @Valid ResetPasswordRequest request) {
