@@ -2,6 +2,7 @@ package org.project.ttokttok.domain.admin.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.project.ttokttok.domain.admin.controller.dto.request.AdminJoinRequest;
 import org.project.ttokttok.domain.admin.controller.dto.request.AdminLoginRequest;
 import org.project.ttokttok.domain.admin.service.AdminAuthService;
 import org.project.ttokttok.domain.admin.service.dto.response.AdminLoginServiceResponse;
@@ -70,11 +71,12 @@ public class AdminAuthApiController {
                 .body("re-issue Success");
     }
 
-
-    // 관리자 계정 생성용 api, 프론트 측 구현 필요 X
-    // todo: 추후에 삭제 등의 조치 취할 것
+    // todo: 추후 삭제 - 관리자 가입 메서드
     @PostMapping("/join")
-    public ResponseEntity<Void> join() {
-        return null;
+    public ResponseEntity<String> join(@RequestBody @Valid AdminJoinRequest request) {
+        String adminId = adminAuthService.join(request.username(), request.password());
+
+        return ResponseEntity.ok()
+                .body(adminId);
     }
 }

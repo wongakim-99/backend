@@ -17,14 +17,15 @@ import java.util.UUID;
 public class Admin extends BaseTimeEntity {
 
     @Id
+    @Getter
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(length = 36, updatable = false, unique = true)
-    private String id = UUID.randomUUID().toString();
+    private String id;
 
     @Getter
     @Column(nullable = false, updatable = false, unique = true)
     private String username;
 
-    @Lob
     @Column(nullable = false)
     private String password;
 
