@@ -8,10 +8,14 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.applyform.domain.enums.ApplicableGrade;
+import org.project.ttokttok.domain.club.domain.QClub;
 import org.project.ttokttok.domain.club.domain.enums.ClubCategory;
 import org.project.ttokttok.domain.club.domain.enums.ClubType;
 import org.project.ttokttok.domain.club.repository.dto.ClubCardQueryResponse;
 import org.project.ttokttok.domain.club.repository.dto.ClubDetailQueryResponse;
+import org.project.ttokttok.domain.clubMember.domain.QClubMember;
+import org.project.ttokttok.domain.favorite.domain.QFavorite;
+import org.project.ttokttok.domain.user.domain.QUser;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -92,7 +96,7 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
             // 페이징 관련
             int size,               // 조회할 개수
             String cursor,          // 커서 (무한스크롤용)
-            String sort,            // 정렬 방식 (현재 미사용)
+            String sort,            // 정렬 방식 (latest, popular)
 
             // 사용자 관련
             String userEmail) {     // 즐겨찾기 확인용 사용자 이메일
@@ -126,10 +130,17 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
                         categoryEq(category),       // 카테고리 필터
                         typeEq(type),               // 분류 필터
                         recruitingEq(recruiting),   // 모집 여부 필터
-                        cursorCondition(cursor)     // 커서 조건 (무한스크롤)
-                )
-                .orderBy(club.id.desc())            // ID 내림차순 정렬 (최신순)
-                .limit(size + 1);                   // size + 1개 조회 (hashNext 판단용)
+                        cursorCondition(cursor, sort)     // 커서 조건 (무한스크롤)
+                );
+
+        // 정렬 방식에 따라 orderBy 설정
+        if ("popular".equals(sort)) {
+            query.orderBy(club.id.desc());
+        } else {
+            query.orderBy(club.id.desc());  // 최신순 (기본값)
+        }
+
+        query.limit(size + 1);  // size + 1개 조회 (hashNext 판단용)
 
         return query.fetch();
     }
@@ -147,7 +158,52 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
         return recruiting != null ? club.recruiting.eq(recruiting) : null;
     }
 
-    private BooleanExpression cursorCondition(String cursor) {
-        return cursor != null ? club.id.lt(cursor) : null;
+    private BooleanExpression cursorCondition(String cursor, String sort) {
+        if (cursor == null) {
+            return null;
+        }
+        
+        // 인기순 정렬일 때는 커서 기반 무한스크롤이 복잡하므로 
+        // 현재는 최신순 정렬에서만 커서를 적용
+        if ("popular".equals(sort)) {
+            return null;  // 인기순에서는 커서 무시 (전체 조회)
+        }
+        
+        return club.id.lt(cursor);
+    }
+
+    // 멤서수 인기도 기준 동아리 조회
+    @Override
+    public List<ClubCardQueryResponse> getPopularClubs(int offset, int limit, String userEmail) {
+        QClub club = QClub.club;
+        QClubMember clubMember = QClubMember.clubMember;
+        QFavorite favorite = QFavorite.favorite;
+        QUser user = QUser.user;
+
+        return queryFactory
+                .select(Projections.constructor(ClubCardQueryResponse.class,
+                        club.id,
+                        club.name,
+                        club.clubType,
+                        club.clubCategory,
+                        club.customCategory,
+                        club.summary,
+                        club.profileImageUrl,
+                        clubMember.countDistinct().intValue(),  // 멤버수
+                        club.recruiting,
+                        favorite.isNotNull()  // 즐겨찾기 여부
+                ))
+                .from(club)
+                .leftJoin(club.clubMembers, clubMember)
+                .leftJoin(favorite).on(favorite.club.eq(club)
+                        .and(favorite.user.email.eq(userEmail)))
+                .where(club.recruiting.isTrue())  // 모집중인 동아리만
+                .groupBy(club.id, club.name, club.clubType, club.clubCategory,
+                        club.customCategory, club.summary, club.profileImageUrl,
+                        club.recruiting, favorite.id)
+                .orderBy(clubMember.countDistinct().desc())  // 멤버수 내림차순
+                .offset(offset)
+                .limit(limit)
+                .fetch();
     }
 }

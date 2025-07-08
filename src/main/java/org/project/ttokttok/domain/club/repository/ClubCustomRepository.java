@@ -21,4 +21,7 @@ public interface ClubCustomRepository {
             String sort,
             String userEmail
     );
+
+    // 멤버수 기준 인기 동아리 조회
+    List<ClubCardQueryResponse> getPopularClubs(int offset, int limit, String userEmail);
 }

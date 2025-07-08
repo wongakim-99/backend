@@ -12,6 +12,7 @@ import org.project.ttokttok.domain.club.controller.dto.response.ClubListResponse
 import org.project.ttokttok.domain.club.domain.enums.ClubCategory;
 import org.project.ttokttok.domain.club.domain.enums.ClubType;
 import org.project.ttokttok.domain.club.service.ClubUserService;
+import org.project.ttokttok.domain.club.service.dto.response.ClubListServiceResponse;
 import org.project.ttokttok.global.annotation.auth.AuthUserInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -92,5 +93,77 @@ public class ClubUserApiController {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 메인 화면 배너용 인기 동아리 조회 API
+     * 메인 화면 상단 배너에 표시될 인기 동아리를 조회합니다.
+     * 화살표 버튼을 통해 다음/이전 페이지로 이동할 수 있습니다.
+     *
+     * @param page 페이지 번호 (0부터 시작, 기본 0)
+     * @param size 페이지당 동아리 수 (기본 4개)
+     * @return 멤버수 기준으로 정렬된 인기 동아리 목록
+     * */
+    @Operation(
+            summary = "메인 배너 인기 동아리 조회",
+            description = "메인 화면 상단 배너에 표시될 인기 동아리를 조회합니다. 4개씩 페이지네이션으로 제공됩니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 파라미터")
+    })
+    @GetMapping("/banner/popular")
+    public ResponseEntity<ClubListResponse> getBannerPopularClubs(
+            @Parameter(description = "페이지 번호 (0부터 시작, 기본 0)")
+            @RequestParam(defaultValue = "0") int page,
+
+            @Parameter(description = "조회할 동아리 수 (기본 4개)")
+            @RequestParam(defaultValue = "4") int size) {
+
+        ClubListServiceResponse response = clubUserService.getPopularClubs(page, size);
+
+        return ResponseEntity.ok(ClubListResponse.from(response));
+    }
+
+    /**
+     * 전체 인기 동아리 목록 조회 API
+     * "더보기" 클릭 시 보여지는 전체 인기 동아리 목록을 조회합니다.
+     * 카테고리, 분류, 모집여부 필터링과 함께 무한스크롤 또는 페이지네이션 제공됩니다.
+     *
+     * @param category 동아리 카테고리 필터 (봉사, 예술, 문화 등) - 선택사항
+     * @param type 동아리 분류 필터 (중앙, 연합, 학과) - 선택사항
+     * @param recruiting 모집 여부 필터 (true: 모집중, false: 모집마감) - 선택사항
+     * @param size 페이지 크기 (기본값: 20)
+     * @param cursor 무한스크롤 커서 (첫 요청시 생략)
+     * @return 멤버수 기준으로 정렬된 인기 동아리 목록
+     * */
+    @Operation(
+            summary = "전체 인기 동아리 목록 조회",
+            description = "멤버수가 많은 순으로 전체 인기 동아리를 조회합니다. 필터링 및 무한스크롤 지원."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 파라미터")
+    })
+    @GetMapping("/popular")
+    public ResponseEntity<ClubListResponse> getPopularClubs(
+            @Parameter(description = "카테고리 (스포츠, 예술, 문화 등)")
+            @RequestParam(required = false) ClubCategory category,
+
+            @Parameter(description = "분류 (중앙, 연합, 과 동아리)")
+            @RequestParam(required = false) ClubType type,
+
+            @Parameter(description = "모집여부 (true : 모집중, false : 모집마감)")
+            @RequestParam(required = false) Boolean recruiting,
+
+            @Parameter(description = "조회 개수 (기본 20개)")
+            @RequestParam(defaultValue = "20") int size,
+
+            @Parameter(description = "무한스크롤 커서 (첫 요청시 생략)")
+            @RequestParam(required = false) String cursor) {
+
+        ClubListServiceResponse response = clubUserService.getPopularClubsWithFilters(category, type, recruiting, size, cursor);
+
+        return ResponseEntity.ok(ClubListResponse.from(response));
     }
 }
