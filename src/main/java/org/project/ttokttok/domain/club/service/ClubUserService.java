@@ -1,6 +1,7 @@
 package org.project.ttokttok.domain.club.service;
 
 import lombok.RequiredArgsConstructor;
+import org.project.ttokttok.domain.club.domain.Club;
 import org.project.ttokttok.domain.club.domain.enums.ClubCategory;
 import org.project.ttokttok.domain.club.domain.enums.ClubType;
 import org.project.ttokttok.domain.club.exception.ClubNotFoundException;
@@ -9,6 +10,7 @@ import org.project.ttokttok.domain.club.repository.dto.ClubCardQueryResponse;
 import org.project.ttokttok.domain.club.service.dto.response.ClubCardServiceResponse;
 import org.project.ttokttok.domain.club.service.dto.response.ClubDetailServiceResponse;
 import org.project.ttokttok.domain.club.service.dto.response.ClubListServiceResponse;
+import org.project.ttokttok.global.config.ClubPopularityConfig;
 import org.project.ttokttok.infrastructure.s3.service.S3Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +30,9 @@ public class ClubUserService {
     // 소개글 조회
     private final ClubRepository clubRepository;
     private final Optional<S3Service> s3Service;
+
+    // 동아리 인기글 조회
+    private final ClubPopularityConfig popularityConfig;
 
     /**
      * 동아리 상세 정보 조회
@@ -134,7 +139,7 @@ public class ClubUserService {
     public ClubListServiceResponse getPopularClubs(int page, int size) {
         // page * size 만큼 건너뛰고 size 개수만큼 조회
         List<ClubCardQueryResponse> results = clubRepository.getPopularClubs(
-                page * size, size,getCurrentUserEmail()  // offset, limit 방식으로 변경
+                page * size, size, getCurrentUserEmail(), popularityConfig.getMinScore()  // minScore 추가
         );
 
         List<ClubCardServiceResponse> clubs = results.stream()
@@ -164,8 +169,13 @@ public class ClubUserService {
             String cursor) {
 
         // 인기순(멤버수 기준) 정렬로 고정
-        List<ClubCardQueryResponse> results = clubRepository.getClubList(
-                category, type, recruiting, size, cursor, "popular", getCurrentUserEmail()
+//        List<ClubCardQueryResponse> results = clubRepository.getClubList(
+//                category, type, recruiting, size, cursor, "popular", getCurrentUserEmail()
+//        );
+
+        // 새로운 복합 인기도 기준 메서드 적용
+        List<ClubCardQueryResponse> results = clubRepository.getPopularClubsWithFilters(
+                category, type, recruiting, size, cursor, getCurrentUserEmail(), popularityConfig.getMinScore()
         );
 
         // hasNext 확인을 위해 size+1로 조회했으므로

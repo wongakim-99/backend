@@ -31,6 +31,39 @@ public class ClubUserApiController {
     private final ClubUserService clubUserService;
 
     /**
+     * 메인화면 기본 동아리 목록 조회 API
+     * 로그인 후 메인화면에 바로 표시될 동아리 목록을 조회합니다.
+     * 필터 없이 최신등록순으로 동아리들을 보여줍니다.
+     *
+     * @param size 페이지 크기 (기본값 : 20)
+     * @param cursor 무한스크롤 커서 (첫 요청시 생략)
+     * @return 최신등록순으로 정렬된 동아리 목록
+     * */
+    @Operation(
+            summary = "메인화면 기본 동아리 목록 조회",
+            description = "로그인 후 메인화면에 표시될 기본 동아리 목록을 조회합니다. 기본적으로 '최신등록순' 정렬이 적용된 상태입니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 파라미터")
+    })
+    @GetMapping("/main")
+    public ResponseEntity<ClubListResponse> getMainClubs(
+            @Parameter(description = "조회 개수 (기본 20개)")
+            @RequestParam(defaultValue = "20") int size,
+
+            @Parameter(description = "무한스크롤 커서 (첫 요청시 생략)")
+            @RequestParam(required = false) String cursor) {
+
+        // 카테고리/타입/모집여부 필터는 없지만, 최신등록순 정렬 적용
+        ClubListResponse response = ClubListResponse.from(
+                clubUserService.getClubList(null, null, null, size, cursor, "latest")
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * 동아리 상세 정보 조회 API
      * 특정 동아리의 상세 정보를 조회합니다.
      * 
