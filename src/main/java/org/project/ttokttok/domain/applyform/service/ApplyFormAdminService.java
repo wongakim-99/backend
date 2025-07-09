@@ -118,6 +118,19 @@ public class ApplyFormAdminService {
         );
     }
 
+    // 이전에 사용한 지원폼의 질문 조회 메서드 추가
+    @Transactional(readOnly = true)
+    public List<Question> getPreviousApplyFormQuestions(String username, String formId) {
+        ApplyForm applyForm = applyFormRepository.findById(formId)
+                .orElseThrow(ApplyFormNotFoundException::new);
+
+        // 관리자 권한 검증
+        validateAdmin(applyForm.getClub().getAdmin().getUsername(), username);
+
+        // 질문 목록 반환
+        return applyForm.getFormJson();
+    }
+
     private void validateAdmin(String adminName, String requestAdminName) {
         if (!adminName.equals(requestAdminName)) {
             throw new NotClubAdminException();
