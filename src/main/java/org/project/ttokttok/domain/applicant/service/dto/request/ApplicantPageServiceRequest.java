@@ -8,22 +8,19 @@ public record ApplicantPageServiceRequest(
         String sortCriteria,
         boolean isEvaluating,
         int cursor,
-        int size,
-        String applyFormId
+        int size
 ) {
     public static ApplicantPageServiceRequest of(String username,
                                                  String sortCriteria,
                                                  boolean isEvaluating,
                                                  int cursor,
-                                                 int size,
-                                                 String applyFormId) {
+                                                 int size) {
         return ApplicantPageServiceRequest.builder()
                 .username(username)
                 .sortCriteria(sortCriteria)
                 .isEvaluating(isEvaluating)
                 .cursor(cursor)
                 .size(size)
-                .applyFormId(applyFormId)
                 .build();
     }
 }
