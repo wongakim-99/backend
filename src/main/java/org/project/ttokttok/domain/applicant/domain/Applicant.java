@@ -74,8 +74,26 @@ public class Applicant extends BaseTimeEntity {
     @JoinColumn(name = "applyform_id", nullable = false)
     private ApplyForm applyForm;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "applicant_id")
-    private List<Memo> memo = new ArrayList<>();
+    @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Memo> memos = new ArrayList<>();
+
+    // ----- 연관관계 편의 메서드 ----- //
+    public String addMemo(String content) {
+        Memo memo = Memo.create(this, content);
+        this.memos.add(memo);
+
+        return memo.getId();
+    }
+
+    public void updateMemo(String memoId, String content) {
+        this.memos.stream()
+                .filter(memo -> memo.getId().equals(memoId))
+                .findFirst()
+                .ifPresent(memo -> memo.updateContent(content));
+    }
+
+    public void deleteMemo(String memoId) {
+        this.memos.removeIf(memo -> memo.getId().equals(memoId));
+    }
 }
 

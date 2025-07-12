@@ -2,6 +2,7 @@ package org.project.ttokttok.domain.memo.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.project.ttokttok.domain.applicant.domain.Applicant;
@@ -25,8 +26,17 @@ public class Memo {
     @JoinColumn(name = "applicant_id", nullable = false)
     private Applicant applicant;
 
-    public Memo(String content) {
+    @Builder
+    private Memo(Applicant applicant, String content) {
+        this.applicant = applicant;
         this.content = content;
+    }
+
+    public static Memo create(Applicant applicant, String content) {
+        return Memo.builder()
+                .applicant(applicant)
+                .content(content)
+                .build();
     }
 
     public void updateContent(final String content) {
