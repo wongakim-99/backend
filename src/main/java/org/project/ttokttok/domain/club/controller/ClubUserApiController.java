@@ -43,11 +43,16 @@ public class ClubUserApiController {
      * @param clubId 조회할 동아리 ID
      * @return 동아리 상세 정보 (소개, 지원 정보, 멤버 수 등)
      */
+    private final ClubUserService clubService;
+
     @GetMapping("/{clubId}/content")
     public ResponseEntity<ClubDetailResponse> getClubIntroduction(@AuthUserInfo String username,
                                                                   @PathVariable String clubId) {
         ClubDetailResponse response = ClubDetailResponse.from(
+
                 clubUserService.getClubIntroduction(username, clubId)
+
+                clubService.getClubIntroduction(username, clubId)
         );
 
         return ResponseEntity.ok()

@@ -20,8 +20,9 @@ import java.util.*;
 public class Club extends BaseTimeEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(length = 36, updatable = false, unique = true)
-    private String id = UUID.randomUUID().toString();
+    private String id;
 
     @Setter
     @Column(length = 50, nullable = false, unique = true)

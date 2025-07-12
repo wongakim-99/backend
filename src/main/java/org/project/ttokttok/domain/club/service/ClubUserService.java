@@ -18,7 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 동아리 서비스 클래스
@@ -30,7 +29,7 @@ public class ClubUserService {
 
     // 소개글 조회
     private final ClubRepository clubRepository;
-    private final Optional<S3Service> s3Service;
+    private final S3Service s3Service;  // Optional 제거 (develop 방식 적용)
 
     // 동아리 인기글 조회
     private final ClubPopularityConfig popularityConfig;
