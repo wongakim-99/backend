@@ -393,7 +393,20 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
             sql.append(")");
         }
 
-        sql.append(" ORDER BY c.created_at DESC LIMIT ?");
+        switch (sort) {
+            case "latest":
+                sql.append(" ORDER BY c.id DESC");
+                break;
+            case "member_count":
+                sql.append(" ORDER BY (SELECT COUNT(*) FROM club_members cm WHERE cm.club_id = c.id) DESC");
+                break;
+            case "popular":
+                sql.append(" ORDER BY ((SELECT COUNT(*) FROM club_members cm WHERE cm.club_id = c.id) * 0.7 + COALESCE((SELECT COUNT(*) FROM user_favorites uf2 WHERE uf2.club_id = c.id), 0) * 0.3) DESC");
+                break;
+            default:
+                sql.append(" ORDER BY c.created_at DESC");
+        }
+        sql.append(" LIMIT ?");
 
         Query query = entityManager.createNativeQuery(sql.toString());
 
