@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class ApplicantAdminApiController {
 
     private final ApplicantAdminService applicantAdminService;
-    private final ApplicantRepository applicantRepository;
 
     @GetMapping
     public ResponseEntity<ApplicantPageResponse> getApplicantsPage(@AuthUserInfo String username,
@@ -45,7 +44,7 @@ public class ApplicantAdminApiController {
 
     @GetMapping("/{applicantId}")
     public ResponseEntity<ApplicantDetailResponse> getApplicantDetail(@AuthUserInfo String username,
-                                                   @PathVariable String applicantId) {
+                                                                      @PathVariable String applicantId) {
 
         ApplicantDetailServiceResponse applicantDetail = applicantAdminService.getApplicantDetail(username, applicantId);
 
@@ -55,3 +54,4 @@ public class ApplicantAdminApiController {
                 .body(response);
     }
 }
+
