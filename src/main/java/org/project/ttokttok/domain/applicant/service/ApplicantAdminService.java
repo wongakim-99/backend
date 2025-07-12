@@ -2,6 +2,7 @@ package org.project.ttokttok.domain.applicant.service;
 
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.applicant.domain.Applicant;
+import org.project.ttokttok.domain.applicant.domain.memo.dto.MemoDto;
 import org.project.ttokttok.domain.applicant.exception.ApplicantNotFoundException;
 import org.project.ttokttok.domain.applicant.exception.UnAuthorizedApplicantAccessException;
 import org.project.ttokttok.domain.applicant.repository.ApplicantRepository;
@@ -9,6 +10,7 @@ import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantPageSe
 import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantSearchServiceRequest;
 import org.project.ttokttok.domain.applicant.service.dto.response.ApplicantDetailServiceResponse;
 import org.project.ttokttok.domain.applicant.service.dto.response.ApplicantPageServiceResponse;
+import org.project.ttokttok.domain.applicant.service.dto.response.MemoResponse;
 import org.project.ttokttok.domain.applyform.domain.ApplyForm;
 import org.project.ttokttok.domain.applyform.exception.ApplyFormNotFoundException;
 import org.project.ttokttok.domain.applyform.repository.ApplyFormRepository;
@@ -17,6 +19,8 @@ import org.project.ttokttok.domain.club.exception.NotClubAdminException;
 import org.project.ttokttok.domain.club.repository.ClubRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +51,6 @@ public class ApplicantAdminService {
                 ).toDto());
     }
 
-    // todo: 메모도 같이 내려주기
     @Transactional(readOnly = true)
     public ApplicantDetailServiceResponse getApplicantDetail(String username, String applicantId) {
         // 1. 관리자 권한 검증
@@ -61,6 +64,9 @@ public class ApplicantAdminService {
         // 3. 지원자의 동아리와 관리자의 동아리 비교
         validateApplicantAccess(applicant.getApplyForm().getClub().getId(), club.getId());
 
+        // 4. 메모 정보 추출
+        List<MemoResponse> memos = MemoResponse.fromList(applicant.getMemos());
+
         return ApplicantDetailServiceResponse.of(
                 applicant.getName(),
                 applicant.getAge(),
@@ -70,7 +76,8 @@ public class ApplicantAdminService {
                 applicant.getStudentStatus(),
                 applicant.getGrade(),
                 applicant.getGender(),
-                applicant.getAnswers()
+                applicant.getAnswers(),
+                memos
         );
     }
 

@@ -18,7 +18,8 @@ public record ApplicantDetailServiceResponse(
         StudentStatus studentStatus,
         Grade grade,
         Gender gender,
-        List<Answer> answers
+        List<Answer> answers,
+        List<MemoResponse> memos
 ) {
 
     public static ApplicantDetailServiceResponse of(String name,
@@ -29,7 +30,8 @@ public record ApplicantDetailServiceResponse(
                                                     StudentStatus studentStatus,
                                                     Grade grade,
                                                     Gender gender,
-                                                    List<Answer> answers) {
+                                                    List<Answer> answers,
+                                                    List<MemoResponse> memos) {
 
         return ApplicantDetailServiceResponse.builder()
                 .name(name)
@@ -41,6 +43,7 @@ public record ApplicantDetailServiceResponse(
                 .grade(grade)
                 .gender(gender)
                 .answers(answers)
+                .memos(memos)
                 .build();
     }
 }
