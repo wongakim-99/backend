@@ -77,6 +77,11 @@ public class Applicant extends BaseTimeEntity {
     @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Memo> memos = new ArrayList<>();
 
+    // ----- 유틸 메서드 ----- //
+    public void updateStatus(Status status) {
+        this.status = status;
+    }
+
     // ----- 연관관계 편의 메서드 ----- //
     public String addMemo(String content) {
         Memo memo = Memo.create(this, content);

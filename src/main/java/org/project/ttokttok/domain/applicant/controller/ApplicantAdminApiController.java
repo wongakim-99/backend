@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.applicant.controller.dto.response.ApplicantDetailResponse;
 import org.project.ttokttok.domain.applicant.controller.dto.response.ApplicantPageResponse;
 import org.project.ttokttok.domain.applicant.controller.enums.Sort;
+import org.project.ttokttok.domain.applicant.domain.enums.Status;
 import org.project.ttokttok.domain.applicant.service.ApplicantAdminService;
 import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantPageServiceRequest;
 import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantSearchServiceRequest;
 import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantStatusServiceRequest;
+import org.project.ttokttok.domain.applicant.service.dto.request.StatusUpdateServiceRequest;
 import org.project.ttokttok.domain.applicant.service.dto.response.ApplicantDetailServiceResponse;
 import org.project.ttokttok.global.annotation.auth.AuthUserInfo;
 import org.springframework.http.ResponseEntity;
@@ -124,5 +126,21 @@ public class ApplicantAdminApiController {
                 .body(response);
     }
 
+    // 지원자 상태 업데이트 - status 부분 리팩토링 필요
+    @PatchMapping("/evaluations/{applicantId}")
+    public ResponseEntity<Void> updateApplicantEvaluation(@AuthUserInfo String username,
+                                                          @PathVariable String applicantId,
+                                                          @RequestBody Status status) {
 
+        StatusUpdateServiceRequest request = StatusUpdateServiceRequest.of(
+                username,
+                applicantId,
+                status
+        );
+
+        applicantAdminService.updateApplicantStatus(request);
+
+        return ResponseEntity.noContent()
+                .build();
+    }
 }

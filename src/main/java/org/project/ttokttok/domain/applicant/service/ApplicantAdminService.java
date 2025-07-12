@@ -8,6 +8,7 @@ import org.project.ttokttok.domain.applicant.repository.ApplicantRepository;
 import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantPageServiceRequest;
 import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantSearchServiceRequest;
 import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantStatusServiceRequest;
+import org.project.ttokttok.domain.applicant.service.dto.request.StatusUpdateServiceRequest;
 import org.project.ttokttok.domain.applicant.service.dto.response.ApplicantDetailServiceResponse;
 import org.project.ttokttok.domain.applicant.service.dto.response.ApplicantPageServiceResponse;
 import org.project.ttokttok.domain.applicant.service.dto.response.MemoResponse;
@@ -120,6 +121,23 @@ public class ApplicantAdminService {
                         request.size(),
                         mostRecentApplyForm.getId()
                 ).toDto());
+    }
+
+    @Transactional
+    public void updateApplicantStatus(StatusUpdateServiceRequest request) {
+        // 1. 관리자 권한 검증
+        Club club = clubRepository.findByAdminUsername(request.username())
+                .orElseThrow(NotClubAdminException::new);
+
+        // 2. 지원자 ID로 지원자 정보 조회
+        Applicant applicant = applicantRepository.findById(request.applicantId())
+                .orElseThrow(ApplicantNotFoundException::new);
+
+        // 3. 지원자의 동아리와 관리자의 동아리 비교
+        validateApplicantAccess(applicant.getApplyForm().getClub().getId(), club.getId());
+
+        // 4. 지원자 상태 업데이트
+        applicant.updateStatus(request.status());
     }
 
     // 지원서가 현재 관리하는 동아리의 지원서인지 검증하는 메서드
