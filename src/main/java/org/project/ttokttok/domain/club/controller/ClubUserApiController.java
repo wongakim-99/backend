@@ -49,10 +49,7 @@ public class ClubUserApiController {
     public ResponseEntity<ClubDetailResponse> getClubIntroduction(@AuthUserInfo String username,
                                                                   @PathVariable String clubId) {
         ClubDetailResponse response = ClubDetailResponse.from(
-
                 clubUserService.getClubIntroduction(username, clubId)
-
-                clubService.getClubIntroduction(username, clubId)
         );
 
         return ResponseEntity.ok()
