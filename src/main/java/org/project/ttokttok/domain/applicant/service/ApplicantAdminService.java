@@ -1,13 +1,12 @@
 package org.project.ttokttok.domain.applicant.service;
 
 import lombok.RequiredArgsConstructor;
-import org.project.ttokttok.domain.admin.exception.AdminNotFoundException;
-import org.project.ttokttok.domain.admin.repository.AdminRepository;
 import org.project.ttokttok.domain.applicant.domain.Applicant;
 import org.project.ttokttok.domain.applicant.exception.ApplicantNotFoundException;
-import org.project.ttokttok.domain.applicant.exception.UnauthorizedApplicantAccessException;
+import org.project.ttokttok.domain.applicant.exception.UnAuthorizedApplicantAccessException;
 import org.project.ttokttok.domain.applicant.repository.ApplicantRepository;
 import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantPageServiceRequest;
+import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantSearchServiceRequest;
 import org.project.ttokttok.domain.applicant.service.dto.response.ApplicantDetailServiceResponse;
 import org.project.ttokttok.domain.applicant.service.dto.response.ApplicantPageServiceResponse;
 import org.project.ttokttok.domain.applyform.domain.ApplyForm;
@@ -18,8 +17,6 @@ import org.project.ttokttok.domain.club.exception.NotClubAdminException;
 import org.project.ttokttok.domain.club.repository.ClubRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.project.ttokttok.domain.applyform.domain.enums.ApplyFormStatus.ACTIVE;
 
 @Service
 @RequiredArgsConstructor
@@ -35,21 +32,22 @@ public class ApplicantAdminService {
         Club club = clubRepository.findByAdminUsername(request.username())
                 .orElseThrow(NotClubAdminException::new);
 
-        // 2. 현재 활성화된 지원 폼 찾기
-        ApplyForm activeApplyForm = applyFormRepository.findTopByClubIdOrderByCreatedAtDesc(club.getId())
+        // 2. 가장 최신의 지원 폼 찾기
+        ApplyForm mostRecentApplyForm = applyFormRepository.findTopByClubIdOrderByCreatedAtDesc(club.getId())
                 .orElseThrow(ApplyFormNotFoundException::new);
 
         // 3. 활성화된 지원 폼의 ID를 사용해 지원자 페이지 조회
-        return ApplicantPageServiceResponse.from(applicantRepository.findApplicantsPageWithSortCriteria(
-                request.sortCriteria(),
-                request.isEvaluating(),
-                request.cursor(),
-                request.size(),
-                activeApplyForm.getId()
-        ).toDto());
+        return ApplicantPageServiceResponse.from(
+                applicantRepository.findApplicantsPageWithSortCriteria(
+                        request.sortCriteria(),
+                        request.isEvaluating(),
+                        request.cursor(),
+                        request.size(),
+                        mostRecentApplyForm.getId()
+                ).toDto());
     }
 
-    // 폼 관리 여부 검증 로직 추가 필요
+    // todo: 메모도 같이 내려주기
     @Transactional(readOnly = true)
     public ApplicantDetailServiceResponse getApplicantDetail(String username, String applicantId) {
         // 1. 관리자 권한 검증
@@ -76,10 +74,31 @@ public class ApplicantAdminService {
         );
     }
 
+    public ApplicantPageServiceResponse searchApplicantByKeyword(ApplicantSearchServiceRequest request) {
+        // 1. 관리자 권한 검증
+        Club club = clubRepository.findByAdminUsername(request.username())
+                .orElseThrow(NotClubAdminException::new);
+
+        // 2. 가장 최신의 지원 폼 찾기
+        ApplyForm mostRecentApplyForm = applyFormRepository.findTopByClubIdOrderByCreatedAtDesc(club.getId())
+                .orElseThrow(ApplyFormNotFoundException::new);
+
+        // 3. 지원자 검색
+        return ApplicantPageServiceResponse.from(
+                applicantRepository.searchApplicantsByKeyword(
+                        request.searchKeyword(),
+                        request.sortCriteria(),
+                        request.isEvaluating(),
+                        request.cursor(),
+                        request.size(),
+                        mostRecentApplyForm.getId()
+                ).toDto());
+    }
+
+    // 지원서가 현재 관리하는 동아리의 지원서인지 검증하는 메서드
     private void validateApplicantAccess(String applicantClubId, String targetClubId) {
         if (!applicantClubId.equals(targetClubId)) {
-            // 지원서가 현재 관리하는 동아리의 지원서가 아닐 경우 예외 발생
-            throw new UnauthorizedApplicantAccessException();
+            throw new UnAuthorizedApplicantAccessException();
         }
     }
 }

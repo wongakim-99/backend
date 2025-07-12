@@ -4,9 +4,15 @@ import org.project.ttokttok.domain.applicant.repository.dto.response.ApplicantPa
 
 public interface ApplicantCustomRepository {
     ApplicantPageQueryResponse findApplicantsPageWithSortCriteria(String sortCriteria,
-                                                                        boolean evaluating,
-                                                                        int cursor,
-                                                                        int size,
-                                                                        String applyFormId);
+                                                                  boolean evaluating,
+                                                                  int cursor,
+                                                                  int size,
+                                                                  String applyFormId);
 
+    ApplicantPageQueryResponse searchApplicantsByKeyword(String searchKeyword,
+                                                         String sortCriteria,
+                                                         boolean evaluating,
+                                                         int cursor,
+                                                         int size,
+                                                         String applyFormId);
 }

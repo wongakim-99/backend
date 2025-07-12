@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.applicant.controller.dto.response.ApplicantDetailResponse;
 import org.project.ttokttok.domain.applicant.controller.dto.response.ApplicantPageResponse;
 import org.project.ttokttok.domain.applicant.controller.enums.Sort;
-import org.project.ttokttok.domain.applicant.repository.ApplicantRepository;
 import org.project.ttokttok.domain.applicant.service.ApplicantAdminService;
 import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantPageServiceRequest;
+import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantSearchServiceRequest;
 import org.project.ttokttok.domain.applicant.service.dto.response.ApplicantDetailServiceResponse;
 import org.project.ttokttok.global.annotation.auth.AuthUserInfo;
 import org.springframework.http.ResponseEntity;
@@ -53,5 +53,32 @@ public class ApplicantAdminApiController {
         return ResponseEntity.ok()
                 .body(response);
     }
-}
 
+    // 지원자 검색
+    @GetMapping("/search")
+    public ResponseEntity<ApplicantPageResponse> applicantPageSearch(@AuthUserInfo String username,
+                                                                     @RequestParam(name = "name") String keyword,
+                                                                     @RequestParam(name = "sort", required = false, defaultValue = "GRADE") Sort sort,
+                                                                     @RequestParam(required = false, defaultValue = "false") boolean isEvaluating,
+                                                                     @RequestParam(required = false, defaultValue = "1") int cursor,
+                                                                     @RequestParam(required = false, defaultValue = "7") int size) {
+
+        ApplicantSearchServiceRequest request = ApplicantSearchServiceRequest.of(
+                username,
+                keyword,
+                sort.name(),
+                isEvaluating,
+                cursor,
+                size
+        );
+
+        ApplicantPageResponse response = ApplicantPageResponse.from(
+                applicantAdminService.searchApplicantByKeyword(request)
+        );
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
+    // TODO: 합/불합격 목록 조회 API, 상태 합 / 불합격으로 변경 API 추가 필요
+}
