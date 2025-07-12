@@ -2,12 +2,12 @@ package org.project.ttokttok.domain.applicant.service;
 
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.applicant.domain.Applicant;
-import org.project.ttokttok.domain.applicant.domain.memo.dto.MemoDto;
 import org.project.ttokttok.domain.applicant.exception.ApplicantNotFoundException;
 import org.project.ttokttok.domain.applicant.exception.UnAuthorizedApplicantAccessException;
 import org.project.ttokttok.domain.applicant.repository.ApplicantRepository;
 import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantPageServiceRequest;
 import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantSearchServiceRequest;
+import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantStatusServiceRequest;
 import org.project.ttokttok.domain.applicant.service.dto.response.ApplicantDetailServiceResponse;
 import org.project.ttokttok.domain.applicant.service.dto.response.ApplicantPageServiceResponse;
 import org.project.ttokttok.domain.applicant.service.dto.response.MemoResponse;
@@ -97,6 +97,26 @@ public class ApplicantAdminService {
                         request.sortCriteria(),
                         request.isEvaluating(),
                         request.cursor(),
+                        request.size(),
+                        mostRecentApplyForm.getId()
+                ).toDto());
+    }
+
+    @Transactional(readOnly = true)
+    public ApplicantPageServiceResponse getApplicantsByStatus(ApplicantStatusServiceRequest request) {
+        // 1. username으로 관리하는 동아리 찾기
+        Club club = clubRepository.findByAdminUsername(request.username())
+                .orElseThrow(NotClubAdminException::new);
+
+        // 2. 가장 최신의 지원 폼 찾기
+        ApplyForm mostRecentApplyForm = applyFormRepository.findTopByClubIdOrderByCreatedAtDesc(club.getId())
+                .orElseThrow(ApplyFormNotFoundException::new);
+
+        // 3. 합격/불합격 상태에 따른 지원자 목록 조회
+        return ApplicantPageServiceResponse.from(
+                applicantRepository.findApplicantsByStatus(
+                        request.isPassed(),
+                        request.page(),
                         request.size(),
                         mostRecentApplyForm.getId()
                 ).toDto());

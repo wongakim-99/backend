@@ -7,6 +7,7 @@ import org.project.ttokttok.domain.applicant.controller.enums.Sort;
 import org.project.ttokttok.domain.applicant.service.ApplicantAdminService;
 import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantPageServiceRequest;
 import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantSearchServiceRequest;
+import org.project.ttokttok.domain.applicant.service.dto.request.ApplicantStatusServiceRequest;
 import org.project.ttokttok.domain.applicant.service.dto.response.ApplicantDetailServiceResponse;
 import org.project.ttokttok.global.annotation.auth.AuthUserInfo;
 import org.springframework.http.ResponseEntity;
@@ -80,5 +81,48 @@ public class ApplicantAdminApiController {
                 .body(response);
     }
 
-    // TODO: 합/불합격 목록 조회 API, 상태 합 / 불합격으로 변경 API 추가 필요
+    //FIXME: 하나로 될 거 같음
+    // 합격 지원자 목록 조회
+    @GetMapping("/passed")
+    public ResponseEntity<ApplicantPageResponse> getPassedApplicantsPage(@AuthUserInfo String username,
+                                                                         @RequestParam(required = false, defaultValue = "1") int page,
+                                                                         @RequestParam(required = false, defaultValue = "4") int size) {
+
+        ApplicantStatusServiceRequest request = ApplicantStatusServiceRequest.of(
+                username,
+                true,
+                page,
+                size
+        );
+
+        ApplicantPageResponse response = ApplicantPageResponse.from(
+                applicantAdminService.getApplicantsByStatus(request)
+        );
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
+    // 불합격 지원자 목록 조회
+    @GetMapping("/failed")
+    public ResponseEntity<ApplicantPageResponse> getFailedApplicantsPage(@AuthUserInfo String username,
+                                                                         @RequestParam(required = false, defaultValue = "1") int page,
+                                                                         @RequestParam(required = false, defaultValue = "4") int size) {
+
+        ApplicantStatusServiceRequest request = ApplicantStatusServiceRequest.of(
+                username,
+                false, // passed = false
+                page,
+                size
+        );
+
+        ApplicantPageResponse response = ApplicantPageResponse.from(
+                applicantAdminService.getApplicantsByStatus(request)
+        );
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
+
 }

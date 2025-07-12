@@ -6,13 +6,14 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.applicant.domain.dto.ApplicantSimpleInfoDto;
+import org.project.ttokttok.domain.applicant.domain.enums.Status;
 import org.project.ttokttok.domain.applicant.repository.dto.response.ApplicantPageQueryResponse;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static org.project.ttokttok.domain.applicant.domain.QApplicant.applicant;
-import static org.project.ttokttok.domain.applicant.domain.enums.Status.EVALUATING;
+import static org.project.ttokttok.domain.applicant.domain.enums.Status.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -53,6 +54,55 @@ public class ApplicantRepositoryImpl implements ApplicantCustomRepository {
                 searchKeyword);
     }
 
+    // TODO: 리팩토링
+    @Override
+    public ApplicantPageQueryResponse findApplicantsByStatus(boolean isPassed,
+                                                             int cursor,
+                                                             int size,
+                                                             String applyFormId) {
+        // 합격/불합격 상태에 따라 조회
+        Status status = isPassed ? PASS : FAIL;
+
+        List<ApplicantSimpleInfoDto> applicants = queryFactory
+                .select(Projections.constructor(
+                        ApplicantSimpleInfoDto.class,
+                        applicant.id,
+                        applicant.grade,
+                        applicant.name,
+                        applicant.major,
+                        applicant.status
+                ))
+                .from(applicant)
+                .where(
+                        applicant.applyForm.id.eq(applyFormId),
+                        applicant.status.eq(status)
+                )
+                .limit(size)
+                .offset((long) size * (cursor - 1))
+                .fetch();
+
+        // 조건에 맞는 총 개수 조회
+        Long count = queryFactory
+                .select(applicant.count())
+                .from(applicant)
+                .where(
+                        applicant.applyForm.id.eq(applyFormId),
+                        applicant.status.eq(status)
+                )
+                .fetchOne();
+
+        // 마지막 페이지 번호 계산
+        int totalPage = (int) Math.ceil((double) count / size);
+
+        return ApplicantPageQueryResponse.builder()
+                .currentPage(cursor)
+                .totalPage(totalPage)
+                .totalCount(count.intValue())
+                .applicants(applicants)
+                .build();
+    }
+
+
     // 공통 로직을 추출한 메소드
     private ApplicantPageQueryResponse getApplicantPageQueryResponse(String sortCriteria,
                                                                      boolean evaluating,
@@ -92,7 +142,7 @@ public class ApplicantRepositoryImpl implements ApplicantCustomRepository {
                 .offset((long) size * (cursor - 1))
                 .fetch();
 
-        // 현재 페이지 번호 계산
+        // 마지막 페이지 번호 계산
         int totalPage = (int) Math.ceil((double) count / size);
 
         return ApplicantPageQueryResponse.builder()

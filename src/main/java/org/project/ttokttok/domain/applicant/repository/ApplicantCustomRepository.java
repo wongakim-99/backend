@@ -15,4 +15,9 @@ public interface ApplicantCustomRepository {
                                                          int cursor,
                                                          int size,
                                                          String applyFormId);
+
+    ApplicantPageQueryResponse findApplicantsByStatus(boolean isPassed,
+                                                      int page,
+                                                      int size,
+                                                      String applyFormId);
 }
