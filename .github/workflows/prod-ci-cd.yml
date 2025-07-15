@@ -67,5 +67,5 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk
         run: |
-          eb deploy --timeout 20 --label ttokttok-server-$(date +'%Y%m%d%H%M%S')
+          eb deploy --label ttokttok-server-$(date +'%Y%m%d%H%M%S')
 
