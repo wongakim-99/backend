@@ -156,7 +156,11 @@ public class DummyDataLoader implements ApplicationRunner {
                 ('user-047', 'student047@sangmyung.kr', '$2a$10$dummyUserPassword047', '합예나', true, true, NOW(), NOW()),
                 ('user-048', 'student048@sangmyung.kr', '$2a$10$dummyUserPassword048', '목현수', true, true, NOW(), NOW()),
                 ('user-049', 'student049@sangmyung.kr', '$2a$10$dummyUserPassword049', '욕지민', true, true, NOW(), NOW()),
-                ('user-050', 'student050@sangmyung.kr', '$2a$10$dummyUserPassword050', '값태영', true, true, NOW(), NOW());
+                ('user-050', 'student050@sangmyung.kr', '$2a$10$dummyUserPassword050', '값태영', true, true, NOW(), NOW()),
+                
+                -- 테스트용 사용자 추가 (비밀번호: TestPass123!)
+                ('test-user-001', 'test@sangmyung.kr', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', '테스트 사용자', true, true, NOW(), NOW()),
+                ('test-user-002', 'admin@sangmyung.kr', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', '관리자 테스트', true, true, NOW(), NOW());
                 """;
         jdbcTemplate.execute(sql);
     }

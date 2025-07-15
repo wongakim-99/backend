@@ -33,7 +33,7 @@ public class FavoriteController {
      * 즐겨찾기 토글 API
      * 동아리를 즐겨찾기에 추가하거나 제거합니다.
      *
-     * @param userEmail 인증된 사용자 이메일
+     * @param tokenUserEmail 인증된 사용자 이메일
      * @param clubId 동아리 ID
      * @return 즐겨찾기 토글 결과
      */
@@ -52,10 +52,10 @@ public class FavoriteController {
             @AuthUserInfo String tokenUserEmail,
             @Parameter(description = "동아리 ID", required = true)
             @PathVariable String clubId,
-            @Parameter(description = "테스트용 사용자 이메일", required = false)
+            @Parameter(description = "테스트용 사용자 이메일", required = false, hidden = false)
             @RequestParam(required = false) String userEmail) {
 
-        // 테스트용: 쿼리 파라미터가 있으면 사용, 없으면 JWT에서 추출
+        // 테스트용 파라미터가 있으면 사용, 없으면 JWT에서 추출한 값 사용
         String actualUserEmail = userEmail != null ? userEmail : tokenUserEmail;
 
         if (actualUserEmail == null) {
@@ -74,7 +74,7 @@ public class FavoriteController {
      * 즐겨찾기 목록 조회 API
      * 사용자의 즐겨찾기한 동아리 목록을 조회합니다.
      *
-     * @param userEmail 인증된 사용자 이메일
+     * @param tokenUserEmail 인증된 사용자 이메일
      * @return 즐겨찾기 동아리 목록
      */
     @Operation(
@@ -87,11 +87,12 @@ public class FavoriteController {
     })
     @GetMapping
     public ResponseEntity<FavoriteListResponse> getFavoriteList(
+            @Parameter(description = "JWT 토큰에서 추출한 사용자 이메일", required = false)
             @AuthUserInfo String tokenUserEmail,
-            @Parameter(description = "테스트용 사용자 이메일", required = false)
+            @Parameter(description = "테스트용 사용자 이메일", required = false, hidden = false)
             @RequestParam(required = false) String userEmail) {
 
-        // 테스트용: 쿼리 파라미터가 있으면 사용, 없으면 JWT에서 추출
+        // 테스트용 파라미터가 있으면 사용, 없으면 JWT에서 추출한 값 사용
         String actualUserEmail = userEmail != null ? userEmail : tokenUserEmail;
 
         if (actualUserEmail == null) {
@@ -109,7 +110,7 @@ public class FavoriteController {
      * 즐겨찾기 상태 확인 API
      * 특정 동아리의 즐겨찾기 상태를 확인합니다.
      *
-     * @param userEmail 인증된 사용자 이메일
+     * @param tokenUserEmail 인증된 사용자 이메일
      * @param clubId 동아리 ID
      * @return 즐겨찾기 여부
      */
@@ -123,13 +124,14 @@ public class FavoriteController {
     })
     @GetMapping("/status/{clubId}")
     public ResponseEntity<Boolean> getFavoriteStatus(
+            @Parameter(description = "JWT 토큰에서 추출한 사용자 이메일", required = false)
             @AuthUserInfo String tokenUserEmail,
             @Parameter(description = "동아리 ID", required = true)
             @PathVariable String clubId,
-            @Parameter(description = "테스트용 사용자 이메일", required = false)
+            @Parameter(description = "테스트용 사용자 이메일", required = false, hidden = false)
             @RequestParam(required = false) String userEmail) {
 
-        // 테스트용: 쿼리 파라미터가 있으면 사용, 없으면 JWT에서 추출
+        // 테스트용 파라미터가 있으면 사용, 없으면 JWT에서 추출한 값 사용
         String actualUserEmail = userEmail != null ? userEmail : tokenUserEmail;
 
         if (actualUserEmail == null) {
