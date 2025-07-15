@@ -29,6 +29,11 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build -x test
 
+      - name: Copy JAR to project root
+        run: |
+          JAR_NAME=$(ls ./build/libs/*.jar | grep -v 'plain.jar' | head -n 1)
+          cp "$JAR_NAME" ./app.jar
+
       - name: Install AWS CLI and EB CLI
         run: |
           pip install --upgrade pip
