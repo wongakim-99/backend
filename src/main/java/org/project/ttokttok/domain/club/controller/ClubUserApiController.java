@@ -116,28 +116,20 @@ public class ClubUserApiController {
      * 메인 화면 상단 배너에 표시될 인기 동아리를 조회합니다.
      * 화살표 버튼을 통해 다음/이전 페이지로 이동할 수 있습니다.
      *
-     * @param page 페이지 번호 (0부터 시작, 기본 0)
-     * @param size 페이지당 동아리 수 (기본 4개)
-     * @return 멤버수 기준으로 정렬된 인기 동아리 목록
+     * @return (멤버수 x 0.7) + (즐겨찾기 수 x 0.3) 기준으로 정렬된 인기 동아리 목록
      * */
     @Operation(
             summary = "메인 배너 인기 동아리 조회",
-            description = "메인 화면 상단 배너에 표시될 인기 동아리를 조회합니다. 4개씩 페이지네이션으로 제공됩니다."
+            description = "메인 화면 상단 배너에 표시될 모든 인기 동아리를 한번에 조회합니다."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 파라미터")
     })
     @GetMapping("/banner/popular")
-    public ResponseEntity<ClubListResponse> getBannerPopularClubs(
-            @Parameter(description = "페이지 번호 (0부터 시작, 기본 0)")
-            @RequestParam(defaultValue = "0") int page,
-
-            @Parameter(description = "조회할 동아리 수 (기본 4개)")
-            @RequestParam(defaultValue = "4") int size) {
-
-        ClubListServiceResponse response = clubUserService.getPopularClubs(page, size);
-
+    public ResponseEntity<ClubListResponse> getBannerPopularClubs() {
+        // 프론트엔드 요청으로 기존의 page, size 페이지네이션 방식의 파라미터 제거
+        ClubListServiceResponse response = clubUserService.getAllPopularClubs();
         return ResponseEntity.ok(ClubListResponse.from(response));
     }
 

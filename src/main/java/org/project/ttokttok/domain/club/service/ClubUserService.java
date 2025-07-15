@@ -136,14 +136,12 @@ public class ClubUserService {
      * 메인 배너용 인기 동아리 목록 조회 (멤버수 기준)
      * 멤버수가 많은 순으로 동아리를 조회합니다.
      *
-     * @param page 페이지 번호 (0부터 시작)
-     * @param size 페이지당 조회할 동아리 수
-     * @return 멤버수 순으로 정렬된 인기 동아리 목록
+     * @return 전체 인기 동아리 목록
      * */
-    public ClubListServiceResponse getPopularClubs(int page, int size) {
-        // page * size 만큼 건너뛰고 size 개수만큼 조회
-        List<ClubCardQueryResponse> results = clubRepository.getPopularClubs(
-                page * size, size, getCurrentUserEmail(), popularityConfig.getMinScore()  // minScore 추가
+    public ClubListServiceResponse getAllPopularClubs() {
+
+        List<ClubCardQueryResponse> results = clubRepository.getAllPopularClubs(
+                getCurrentUserEmail(), popularityConfig.getMinScore()
         );
 
         List<ClubCardServiceResponse> clubs = results.stream()
