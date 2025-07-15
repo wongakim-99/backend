@@ -42,7 +42,7 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Initialize EB CLI
-        run: eb init -p java-17 ${{ secrets.EB_APP_NAME }} --region ap-northeast-2
+        run: eb init -p corretto-17 ${{ secrets.EB_APP_NAME }} --region ap-northeast-2
 
       - name: Set EB environment
         run: eb use ${{ secrets.EB_ENV_NAME }}
