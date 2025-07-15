@@ -30,9 +30,8 @@ jobs:
 
       - name: Copy JAR and Procfile to deploy dir
         run: |
-          mkdir -p deploy
-          cp ./build/libs/*-SNAPSHOT.jar ./deploy/app.jar
-          echo "web: java -jar app.jar" > ./deploy/Procfile
+          cp ./build/libs/*-SNAPSHOT.jar ./app.jar
+          echo "web: java -jar app.jar" > ./Procfile
       
       # === 디버깅용: 현재 루트에 뭐가 있는지 확인 ===
       - name: List files at root
