@@ -61,4 +61,6 @@ jobs:
         run: eb use ${{ secrets.EB_ENV_NAME }}
 
       - name: Deploy to Elastic Beanstalk
-        run: eb deploy --staged --timeout 20
+        run: |
+          eb deploy --staged --timeout 20 --label ttokttok-server-$(date +'%Y%m%d%H%M%S')
+
