@@ -242,7 +242,7 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
 
     // 복합 인기도 기준 동아리 조회 (부원수 x 0.7 + 즐겨찾기 수 x 0.3)
     @Override
-    public List<ClubCardQueryResponse> getPopularClubs(int offset, int limit, String userEmail, double minScore) {
+    public List<ClubCardQueryResponse> getAllPopularClubs(String userEmail, double minScore) {
         QClub club = QClub.club;
         QClubMember clubMember = QClubMember.clubMember;
         QFavorite favorite = QFavorite.favorite;
@@ -281,8 +281,6 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
                         club.recruiting, userFavorite.id)
                 .having(popularityScore.goe(minScore))      // 최소 인기도 점수 조건
                 .orderBy(popularityScore.desc(), club.id.desc())  // 인기도 점수 내림차순
-                .offset(offset)
-                .limit(limit)
                 .fetch();
     }
 

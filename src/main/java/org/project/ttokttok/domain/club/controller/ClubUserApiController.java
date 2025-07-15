@@ -129,15 +129,9 @@ public class ClubUserApiController {
             @ApiResponse(responseCode = "400", description = "잘못된 파라미터")
     })
     @GetMapping("/banner/popular")
-    public ResponseEntity<ClubListResponse> getBannerPopularClubs(
-            @Parameter(description = "페이지 번호 (0부터 시작, 기본 0)")
-            @RequestParam(defaultValue = "0") int page,
-
-            @Parameter(description = "조회할 동아리 수 (기본 4개)")
-            @RequestParam(defaultValue = "4") int size) {
-
-        ClubListServiceResponse response = clubUserService.getPopularClubs(page, size);
-
+    public ResponseEntity<ClubListResponse> getBannerPopularClubs() {
+        // 프론트엔드 요청으로 기존의 page, size 페이지네이션 방식의 파라미터 제거
+        ClubListServiceResponse response = clubUserService.getAllPopularClubs();
         return ResponseEntity.ok(ClubListResponse.from(response));
     }
 
