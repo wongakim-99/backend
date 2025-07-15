@@ -39,40 +39,20 @@ public class RedisConfig {
         //Redis의 작동 방식 중 하나인 StandAlone 방식 이용
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
 
-        String[] activeProfiles = environment.getActiveProfiles();
-        boolean isProd = activeProfiles.length > 0 && PROD.equals(activeProfiles[0]);
-
-        if (isProd) {
-            // 운영 환경에서만 비밀번호 사용
-            if (!redisPassword.isEmpty()) {
-                redisConfig.setPassword(RedisPassword.of(redisPassword));
-            }
-        }
-
         // Redis 연결 설정
         redisConfig.setHostName(redisHost);
         redisConfig.setPort(redisPort);
 
-        // Redis 클라이언트 설정
-        LettuceClientConfiguration lettuceClientConfig = createLettuceClientConfig();
-
-        return new LettuceConnectionFactory(redisConfig, lettuceClientConfig);
-    }
-
-    private LettuceClientConfiguration createLettuceClientConfig() {
-        LettuceClientConfiguration.LettuceClientConfigurationBuilder builder =
-                LettuceClientConfiguration.builder()
-                        .commandTimeout(Duration.ofSeconds(5));
-
-        String[] activeProfiles = environment.getActiveProfiles();
-        boolean isProd = activeProfiles.length > 0 && PROD.equals(activeProfiles[0]);
-
-        // 운영환경일 때만 암호화 등록
-        if (isProd) {
-            builder.useSsl();
+        if (isProdProfile() && !redisPassword.isEmpty()) {
+            redisConfig.setPassword(RedisPassword.of(redisPassword));
         }
 
-        return builder.build();
+        // Redis 클라이언트 설정
+        LettuceClientConfiguration lettuceClientConfig = LettuceClientConfiguration.builder()
+                .commandTimeout(Duration.ofSeconds(5))
+                .build();
+
+        return new LettuceConnectionFactory(redisConfig, lettuceClientConfig);
     }
 
     // Redis 템플릿 설정.
@@ -89,5 +69,15 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new StringRedisSerializer());
 
         return redisTemplate;
+    }
+
+    // 현재 환경이 prod인지 체크하는 헬퍼 메서드
+    private boolean isProdProfile() {
+        for (String profile : environment.getActiveProfiles()) {
+            if (profile.equals(PROD)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
