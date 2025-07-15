@@ -41,6 +41,12 @@ jobs:
       - name: Show Procfile contents
         run: cat ./Procfile
 
+      # === zip으로 번들 만들고 구조 확인 ===
+      - name: Make deployment zip and check contents
+        run: |
+          zip deploy.zip app.jar Procfile
+          unzip -l deploy.zip
+      
       - name: Install AWS CLI and EB CLI
         run: |
           pip install --upgrade pip
