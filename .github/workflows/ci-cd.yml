@@ -38,6 +38,10 @@ jobs:
           mkdir deploy
           cp build/libs/*.jar deploy/
           cp Procfile deploy/
+          # 아래 두 줄 추가: yml 파일을 deploy 폴더에 복사
+          # TODO: 추후 EB 환경 변수로 빼기.
+          cp src/main/resources/application.yml deploy/
+          cp src/main/resources/application-prod.yml deploy/
           if [ -d .ebextensions ]; then cp -r .ebextensions deploy/; fi
           cd deploy
           zip -r ../deploy.zip .
