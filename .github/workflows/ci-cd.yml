@@ -2,7 +2,7 @@ name: Deploy master
 on:
   push:
     branches:
-      - Release/#30
+      - main
 
 jobs:
   build:
