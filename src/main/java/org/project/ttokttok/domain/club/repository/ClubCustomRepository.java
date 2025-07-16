@@ -24,15 +24,13 @@ public interface ClubCustomRepository {
             String userEmail
     );
 
-    // 복합 점수 기반 인기 동아리 조회
-    List<ClubCardQueryResponse> getPopularClubs(int offset, int limit, String userEmail, double minScore);
+    // 복합 점수 기반 인기 동아리 조회 - 페이지네이션 제거
+    List<ClubCardQueryResponse> getAllPopularClubs(String userEmail, double minScore);
 
     List<ClubCardQueryResponse> getPopularClubsWithFilters(
-            ClubCategory category,
-            ClubType type,
-            Boolean recruiting,
             int size,
             String cursor,
+            String sort,
             String userEmail,
             double minScore
     );
