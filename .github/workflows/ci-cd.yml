@@ -33,6 +33,9 @@ jobs:
           JAR_BASENAME=$(basename $JAR_NAME)
           echo "web: java -jar $JAR_BASENAME" > Procfile
 
+      - name: Debug yml content
+        run: cat ./src/main/resources/application-prod.yml
+
       - name: Prepare deployment package
         run: |
           mkdir deploy
