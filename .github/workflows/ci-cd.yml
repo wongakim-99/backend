@@ -27,6 +27,11 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build -x test
 
+      - name: Create Procfile dynamically
+        run: |
+          JAR_NAME=$(ls build/libs/*.jar | head -n 1)
+          echo "web: java -jar $JAR_NAME" > Procfile
+
       - name: Prepare deployment package
         run: |
           mkdir deploy
