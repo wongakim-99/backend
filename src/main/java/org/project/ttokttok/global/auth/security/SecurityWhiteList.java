@@ -20,10 +20,7 @@ public enum SecurityWhiteList {
             "/api/user/auth/reset-password",
             "/api/admin/auth/reissue",
             "/health",
-            "/api/admin/auth/join", // todo: 추후 삭제 예정 - 관리자 가입 API 엔드포인트
-            "/api/clubs/banner/popular", // 메인 배너는 인증 없이 조회 가능
-            "/api/clubs/popular", // 전체 인기 동아리 목록은 인증 없이 조회 가능
-            "/api/clubs" // 동아리 목록 조회는 인증 없이 조회 가능
+            "/api/admin/auth/join" // todo: 추후 삭제 예정 - 관리자 가입 API 엔드포인트
     }),
 
     SWAGGER_URLS(new String[]{
