@@ -213,10 +213,10 @@ public class ClubUserService {
      * @param cursor 커서 기반 페이징용 기준 값
      * @param size 한 페이지당 개수
      */
-    public ClubListServiceResponse searchClubs(String keyword, String sort, String cursor, int size, String testUserEmail, String loginUserEmail) {
+    public ClubListServiceResponse searchClubs(String keyword, String sort, String cursor, int size, String userEmail) {
 
-        // 1. 사용자 이메일 결정 (테스트용 이메일 우선)
-        String finalUserEmail = (testUserEmail != null) ? testUserEmail : loginUserEmail;
+        // 1. 사용자 이메일 결정 (인증된 사용자 정보 사용)
+        String finalUserEmail = userEmail != null ? userEmail : getCurrentUserEmail();
 
         // 2. 전체 카운트 조회
         long totalCount = clubRepository.countByKeyword(keyword);

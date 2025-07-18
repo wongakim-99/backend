@@ -195,15 +195,10 @@ public class ClubUserApiController {
             @RequestParam(defaultValue = "latest") String sort,
             @RequestParam(required = false) String cursor,
             @RequestParam(defaultValue = "20") int size,
-            Principal principal,
-
-            @Parameter(description = "테스트용 사용자 이메일", required = false, hidden = true)
-            @RequestParam(required = false) String userEmail
+            @Parameter(hidden = true) @AuthUserInfo String userEmail
     ) {
-        String loginUserEmail = (principal != null) ? principal.getName() : null;
-
         ClubListResponse response = ClubListResponse.from(
-                clubUserService.searchClubs(keyword, sort, cursor, size, userEmail, loginUserEmail)
+                clubUserService.searchClubs(keyword, sort, cursor, size, userEmail)
         );
 
         return ResponseEntity.ok(response);
