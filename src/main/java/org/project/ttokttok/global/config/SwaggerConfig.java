@@ -5,13 +5,20 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
+
+    @Value("${server.url}")
+    private String prodUrl;
+
     @Bean
     public OpenAPI boardAPI() {
         Info info = createSwaggerInfo();
@@ -25,9 +32,18 @@ public class SwaggerConfig {
         // 보안 요구사항 설정
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("cookieAuth");
 
+        Server prodServer = new Server()
+                .url(prodUrl)
+                .description("Production Server");
+
+        Server localServer = new Server()
+                .url("http://localhost:8080")
+                .description("Local Server");
+
         return new OpenAPI()
                 .info(info)
                 .components(new Components().addSecuritySchemes("cookieAuth", apiKey))
+                .servers(List.of(prodServer, localServer))
                 .security(Collections.singletonList(securityRequirement));
     }
 
