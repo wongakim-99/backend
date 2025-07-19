@@ -110,7 +110,7 @@ public class ClubUserApiController {
             @Parameter(description = "무한스크롤 커서 (첫 요청시 생략)")
             @RequestParam(required = false) String cursor,    // cursor 추가
 
-            @Parameter(description = "정렬 (latest: 최신등록순, popular: 인기도순, member_count: 멤버많은순)")
+            @Parameter(description = "정렬 (latest: 최신등록순, popular: 인기도순, member_count: 멤버많은순)\n")
             @RequestParam(defaultValue = "latest") String sort,
             @Parameter(hidden = true) @AuthUserInfo String userEmail) {
 
