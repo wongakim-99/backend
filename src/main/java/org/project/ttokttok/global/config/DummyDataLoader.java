@@ -26,18 +26,18 @@ public class DummyDataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        // 개발 환경에서만 더미 데이터 로드
-        if (isLocalOrDevProfile()) {
-            log.info("더미 데이터 로딩 시작...");
+        // 개발 또는 운영(테스트용) 환경에서 더미 데이터 로드
+        if (shouldLoadDummyData()) {
+            log.info("더미 데이터 로딩 시작 (Profile: {})", String.join(", ", environment.getActiveProfiles()));
             loadDummyData();
             log.info("더미 데이터 로딩 완료!");
         }
     }
 
-    private boolean isLocalOrDevProfile() {
+    private boolean shouldLoadDummyData() {
         String[] activeProfiles = environment.getActiveProfiles();
         for (String profile : activeProfiles) {
-            if ("local".equals(profile) || "dev".equals(profile)) {
+            if ("local".equals(profile) || "dev".equals(profile) || "prod".equals(profile)) {
                 return true;
             }
         }
