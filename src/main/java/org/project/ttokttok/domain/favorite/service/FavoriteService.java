@@ -178,7 +178,8 @@ public class FavoriteService {
                 club.getSummary(),
                 club.getProfileImageUrl(),
                 club.getClubMembers().size(), // 멤버 수
-                club.isRecruiting(),
+                // club.isRecruiting(), - ApplyForm에서 관리하므로 기본값
+                false,
                 bookmarked
         );
     }
