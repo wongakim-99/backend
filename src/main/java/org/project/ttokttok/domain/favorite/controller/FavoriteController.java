@@ -113,7 +113,7 @@ public class FavoriteController {
             @Parameter(description = "조회할 개수")
             @RequestParam(defaultValue = "20") int size,
 
-            @Parameter(description = "정렬 기준")
+            @Parameter(description = "정렬 (latest: 최신등록순, popular: 인기도순, member_count: 멤버많은순)")
             @RequestParam(defaultValue = "latest") String sort) {
 
         if (userEmail == null) {

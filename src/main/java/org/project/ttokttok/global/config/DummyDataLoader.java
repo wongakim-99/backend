@@ -69,6 +69,9 @@ public class DummyDataLoader implements ApplicationRunner {
             
             // 8. 테스트용 ApplyForm 데이터 (확실히 들어가도록)
             loadTestApplyFormData();
+            
+            // 9. 추가 엣지 케이스 ApplyForm 데이터
+            loadEdgeCaseApplyFormData();
         } catch (Exception e) {
             log.error("더미 데이터 로딩 중 오류 발생", e);
         }
@@ -854,22 +857,47 @@ public class DummyDataLoader implements ApplicationRunner {
     }
 
     private void loadApplyFormGrades() {
-        log.info("ApplyForm Grades 데이터 로딩...");
-        String sql = """
-                -- ApplyForm grades 데이터
+        log.info("ApplyForm Grades 데이터 로딩 (다양한 학년 조합)...");
+        
+        // 1학년만 모집 (신입생 전용)
+        String sql1 = """
+                INSERT INTO applyform_grades (applyform_id, grades) 
+                SELECT af.id, 'FIRST_GRADE'
+                FROM applyforms af
+                WHERE af.club_id IN ('club-001', 'club-007');
+                """;
+        
+        // 1,2학년 모집 (저학년 대상)
+        String sql2 = """
                 INSERT INTO applyform_grades (applyform_id, grades) 
                 SELECT af.id, grade_value
                 FROM applyforms af
-                CROSS JOIN (
-                    VALUES 
-                    ('FIRST_GRADE'),
-                    ('SECOND_GRADE'), 
-                    ('THIRD_GRADE'),
-                    ('FOURTH_GRADE')
-                ) AS grades(grade_value)
-                WHERE af.club_id IN ('club-001', 'club-002', 'club-003', 'club-004', 'club-006', 'club-007', 'club-008', 'club-010', 'club-011', 'club-012');
+                CROSS JOIN (VALUES ('FIRST_GRADE'), ('SECOND_GRADE')) AS grades(grade_value)
+                WHERE af.club_id IN ('club-002', 'club-008');
                 """;
-        jdbcTemplate.execute(sql);
+        
+        // 3,4학년 모집 (고학년 대상)  
+        String sql3 = """
+                INSERT INTO applyform_grades (applyform_id, grades) 
+                SELECT af.id, grade_value
+                FROM applyforms af
+                CROSS JOIN (VALUES ('THIRD_GRADE'), ('FOURTH_GRADE')) AS grades(grade_value)
+                WHERE af.club_id IN ('club-003', 'club-010');
+                """;
+        
+        // 전체 학년 모집 (모든 학년 환영)
+        String sql4 = """
+                INSERT INTO applyform_grades (applyform_id, grades) 
+                SELECT af.id, grade_value
+                FROM applyforms af
+                CROSS JOIN (VALUES ('FIRST_GRADE'), ('SECOND_GRADE'), ('THIRD_GRADE'), ('FOURTH_GRADE')) AS grades(grade_value)
+                WHERE af.club_id IN ('club-004', 'club-006', 'club-011', 'club-012');
+                """;
+        
+        jdbcTemplate.execute(sql1);
+        jdbcTemplate.execute(sql2);
+        jdbcTemplate.execute(sql3);
+        jdbcTemplate.execute(sql4);
     }
 
     private void loadTestApplyFormData() {
@@ -889,16 +917,46 @@ public class DummyDataLoader implements ApplicationRunner {
                 """;
         jdbcTemplate.update(sql1, applyFormId);
         
-        // grades 데이터 추가
+        // grades 데이터 추가 (1학년만 - 신입생 전용)
         String sql2 = """
                 INSERT INTO applyform_grades (applyform_id, grades) VALUES 
-                (?, 'FIRST_GRADE'),
-                (?, 'SECOND_GRADE'),
-                (?, 'THIRD_GRADE'),
-                (?, 'FOURTH_GRADE')
+                (?, 'FIRST_GRADE')
                 """;
-        jdbcTemplate.update(sql2, applyFormId, applyFormId, applyFormId, applyFormId);
+        jdbcTemplate.update(sql2, applyFormId);
         
         log.info("테스트용 ApplyForm 데이터 로딩 완료: {}", applyFormId);
+    }
+
+    private void loadEdgeCaseApplyFormData() {
+        log.info("엣지 케이스 ApplyForm 데이터 로딩...");
+        
+        // 마감된 모집 (INACTIVE 상태) - recruiting: false가 되어야 함
+        String inactiveFormId = "inactive-applyform-001";
+        String sql1 = """
+                INSERT INTO applyforms (id, title, sub_title, status, apply_start_date, apply_end_date, 
+                                       has_interview, max_apply_count, club_id, form_json, created_at, updated_at) 
+                VALUES (?, '연극반 모집 마감', '모집이 마감되었습니다', 'INACTIVE', 
+                        '2025-02-01', '2025-02-15', false, 5, 'club-005', '[]', NOW(), NOW())
+                """;
+        jdbcTemplate.update(sql1, inactiveFormId);
+        
+        // 2학년만 모집하는 특별한 케이스
+        String specialFormId = "special-applyform-001";  
+        String sql2 = """
+                INSERT INTO applyforms (id, title, sub_title, status, apply_start_date, apply_end_date, 
+                                       has_interview, max_apply_count, club_id, form_json, created_at, updated_at) 
+                VALUES (?, '밴드동아리 2학년 특별모집', '2학년만 특별 모집합니다', 'ACTIVE', 
+                        '2025-03-01', '2025-03-20', true, 3, 'club-009', '[]', NOW(), NOW())
+                """;
+        jdbcTemplate.update(sql2, specialFormId);
+        
+        // grades 데이터 추가
+        String sql3 = """
+                INSERT INTO applyform_grades (applyform_id, grades) VALUES 
+                (?, 'SECOND_GRADE')
+                """;
+        jdbcTemplate.update(sql3, specialFormId);
+        
+        log.info("엣지 케이스 ApplyForm 데이터 로딩 완료");
     }
 }
