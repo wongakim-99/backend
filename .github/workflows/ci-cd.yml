@@ -19,10 +19,25 @@ jobs:
           java-version: '17'
 
       - name: Generate application-prod.yml from secret
+        env:
+          PROD_DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+          PROD_REDIS_PASSWORD: ${{ secrets.PROD_REDIS_PASSWORD }}
+          PROD_MAIL_PASSWORD: ${{ secrets.PROD_MAIL_PASSWORD }}
+          PROD_JWT_SECRET: ${{ secrets.PROD_JWT_SECRET }}
+          PROD_AWS_ACCESS_KEY: ${{ secrets.PROD_AWS_ACCESS_KEY }}
+          PROD_AWS_SECRET_KEY: ${{ secrets.PROD_AWS_SECRET_KEY }}
         run: |
           mkdir -p ./src/main/resources
           echo "${{ secrets.APPLICATION_YML}}" | base64 --decode > ./src/main/resources/application.yml
-          echo "${{ secrets.APPLICATION_PROD_YAML }}" | base64 --decode > ./src/main/resources/application-prod.yml
+          
+          PROD_YML_CONTENT=$(echo "${{ secrets.APPLICATION_PROD_YAML }}" | base64 --decode)
+          echo "$PROD_YML_CONTENT" | envsubst > ./src/main/resources/application-prod.yml
+
+      - name: Debug - Show generated application-prod.yml content
+        run: |
+          echo "--- Content of src/main/resources/application-prod.yml ---"
+          cat ./src/main/resources/application-prod.yml
+          echo "---------------------------------------------------------"
 
       - name: Build with Gradle
         run: ./gradlew clean build -x test
@@ -31,21 +46,25 @@ jobs:
         run: |
           JAR_NAME=$(ls build/libs/*.jar | grep -v 'plain' | head -n 1)
           JAR_BASENAME=$(basename $JAR_NAME)
-          echo "web: java -jar $JAR_BASENAME" > Procfile
+          echo "web: java -Dspring.profiles.active=prod -jar $JAR_BASENAME" > Procfile
 
       - name: Prepare deployment package
         run: |
           mkdir deploy
           cp build/libs/*.jar deploy/
           cp Procfile deploy/
-          # 아래 두 줄 추가: yml 파일을 deploy 폴더에 복사
-          # TODO: 추후 EB 환경 변수로 빼기.
           cp src/main/resources/application.yml deploy/
           cp src/main/resources/application-prod.yml deploy/
           if [ -d .ebextensions ]; then cp -r .ebextensions deploy/; fi
           cd deploy
           zip -r ../deploy.zip .
           cd ..
+
+      - name: Debug - Show application-prod.yml in deploy package
+        run: |
+          echo "--- Content of application-prod.yml in deploy.zip ---"
+          unzip -p deploy.zip application-prod.yml
+          echo "-----------------------------------------------------"
 
       - name: Set version label
         id: version
