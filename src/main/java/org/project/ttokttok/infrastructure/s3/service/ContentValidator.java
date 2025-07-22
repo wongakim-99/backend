@@ -1,9 +1,11 @@
 package org.project.ttokttok.infrastructure.s3.service;
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
+@Service
 public class ContentValidator implements ContentValidatable {
 
     private static final Set<String> ALLOWED_IMAGE_TYPES =

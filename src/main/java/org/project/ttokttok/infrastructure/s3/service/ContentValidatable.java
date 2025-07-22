@@ -1,9 +1,7 @@
 package org.project.ttokttok.infrastructure.s3.service;
 
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-@Service
 public interface ContentValidatable {
     void validateContent(MultipartFile content);
 
