@@ -47,4 +47,11 @@ public class ClubAdminApiController {
         return ResponseEntity.ok()
                 .body("Markdown image Updated successfully. Image Key: " + imageKey);
     }
+
+    @GetMapping("/image")
+    public ResponseEntity<String> getImageUrl(@RequestParam String imageKey) {
+        String imageUrl = clubAdminService.getImageUrl(imageKey);
+
+        return ResponseEntity.ok(imageUrl);
+    }
 }

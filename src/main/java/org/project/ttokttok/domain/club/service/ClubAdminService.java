@@ -137,4 +137,8 @@ public class ClubAdminService {
         if (!username.equals(targetAdminUsername))
             throw new NotClubAdminException();
     }
+
+    public String getImageUrl(String imageKey) {
+        return s3Service.generatePresignedUrl(imageKey);
+    }
 }
