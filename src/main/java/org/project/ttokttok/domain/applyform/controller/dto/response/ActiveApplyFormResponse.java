@@ -15,7 +15,7 @@ public record ActiveApplyFormResponse(
 ) {
     public static ActiveApplyFormResponse from(ActiveApplyFormServiceResponse response) {
         return ActiveApplyFormResponse.builder()
-                .formId
+                .formId(response.formId())
                 .title(response.title())
                 .subTitle(response.subTitle())
                 .questions(response.questions())
