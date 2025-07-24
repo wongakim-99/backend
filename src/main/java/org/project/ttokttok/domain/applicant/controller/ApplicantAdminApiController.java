@@ -9,7 +9,6 @@ import org.project.ttokttok.domain.applicant.domain.enums.Status;
 import org.project.ttokttok.domain.applicant.service.ApplicantAdminService;
 import org.project.ttokttok.domain.applicant.service.dto.request.*;
 import org.project.ttokttok.domain.applicant.service.dto.response.ApplicantDetailServiceResponse;
-import org.project.ttokttok.domain.applicant.service.dto.response.ApplicantFinalizeServiceResponse;
 import org.project.ttokttok.global.annotation.auth.AuthUserInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
