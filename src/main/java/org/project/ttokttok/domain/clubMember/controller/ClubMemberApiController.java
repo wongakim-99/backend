@@ -2,6 +2,7 @@ package org.project.ttokttok.domain.clubMember.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.project.ttokttok.domain.clubMember.controller.dto.request.ClubMemberAddRequest;
 import org.project.ttokttok.domain.clubMember.controller.dto.request.RoleChangeRequest;
 import org.project.ttokttok.domain.clubMember.controller.dto.response.ClubMemberCountResponse;
 import org.project.ttokttok.domain.clubMember.controller.dto.response.ClubMemberPageResponse;
@@ -17,6 +18,7 @@ import org.project.ttokttok.domain.clubMember.service.dto.response.ExcelServiceR
 import org.project.ttokttok.global.annotation.auth.AuthUserInfo;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -128,5 +130,17 @@ public class ClubMemberApiController {
 
         return ResponseEntity.ok()
                 .body(response);
+    }
+
+    @PostMapping("/{clubId}/add")
+    public ResponseEntity<String> addMembers(@AuthUserInfo String username,
+                                             @PathVariable String clubId,
+                                             @Valid @RequestBody ClubMemberAddRequest request) {
+        String clubMemberId = clubMemberService.addMember(
+                username, clubId, request.toServiceRequest()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("ClubMember Add Successfully. clubMemberId: " + clubMemberId);
     }
 }
