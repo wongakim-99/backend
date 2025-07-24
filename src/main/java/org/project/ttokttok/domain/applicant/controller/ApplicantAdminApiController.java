@@ -1,6 +1,8 @@
 package org.project.ttokttok.domain.applicant.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.project.ttokttok.domain.applicant.controller.dto.request.SendResultMailRequest;
 import org.project.ttokttok.domain.applicant.controller.dto.response.ApplicantDetailResponse;
 import org.project.ttokttok.domain.applicant.controller.dto.response.ApplicantFinalizeResponse;
 import org.project.ttokttok.domain.applicant.controller.dto.response.ApplicantPageResponse;
@@ -157,5 +159,20 @@ public class ApplicantAdminApiController {
 
         return ResponseEntity.ok()
                 .body(response);
+    }
+
+    @PostMapping("/{clubId}/send-email")
+    public ResponseEntity<Void> sendEmailToApplicants(@AuthUserInfo String username,
+                                                      @PathVariable String clubId,
+                                                      @Valid @RequestBody SendResultMailRequest request) {
+
+        applicantAdminService.sendResultMailToApplicants(
+                request.toServiceRequest(),
+                username,
+                clubId
+        );
+
+        return ResponseEntity.noContent()
+                .build();
     }
 }
