@@ -2,6 +2,7 @@ package org.project.ttokttok.domain.clubMember.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.project.ttokttok.domain.clubMember.controller.docs.ClubMemberDocs;
 import org.project.ttokttok.domain.clubMember.controller.dto.request.ClubMemberAddRequest;
 import org.project.ttokttok.domain.clubMember.controller.dto.request.RoleChangeRequest;
 import org.project.ttokttok.domain.clubMember.controller.dto.response.ClubMemberCountResponse;
@@ -30,7 +31,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/members")
-public class ClubMemberApiController {
+public class ClubMemberApiController implements ClubMemberDocs {
 
     private final ClubMemberService clubMemberService;
 
