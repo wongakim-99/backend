@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.project.ttokttok.domain.club.controller.dto.request.UpdateClubContentRequest;
 import org.project.ttokttok.domain.club.controller.dto.response.ClubAdminDetailResponse;
+import org.project.ttokttok.domain.club.controller.dto.response.GetImageUrlResponse;
+import org.project.ttokttok.domain.club.controller.dto.response.UpdateImageResponse;
 import org.project.ttokttok.global.exception.dto.ErrorResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -85,9 +87,8 @@ public interface ClubAdminApiDocs {
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "200",
-                            description = "동아리 소개 수정 성공",
-                            content = @Content(schema = @Schema(implementation = String.class, example = "Club content updated successfully."))
+                            responseCode = "204",
+                            description = "동아리 소개 수정 성공"
                     ),
                     @ApiResponse(
                             responseCode = "400",
@@ -110,7 +111,7 @@ public interface ClubAdminApiDocs {
                             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
                     )
             })
-    ResponseEntity<String> updateClubContent(
+    ResponseEntity<Void> updateClubContent(
             @Parameter(
                     description = "인증된 사용자 정보",
                     hidden = true
@@ -181,7 +182,7 @@ public interface ClubAdminApiDocs {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    ResponseEntity<String> updateMarkdownImage(
+    ResponseEntity<UpdateImageResponse> updateMarkdownImage(
             @Parameter(description = "인증된 관리자 이름", hidden = true)
             String username,
             @Parameter(description = "동아리 ID", required = true, example = "UUID")
@@ -223,7 +224,7 @@ public interface ClubAdminApiDocs {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    ResponseEntity<String> getImageUrl(
+    ResponseEntity<GetImageUrlResponse> getImageUrl(
             @Parameter(description = "조회할 이미지의 키", required = true, example = "club-1-image-12345")
             @RequestParam String imageKey
     );
