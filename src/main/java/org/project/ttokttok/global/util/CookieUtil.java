@@ -14,8 +14,7 @@ public class CookieUtil {
     public static ResponseCookie createResponseCookie(String name, String value, Duration maxAge) {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
-                //.secure(true) // HTTPS에서만 전송
-                .secure(false) // FIXME: 프론트 테스트 용으로 비활성화
+                .secure(true) // HTTPS에서만 전송
                 //.sameSite("Strict") // 동일 사이트에서만 쿠키 전송
                 .sameSite("None") // 개발용
                 .path("/")
@@ -26,8 +25,7 @@ public class CookieUtil {
     public static ResponseCookie exireResponseCookie(String name) {
         return ResponseCookie.from(name, "")
                 .httpOnly(true)
-                //.secure(true)
-                .secure(false) // FIXME: 프론트 테스트 용으로 비활성화
+                .secure(true)
                 //.sameSite("Strict")
                 .sameSite("None")
                 .path("/")
