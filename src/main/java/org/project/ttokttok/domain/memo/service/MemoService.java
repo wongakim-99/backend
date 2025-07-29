@@ -1,14 +1,10 @@
 package org.project.ttokttok.domain.memo.service;
 
 import lombok.RequiredArgsConstructor;
-import org.project.ttokttok.domain.applicant.domain.Applicant;
 import org.project.ttokttok.domain.applicant.domain.BaseApplicant;
 import org.project.ttokttok.domain.applicant.domain.DocumentApplicant;
 import org.project.ttokttok.domain.applicant.exception.ApplicantNotFoundException;
 import org.project.ttokttok.domain.applicant.repository.ApplicantRepository;
-import org.project.ttokttok.domain.memo.domain.Memo;
-import org.project.ttokttok.domain.memo.exception.MemoNotFoundException;
-import org.project.ttokttok.domain.memo.repository.MemoRepository;
 import org.project.ttokttok.domain.memo.service.dto.request.CreateMemoServiceRequest;
 import org.project.ttokttok.domain.memo.service.dto.request.DeleteMemoServiceRequest;
 import org.project.ttokttok.domain.memo.service.dto.request.UpdateMemoServiceRequest;
@@ -20,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemoService {
 
     //TODO: 올바른 관리자인지 검증 로직 추가 필요
-    //private final MemoRepository memoRepository;
     private final ApplicantRepository applicantRepository;
 
     @Transactional
