@@ -11,6 +11,7 @@ import org.project.ttokttok.domain.applicant.controller.dto.request.SendResultMa
 import org.project.ttokttok.domain.applicant.controller.dto.response.ApplicantDetailResponse;
 import org.project.ttokttok.domain.applicant.controller.dto.response.ApplicantFinalizeResponse;
 import org.project.ttokttok.domain.applicant.controller.dto.response.ApplicantPageResponse;
+import org.project.ttokttok.domain.applicant.controller.enums.Kind;
 import org.project.ttokttok.domain.applicant.controller.enums.Sort;
 import org.project.ttokttok.domain.applicant.domain.enums.Status;
 import org.project.ttokttok.global.exception.dto.ErrorResponse;
@@ -71,7 +72,8 @@ public interface ApplicantAdminDocs {
             @Parameter(description = "정렬 기준 (GRADE 등)", example = "GRADE") Sort sort,
             @Parameter(description = "평가 중인 지원자만 조회 여부", example = "false") boolean isEvaluating,
             @Parameter(description = "페이지 커서 (1부터 시작)", example = "1") int cursor,
-            @Parameter(description = "페이지 크기", example = "7") int size
+            @Parameter(description = "페이지 크기", example = "7") int size,
+            @Parameter(description = "서류 / 면접 구분", example = "DOCUMENT / INTERVIEW") Kind kind
     );
 
     @Operation(
