@@ -15,7 +15,8 @@ public class CookieUtil {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .secure(true) // HTTPS에서만 전송
-                .sameSite("Strict") // 동일 사이트에서만 쿠키 전송
+                //.sameSite("Strict") // 동일 사이트에서만 쿠키 전송
+                .sameSite("None") // 개발용
                 .path("/")
                 .maxAge(maxAge)
                 .build();
@@ -25,7 +26,8 @@ public class CookieUtil {
         return ResponseCookie.from(name, "")
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Strict")
+                //.sameSite("Strict")
+                .sameSite("None")
                 .path("/")
                 .maxAge(0)
                 .build();
