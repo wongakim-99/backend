@@ -138,7 +138,7 @@ public class ApplicantAdminService {
                 .orElseThrow(NotClubAdminException::new);
 
         // 2. 지원자 ID로 지원자 정보 조회
-        Applicant applicant = applicantRepository.findById(request.applicantId())
+        BaseApplicant applicant = applicantRepository.findById(request.applicantId())
                 .orElseThrow(ApplicantNotFoundException::new);
 
         // 3. 지원자의 동아리와 관리자의 동아리 비교

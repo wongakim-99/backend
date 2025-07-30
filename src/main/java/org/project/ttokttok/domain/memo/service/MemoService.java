@@ -1,8 +1,6 @@
 package org.project.ttokttok.domain.memo.service;
 
 import lombok.RequiredArgsConstructor;
-import org.project.ttokttok.domain.applicant.domain.BaseApplicant;
-import org.project.ttokttok.domain.applicant.domain.DocumentApplicant;
 import org.project.ttokttok.domain.applicant.exception.ApplicantNotFoundException;
 import org.project.ttokttok.domain.applicant.repository.ApplicantRepository;
 import org.project.ttokttok.domain.memo.service.dto.request.CreateMemoServiceRequest;

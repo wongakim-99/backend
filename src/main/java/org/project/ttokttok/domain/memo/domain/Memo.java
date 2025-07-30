@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.project.ttokttok.domain.applicant.domain.DocumentApplicant;
+import org.project.ttokttok.domain.applicant.domain.DocumentPhase;
 
 @Entity
 @Getter
@@ -30,7 +30,7 @@ public class Memo {
         this.content = content;
     }
 
-    public static Memo create(DocumentApplicant applicant, String content) {
+    public static Memo create(DocumentPhase applicant, String content) {
         return Memo.builder()
                 .applicant(applicant)
                 .content(content)

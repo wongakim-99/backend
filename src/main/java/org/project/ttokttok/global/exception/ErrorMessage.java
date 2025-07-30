@@ -51,6 +51,7 @@ public enum ErrorMessage {
     // 지원자 에러 메시지
     APPLICANT_NOT_FOUND("지원자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     UNAUTHORIZED_APPLICANT_ACCESS("지원자 조회에 대한 권한이 없습니다.", HttpStatus.FORBIDDEN),
+    INVALID_PHASE_TRANSITION("지원자의 상태를 변경할 수 없습니다.", HttpStatus.BAD_REQUEST),
 
     // 메모 에러 메시지
     MEMO_NOT_FOUND("메모를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
