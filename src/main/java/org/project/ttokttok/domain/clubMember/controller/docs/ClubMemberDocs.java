@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Map;
+
 @Tag(name = "[관리자] 동아리 부원 관리 API", description = "동아리 관리자용 부원 관리 API 입니다.")
 public interface ClubMemberDocs {
 
@@ -169,7 +171,7 @@ public interface ClubMemberDocs {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    ResponseEntity<Void> deleteMember(
+    ResponseEntity<Map<String, String>> deleteMember(
             @Parameter(description = "인증된 관리자 이름", hidden = true)
             @AuthUserInfo String username,
             @Parameter(description = "동아리 ID", required = true, example = "UUID")
@@ -226,7 +228,7 @@ public interface ClubMemberDocs {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    ResponseEntity<Void> changeRole(
+    ResponseEntity<Map<String, String>> changeRole(
             @Parameter(description = "인증된 관리자 이름", hidden = true)
             @AuthUserInfo String username,
             @Parameter(description = "동아리 ID", required = true, example = "UUID")

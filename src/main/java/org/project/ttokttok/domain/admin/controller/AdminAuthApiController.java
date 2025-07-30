@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
+import java.util.Map;
 
 import static org.project.ttokttok.global.auth.jwt.TokenExpiry.ACCESS_TOKEN_EXPIRY_TIME;
 import static org.project.ttokttok.global.auth.jwt.TokenExpiry.REFRESH_TOKEN_EXPIRY_TIME;
@@ -61,7 +62,7 @@ public class AdminAuthApiController implements AdminAuthDocs {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@AuthUserInfo String adminName) {
+    public ResponseEntity<Map<String, String>> logout(@AuthUserInfo String adminName) {
         adminAuthService.logout(adminName);
 
         // 두 쿠키 모두 만료시키기
@@ -70,11 +71,11 @@ public class AdminAuthApiController implements AdminAuthDocs {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, expiredCookies[0].toString())
                 .header(HttpHeaders.SET_COOKIE, expiredCookies[1].toString())
-                .build();
+                .body(Map.of("message", "로그아웃이 완료되었습니다."));
     }
 
     @PostMapping("/re-issue")
-    public ResponseEntity<Void> reissue(
+    public ResponseEntity<Map<String, String>> reissue(
             @AuthUserInfo String adminName,
             @CookieValue(value = "ttref", required = false) String refreshToken) {
 
@@ -97,7 +98,7 @@ public class AdminAuthApiController implements AdminAuthDocs {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .build();
+                .body(Map.of("message", "토큰이 재발급되었습니다."));
     }
 
     // todo: 추후 삭제 - 관리자 가입 메서드

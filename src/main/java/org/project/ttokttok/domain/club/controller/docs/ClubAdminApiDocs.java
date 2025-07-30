@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @Tag(name = "[관리자] 동아리 관련 API", description = "관리자 동아리 정보 관리용 API 입니다.")
 public interface ClubAdminApiDocs {
 
@@ -111,7 +113,7 @@ public interface ClubAdminApiDocs {
                             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
                     )
             })
-    ResponseEntity<Void> updateClubContent(
+    ResponseEntity<Map<String, String>> updateClubContent(
             @Parameter(
                     description = "인증된 사용자 정보",
                     hidden = true
@@ -323,7 +325,7 @@ public interface ClubAdminApiDocs {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    ResponseEntity<Void> toggleRecruitment(
+    ResponseEntity<Map<String, String>> toggleRecruitment(
             @Parameter(description = "인증된 사용자 정보", hidden = true)
             String username,
             @Parameter(description = "동아리 ID", required = true, example = "UUID")

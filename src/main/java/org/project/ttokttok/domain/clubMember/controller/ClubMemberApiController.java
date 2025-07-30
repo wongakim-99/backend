@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -65,10 +66,10 @@ public class ClubMemberApiController implements ClubMemberDocs {
     }
 
     @PatchMapping("/{clubId}/{memberId}/role")
-    public ResponseEntity<Void> changeRole(@AuthUserInfo String username,
-                                           @PathVariable String clubId,
-                                           @PathVariable String memberId,
-                                           @Valid @RequestBody RoleChangeRequest request) {
+    public ResponseEntity<Map<String, String>> changeRole(@AuthUserInfo String username,
+                                                          @PathVariable String clubId,
+                                                          @PathVariable String memberId,
+                                                          @Valid @RequestBody RoleChangeRequest request) {
 
         ChangeRoleServiceRequest serviceRequest = ChangeRoleServiceRequest.of(
                 username,
@@ -84,9 +85,9 @@ public class ClubMemberApiController implements ClubMemberDocs {
     }
 
     @DeleteMapping("/{clubId}/{memberId}")
-    public ResponseEntity<Void> deleteMember(@AuthUserInfo String username,
-                                             @PathVariable String clubId,
-                                             @PathVariable String memberId) {
+    public ResponseEntity<Map<String, String>> deleteMember(@AuthUserInfo String username,
+                                                            @PathVariable String clubId,
+                                                            @PathVariable String memberId) {
 
         DeleteMemberServiceRequest serviceRequest = DeleteMemberServiceRequest.of(
                 username,
@@ -136,8 +137,8 @@ public class ClubMemberApiController implements ClubMemberDocs {
 
     @PostMapping("/{clubId}/add")
     public ResponseEntity<ClubMemberCreateResponse> addMembers(@AuthUserInfo String username,
-                                             @PathVariable String clubId,
-                                             @Valid @RequestBody ClubMemberAddRequest request) {
+                                                               @PathVariable String clubId,
+                                                               @Valid @RequestBody ClubMemberAddRequest request) {
         String clubMemberId = clubMemberService.addMember(
                 username, clubId, request.toServiceRequest()
         );
