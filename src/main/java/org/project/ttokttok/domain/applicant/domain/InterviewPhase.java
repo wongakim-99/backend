@@ -40,5 +40,9 @@ public class InterviewPhase extends BaseTimeEntity {
     public void updateStatus(PhaseStatus status) {
         this.status = status;
     }
+
+    public void updateInterviewDate(LocalDate interviewDate) {
+        this.interviewDate = interviewDate;
+    }
 }
 
