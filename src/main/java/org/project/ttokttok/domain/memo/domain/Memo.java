@@ -21,18 +21,18 @@ public class Memo {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "applicant_id", nullable = false)
-    private DocumentApplicant applicant;
+    @JoinColumn(name = "document_phase_id", nullable = false)
+    private DocumentPhase documentPhase;
 
     @Builder
-    private Memo(DocumentApplicant applicant, String content) {
-        this.applicant = applicant;
+    private Memo(DocumentPhase documentPhase, String content) {
+        this.documentPhase = documentPhase;
         this.content = content;
     }
 
-    public static Memo create(DocumentPhase applicant, String content) {
+    public static Memo create(DocumentPhase documentPhase, String content) {
         return Memo.builder()
-                .applicant(applicant)
+                .documentPhase(documentPhase)
                 .content(content)
                 .build();
     }
