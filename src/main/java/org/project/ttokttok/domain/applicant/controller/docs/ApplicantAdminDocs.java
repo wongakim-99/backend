@@ -17,6 +17,8 @@ import org.project.ttokttok.domain.applicant.domain.enums.Status;
 import org.project.ttokttok.global.exception.dto.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
+
 @Tag(name = "[관리자] 지원자 관리 API", description = "관리자가 지원자를 조회, 평가, 상태 관리하는 API입니다.")
 public interface ApplicantAdminDocs {
 
@@ -270,7 +272,7 @@ public interface ApplicantAdminDocs {
     )
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "204",
+                    responseCode = "200",
                     description = "평가 상태 업데이트 성공"
             ),
             @ApiResponse(
@@ -294,7 +296,7 @@ public interface ApplicantAdminDocs {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    ResponseEntity<Void> updateApplicantEvaluation(
+    ResponseEntity<Map<String, String>> updateApplicantEvaluation(
             @Parameter(hidden = true) String username,
             @Parameter(description = "지원자 ID", example = "UUID") String applicantId,
             @Parameter(description = "변경할 상태", schema = @Schema(implementation = Status.class), example = "PASS") Status status,
@@ -364,7 +366,7 @@ public interface ApplicantAdminDocs {
     )
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "204",
+                    responseCode = "200",
                     description = "이메일 발송 성공"
             ),
             @ApiResponse(
@@ -393,7 +395,7 @@ public interface ApplicantAdminDocs {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    ResponseEntity<Void> sendEmailToApplicants(
+    ResponseEntity<Map<String, String>> sendEmailToApplicants(
             @Parameter(hidden = true) String username,
             @Parameter(description = "동아리 ID", example = "UUID") String clubId,
             @Parameter(description = "이메일 발송 요청 정보") SendResultMailRequest request
