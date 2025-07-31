@@ -90,6 +90,7 @@ public class ClubMemberService {
     }
 
     // 동아리 부원 검색 기능
+    @Transactional(readOnly = true)
     public List<ClubMemberSearchServiceResponse> clubMemberSearch(ClubMemberSearchRequest request) {
         // 동아리 관리자 검증
         validateClubAndAdmin(request.clubId(), request.username());
@@ -112,6 +113,7 @@ public class ClubMemberService {
     }
 
     // 동아리 부원 수 조회
+    @Transactional(readOnly = true)
     public ClubMemberCountServiceResponse getClubMembersCount(String clubId, String username) {
         // 동아리 관리자 검증
         validateClubAndAdmin(clubId, username);
@@ -125,7 +127,7 @@ public class ClubMemberService {
         );
     }
 
-
+    @Transactional
     public String addMember(String username,
                             String clubId,
                             ClubMemberServiceRequest request,
