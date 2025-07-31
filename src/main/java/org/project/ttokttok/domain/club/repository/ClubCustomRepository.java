@@ -3,6 +3,7 @@ package org.project.ttokttok.domain.club.repository;
 import org.project.ttokttok.domain.applyform.domain.enums.ApplicableGrade;
 import org.project.ttokttok.domain.club.domain.enums.ClubCategory;
 import org.project.ttokttok.domain.club.domain.enums.ClubType;
+import org.project.ttokttok.domain.club.domain.enums.ClubUniv;
 import org.project.ttokttok.domain.club.repository.dto.ClubCardQueryResponse;
 import org.project.ttokttok.domain.club.repository.dto.ClubDetailAdminQueryResponse;
 import org.project.ttokttok.domain.club.repository.dto.ClubDetailQueryResponse;
@@ -19,6 +20,7 @@ public interface ClubCustomRepository {
     List<ClubCardQueryResponse> getClubList(
             ClubCategory category,
             ClubType type,
+            ClubUniv clubUniv,
             Boolean recruiting,
             List<ApplicableGrade> grades,
             int size,

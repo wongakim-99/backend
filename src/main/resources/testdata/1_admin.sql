@@ -30,4 +30,8 @@ INSERT INTO admins (id, username, password, created_at, updated_at) VALUES
 ('admin-028', 'admin_hiking', '$2a$10$dummyHashForPassword028', NOW(), NOW()),
 ('admin-029', 'admin_christian', '$2a$10$dummyHashForPassword029', NOW(), NOW()),
 ('admin-030', 'admin_etc', '$2a$10$dummyHashForPassword030', NOW(), NOW()),
-('admin-031', 'admin_free', '$2a$10$dummyHashForPassword031', NOW(), NOW());
+('admin-031', 'admin_free', '$2a$10$dummyHashForPassword031', NOW(), NOW()),
+-- ENGINEERING 과동아리 관리자 추가 (과동아리 필터링 테스트용)
+('admin-032', 'admin_mechanical', '$2a$10$dummyHashForPassword032', NOW(), NOW()),
+('admin-033', 'admin_electronics', '$2a$10$dummyHashForPassword033', NOW(), NOW()),
+('admin-034', 'admin_chemical', '$2a$10$dummyHashForPassword034', NOW(), NOW());

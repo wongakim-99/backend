@@ -30,4 +30,8 @@ INSERT INTO clubs (id, name, profile_img, summary, club_type, club_category, clu
 ('club-028', '등산동아리', 'https://example.com/hiking.jpg', '자연과 함께하는 건강한 등산', 'UNION', 'SPORTS', 'ENGINEERING', '등산', '정기적인 등산을 통해 자연을 느끼고 체력을 기릅니다.', 'admin-028', NOW(), NOW()),
 ('club-029', '기독교동아리', 'https://example.com/christian.jpg', '믿음 안에서 함께하는 공동체', 'CENTRAL', 'RELIGION', 'GLOBAL_AREA', '기독교', '신앙 생활과 봉사활동을 함께 하는 동아리입니다.', 'admin-029', NOW(), NOW()),
 ('club-030', '자유동아리', 'https://example.com/free.jpg', '자유로운 활동과 새로운 도전', 'DEPARTMENT', 'ETC', 'DESIGN', '자유활동', '정해진 틀 없이 자유롭게 활동하는 동아리입니다.', 'admin-030', NOW(), NOW()),
-('club-031', '벽외조사 동아리', 'https://example.com/rumbling.jpg', '지유를 찾아서 떠나는 조사', 'CENTRAL', 'VOLUNTEER', 'CONVERGENCE_TECHNOLOGY', '지유', '벽 밖을 조사하여 더 넓은 세상을 탐구하는 동아리 입니다. (주의 : 오장육부 분리 가능성 있음)', 'admin-031', NOW(), NOW());
+('club-031', '벽외조사 동아리', 'https://example.com/rumbling.jpg', '지유를 찾아서 떠나는 조사', 'CENTRAL', 'VOLUNTEER', 'CONVERGENCE_TECHNOLOGY', '지유', '벽 밖을 조사하여 더 넓은 세상을 탐구하는 동아리 입니다. (주의 : 오장육부 분리 가능성 있음)', 'admin-031', NOW(), NOW()),
+-- ENGINEERING 과동아리 추가 (과동아리 필터링 테스트용)
+('club-032', '기계공학연구회', 'https://example.com/mechanical.jpg', '기계공학 실습과 연구', 'DEPARTMENT', 'ACADEMIC', 'ENGINEERING', '기계공학', '기계공학 관련 실습과 연구를 진행하는 동아리입니다.', 'admin-032', NOW(), NOW()),
+('club-033', '전자공학동아리', 'https://example.com/electronics.jpg', '전자공학 실험실습', 'DEPARTMENT', 'ACADEMIC', 'ENGINEERING', '전자공학', '전자공학 실험과 실습을 통해 실력을 키웁니다.', 'admin-033', NOW(), NOW()),
+('club-034', '화학공학연구회', 'https://example.com/chemical.jpg', '화학공학 실험연구', 'DEPARTMENT', 'ACADEMIC', 'ENGINEERING', '화학공학', '화학공학 실험과 연구를 진행하는 동아리입니다.', 'admin-034', NOW(), NOW());
