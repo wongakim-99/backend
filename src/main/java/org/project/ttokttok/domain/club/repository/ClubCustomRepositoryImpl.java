@@ -13,6 +13,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.applyform.domain.ApplyForm;
 import org.project.ttokttok.domain.applyform.domain.enums.ApplicableGrade;
+import org.project.ttokttok.domain.applyform.domain.enums.ApplyFormStatus;
 import org.project.ttokttok.domain.club.domain.enums.ClubCategory;
 import org.project.ttokttok.domain.club.domain.enums.ClubType;
 import org.project.ttokttok.domain.club.domain.enums.ClubUniv;
@@ -114,6 +115,7 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
     public List<ClubCardQueryResponse> getClubList(
             ClubCategory category,
             ClubType type,
+            ClubUniv clubUniv,
             Boolean recruiting,
             List<ApplicableGrade> grades,
             int size,
@@ -153,7 +155,8 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
                 .where(
                         categoryEq(category),
                         typeEq(type),
-                        // recruitingEq(recruiting), - ApplyForm에서 관리하므로 제거
+                        clubUnivEq(clubUniv),
+                        recruitingEq(recruiting),
                         gradesEq(grades),
                         cursorCondition(cursor, sort)
                 );
@@ -190,9 +193,21 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
         return type != null ? club.clubType.eq(type) : null;
     }
 
+    private BooleanExpression clubUnivEq(ClubUniv clubUniv) {
+        return clubUniv != null ? club.clubUniv.eq(clubUniv) : null;
+    }
+
     private BooleanExpression recruitingEq(Boolean recruiting) {
-        // recruiting은 이제 ApplyForm에서 관리되므로 항상 null 반환
-        return null;
+        if (recruiting == null) {
+            return null; // 전체 선택 시 필터링하지 않음
+        }
+        // recruiting은 ApplyForm의 status로 관리되므로 ACTIVE/INACTIVE로 확인
+        ApplyFormStatus targetStatus = recruiting ? ApplyFormStatus.ACTIVE : ApplyFormStatus.INACTIVE;
+        return JPAExpressions.selectOne()
+                .from(applyForm)
+                .where(applyForm.club.id.eq(club.id)
+                        .and(applyForm.status.eq(targetStatus)))
+                .exists();
     }
 
     private BooleanExpression gradesEq(List<ApplicableGrade> grades) {
