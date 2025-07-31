@@ -389,5 +389,45 @@ INSERT INTO club_members (id, club_id, member_id, grade, major, role, email, pho
 (gen_random_uuid(), 'club-030', 'user-026', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'selfgovernance09@example.com', '010-9192-9797', 'FEMALE', NOW(), NOW()),
 (gen_random_uuid(), 'club-030', 'user-027', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'personality10@example.com', '010-0000-0808', 'MALE', NOW(), NOW()),
 (gen_random_uuid(), 'club-030', 'user-028', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'individuality11@example.com', '010-1000-1818', 'FEMALE', NOW(), NOW());
--- (더 많이 만들 수도 있지만 우선 이 4개로 테스트)
+
+-- club-031 (벽외조사 동아리): 5명
+INSERT INTO club_members (id, club_id, member_id, grade, major, role, email, phone_number, gender, created_at, updated_at) VALUES
+(gen_random_uuid(), 'club-031', 'user-029', 'FIRST_GRADE', 'Undeclared', 'PRESIDENT', 'investigator01@example.com', '010-1117-1819', 'MALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-031', 'user-030', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'detective02@example.com', '010-2117-2829', 'FEMALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-031', 'user-031', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'researcher03@example.com', '010-3117-3839', 'MALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-031', 'user-032', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'explorer04@example.com', '010-4117-4849', 'FEMALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-031', 'user-033', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'scout05@example.com', '010-5117-5859', 'MALE', NOW(), NOW());
+
+-- club-032 (기계공학연구회): 8명
+INSERT INTO club_members (id, club_id, member_id, grade, major, role, email, phone_number, gender, created_at, updated_at) VALUES
+(gen_random_uuid(), 'club-032', 'user-034', 'FIRST_GRADE', 'Undeclared', 'PRESIDENT', 'mechanical01@example.com', '010-1118-1920', 'MALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-032', 'user-035', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'mechanical02@example.com', '010-2118-2930', 'FEMALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-032', 'user-036', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'mechanical03@example.com', '010-3118-3940', 'MALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-032', 'user-037', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'mechanical04@example.com', '010-4118-4950', 'FEMALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-032', 'user-038', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'mechanical05@example.com', '010-5118-5960', 'MALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-032', 'user-039', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'mechanical06@example.com', '010-6118-6970', 'FEMALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-032', 'user-040', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'mechanical07@example.com', '010-7118-7980', 'MALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-032', 'user-041', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'mechanical08@example.com', '010-8118-8990', 'FEMALE', NOW(), NOW());
+
+-- club-033 (전자공학동아리): 10명
+INSERT INTO club_members (id, club_id, member_id, grade, major, role, email, phone_number, gender, created_at, updated_at) VALUES
+(gen_random_uuid(), 'club-033', 'user-042', 'FIRST_GRADE', 'Undeclared', 'PRESIDENT', 'electronics01@example.com', '010-1119-2021', 'MALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-033', 'user-043', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'electronics02@example.com', '010-2119-3031', 'FEMALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-033', 'user-044', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'electronics03@example.com', '010-3119-4041', 'MALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-033', 'user-045', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'electronics04@example.com', '010-4119-5051', 'FEMALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-033', 'user-046', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'electronics05@example.com', '010-5119-6061', 'MALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-033', 'user-047', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'electronics06@example.com', '010-6119-7071', 'FEMALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-033', 'user-048', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'electronics07@example.com', '010-7119-8081', 'MALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-033', 'user-049', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'electronics08@example.com', '010-8119-9091', 'FEMALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-033', 'user-050', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'electronics09@example.com', '010-9119-0001', 'MALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-033', 'user-001', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'electronics10@example.com', '010-0119-1011', 'FEMALE', NOW(), NOW());
+
+-- club-034 (화학공학연구회): 6명
+INSERT INTO club_members (id, club_id, member_id, grade, major, role, email, phone_number, gender, created_at, updated_at) VALUES
+(gen_random_uuid(), 'club-034', 'user-002', 'FIRST_GRADE', 'Undeclared', 'PRESIDENT', 'chemical01@example.com', '010-1120-2122', 'FEMALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-034', 'user-003', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'chemical02@example.com', '010-2120-3132', 'MALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-034', 'user-004', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'chemical03@example.com', '010-3120-4142', 'FEMALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-034', 'user-005', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'chemical04@example.com', '010-4120-5152', 'MALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-034', 'user-006', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'chemical05@example.com', '010-5120-6162', 'FEMALE', NOW(), NOW()),
+(gen_random_uuid(), 'club-034', 'user-007', 'FIRST_GRADE', 'Undeclared', 'MEMBER', 'chemical06@example.com', '010-6120-7172', 'MALE', NOW(), NOW());
 

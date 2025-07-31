@@ -5,6 +5,7 @@ import org.project.ttokttok.domain.applyform.domain.enums.ApplicableGrade;
 import org.project.ttokttok.domain.club.domain.Club;
 import org.project.ttokttok.domain.club.domain.enums.ClubCategory;
 import org.project.ttokttok.domain.club.domain.enums.ClubType;
+import org.project.ttokttok.domain.club.domain.enums.ClubUniv;
 import org.project.ttokttok.domain.club.exception.ClubNotFoundException;
 import org.project.ttokttok.domain.club.repository.ClubRepository;
 import org.project.ttokttok.domain.club.repository.dto.ClubCardQueryResponse;
@@ -55,8 +56,9 @@ public class ClubUserService {
      * 필터링 조건에 따라 동아리 목록을 무한스크롤 조회합니다.
      * 
      * @param category 동아리 카테고리 필터
-     * @param type 동아리 분류 필터
-     * @param recruiting 모집 여부 필터
+     * @param type 동아리 분류 필터 (전체: null, 중앙: CENTRAL, 연합: UNION, 과동아리: DEPARTMENT)
+     * @param clubUniv 대학 구분 필터 (과동아리 선택 시 사용)
+     * @param recruiting 모집 여부 필터 (전체: null, 모집중: true, 모집마감: false)
      * @param size 조회할 개수
      * @param cursor 커서 (무한스크롤용)
      * @param sort 정렬 방식
@@ -65,6 +67,7 @@ public class ClubUserService {
     public ClubListServiceResponse getClubList(
             ClubCategory category,
             ClubType type,
+            ClubUniv clubUniv,
             Boolean recruiting,
             List<ApplicableGrade> grades, // 추가
             int size,
@@ -73,7 +76,7 @@ public class ClubUserService {
             String userEmail) {
 
         List<ClubCardQueryResponse> results = clubRepository.getClubList(
-                category, type, recruiting, grades, size, cursor, sort, userEmail
+                category, type, clubUniv, recruiting, grades, size, cursor, sort, userEmail
         );
 
         // hasNext 확인을 위해 size+1로 조회했으므로

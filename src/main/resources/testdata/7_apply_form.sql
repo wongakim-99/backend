@@ -37,4 +37,14 @@ INSERT INTO applyforms (id, title, sub_title, status, apply_start_date, apply_en
  '2025-03-01', '2025-03-12', false, 8, 'club-011', '[]', NOW(), NOW()),
  
 (gen_random_uuid(), '댄스크루 모집', '춤으로 하나되어요', 'ACTIVE',
- '2025-03-01', '2025-03-22', true, 15, 'club-012', '[]', NOW(), NOW());
+ '2025-03-01', '2025-03-22', true, 15, 'club-012', '[]', NOW(), NOW()),
+ 
+-- ENGINEERING 과동아리 모집 폼 추가 (과동아리 필터링 테스트용)
+(gen_random_uuid(), '기계공학연구회 모집', '기계공학에 관심있는 분들', 'ACTIVE',
+ '2025-03-01', '2025-03-20', false, 10, 'club-032', '[]', NOW(), NOW()),
+ 
+(gen_random_uuid(), '전자공학동아리 모집', '전자공학 실습 함께해요', 'ACTIVE',
+ '2025-03-05', '2025-03-25', true, 12, 'club-033', '[]', NOW(), NOW()),
+ 
+(gen_random_uuid(), '화학공학연구회 모집', '화학공학 실험 연구', 'ACTIVE',
+ '2025-03-01', '2025-03-18', false, 8, 'club-034', '[]', NOW(), NOW());
