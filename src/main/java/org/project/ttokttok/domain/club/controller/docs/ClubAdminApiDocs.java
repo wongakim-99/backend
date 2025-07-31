@@ -90,7 +90,8 @@ public interface ClubAdminApiDocs {
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "동아리 소개 수정 성공"
+                            description = "동아리 소개 수정 성공",
+                            content = @Content(schema = @Schema(implementation = Map.class, example = "{\"message\": \"동아리 소개가 수정되었습니다.\"}"))
                     ),
                     @ApiResponse(
                             responseCode = "400",
@@ -156,7 +157,7 @@ public interface ClubAdminApiDocs {
             @ApiResponse(
                     responseCode = "200",
                     description = "이미지 업로드 및 업데이트 성공",
-                    content = @Content(schema = @Schema(implementation = String.class, example = "Markdown image Updated successfully. Image Key: IMAGE_KEY"))
+                    content = @Content(schema = @Schema(implementation = UpdateImageResponse.class))
             ),
             @ApiResponse(
                     responseCode = "400",
