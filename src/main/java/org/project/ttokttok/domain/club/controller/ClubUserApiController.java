@@ -93,10 +93,10 @@ public class ClubUserApiController {
     @GetMapping
     public ResponseEntity<ClubListResponse> getClubList(
             @Parameter(description = "카테고리 (스포츠, 예술, 문화 등)")
-            @RequestParam(required = false) ClubCategory category,
+            @RequestParam(required = false) String category,
 
             @Parameter(description = "분류 (전체: null, 중앙: CENTRAL, 연합: UNION, 과동아리: DEPARTMENT)")
-            @RequestParam(required = false) ClubType type,
+            @RequestParam(required = false) String type,
 
             @Parameter(description = "대학 구분 (글로벌지역학부, 디자인대학, 공대, 융합기술대, 예술대)")
             @RequestParam(required = false) ClubUniv clubUniv,
@@ -109,7 +109,7 @@ public class ClubUserApiController {
             @RequestParam(required = false) List<ApplicableGrade> grades,
 
             @Parameter(description = "모집여부 (전체: null, 모집중: true, 모집마감: false)")
-            @RequestParam(required = false) Boolean recruiting,
+            @RequestParam(required = false) String recruiting,
 
             @Parameter(description = "조회 개수 (기본 20개)")
             @RequestParam(defaultValue = "20") int size,
@@ -121,8 +121,41 @@ public class ClubUserApiController {
             @RequestParam(defaultValue = "latest") String sort,
             @Parameter(hidden = true) @AuthUserInfo String userEmail) {
 
+        // type 파라미터 처리
+        ClubType clubType = null;
+        if (type != null && !type.equals("null")) {
+            try {
+                clubType = ClubType.valueOf(type);
+            } catch (IllegalArgumentException e) {
+                // 잘못된 type 값이면 null로 처리 (전체)
+                clubType = null;
+            }
+        }
+
+        // category 파라미터 처리
+        ClubCategory clubCategory = null;
+        if (category != null && !category.equals("null")) {
+            try {
+                clubCategory = ClubCategory.valueOf(category);
+            } catch (IllegalArgumentException e) {
+                // 잘못된 category 값이면 null로 처리 (전체)
+                clubCategory = null;
+            }
+        }
+
+        // recruiting 파라미터 처리
+        Boolean recruitingStatus = null;
+        if (recruiting != null && !recruiting.equals("null")) {
+            if (recruiting.equals("true")) {
+                recruitingStatus = true;
+            } else if (recruiting.equals("false")) {
+                recruitingStatus = false;
+            }
+            // 잘못된 값이면 null로 처리 (전체)
+        }
+
         ClubListResponse response = ClubListResponse.from(
-                clubUserService.getClubList(category, type, clubUniv, recruiting, grades, size, cursor, sort, userEmail)
+                clubUserService.getClubList(clubCategory, clubType, clubUniv, recruitingStatus, grades, size, cursor, sort, userEmail)
         );
 
         return ResponseEntity.ok(response);
