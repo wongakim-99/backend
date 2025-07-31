@@ -33,7 +33,6 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
     private static final String INTERVIEW = "INTERVIEW";
     private static final String SUBMIT = "SUBMIT";
 
-    //ok
     @Override
     public ApplicantPageQueryResponse findApplicantsPageWithSortCriteria(String sortCriteria,
                                                                          boolean evaluating,
@@ -51,7 +50,6 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
                 kind);
     }
 
-    //ok
     @Override
     public ApplicantPageQueryResponse searchApplicantsByKeyword(String searchKeyword,
                                                                 String sortCriteria,
@@ -71,15 +69,13 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
                 kind);
     }
 
-    // FIXME: 리팩토링 ㄹㅊㄱ
     @Override
     public ApplicantPageQueryResponse findApplicantsByStatus(boolean isPassed,
                                                              int cursor,
                                                              int size,
                                                              String applyFormId,
                                                              String kind) {
-        // 합격/불합격 상태에 따라 조회
-        // 평가중 고민하기
+
         PhaseStatus status = isPassed ? PASS : FAIL;
 
         return getApplicantPageQueryResponse(
@@ -119,15 +115,16 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
         // 기본 쿼리 생성
         JPAQuery<ApplicantSimpleInfoDto> baseQuery = createBaseQuery(kind);
 
-        // 총 개수 조회
-        Long count = getApplicantCount(applyFormId, searchKeyword, evaluating, kind);
+        // 총 개수 조회 (수정된 버전)
+        Long count = getApplicantCount(applyFormId, searchKeyword, evaluating, kind, status);
 
         // 지원자 목록 조회
         List<ApplicantSimpleInfoDto> applicants = baseQuery
                 .where(
                         applicant.applyForm.id.eq(applyFormId),
                         containsName(searchKeyword),
-                        isEvaluating(evaluating)
+                        isEvaluating(evaluating),
+                        hasStatus(status)
                 )
                 .orderBy(getSortCriteria(sortCriteria))
                 .limit(size)
@@ -145,7 +142,11 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
     }
 
     // baseQuery 에서 지원자 수를 조회하는 메서드
-    private Long getApplicantCount(String applyFormId, String searchKeyword, boolean evaluating, String kind) {
+    private Long getApplicantCount(String applyFormId,
+                                   String searchKeyword,
+                                   boolean evaluating,
+                                   String kind,
+                                   PhaseStatus statusFilter) {
         boolean isInterview = INTERVIEW.equalsIgnoreCase(kind);
 
         JPAQuery<Long> query = queryFactory
@@ -162,9 +163,9 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
                 .where(
                         applicant.applyForm.id.eq(applyFormId),
                         containsName(searchKeyword),
-                        isEvaluating(evaluating)
-                )
-                .fetchOne();
+                        isEvaluating(evaluating),
+                        hasStatus(statusFilter)
+                ).fetchOne();
     }
 
     // 들어온 sortCriteria에 따라 정렬 조건을 반환하는 메서드
@@ -225,6 +226,23 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
     // 평가 중 여부 확인
     private BooleanExpression isEvaluating(boolean evaluating) {
         return evaluating ? applicant.currentPhase.in(DOCUMENT_EVALUATING, INTERVIEW_EVALUATING) : null;
+    }
+
+    // 현재 단계에 따라 상태 결정 로직
+    private BooleanExpression hasStatus(PhaseStatus status) {
+        if (status == null) return null;
+
+        // 상태별로 직접 조건 생성
+        switch (status) {
+            case EVALUATING:
+                return applicant.currentPhase.in(DOCUMENT_EVALUATING, INTERVIEW_EVALUATING);
+            case PASS:
+                return applicant.currentPhase.in(DOCUMENT_PASS, INTERVIEW_PASS);
+            case FAIL:
+                return applicant.currentPhase.in(DOCUMENT_FAIL, INTERVIEW_FAIL);
+            default:
+                return null;
+        }
     }
 
     //----EXPRESSION METHODS----//
