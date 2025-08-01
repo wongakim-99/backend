@@ -1,6 +1,7 @@
 package org.project.ttokttok.domain.club.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.project.ttokttok.domain.applyform.domain.ApplyForm;
 import org.project.ttokttok.domain.applyform.exception.ApplyFormNotFoundException;
 import org.project.ttokttok.domain.applyform.exception.InvalidDateRangeException;
@@ -27,6 +28,7 @@ import static org.project.ttokttok.domain.applyform.domain.enums.ApplyFormStatus
 import static org.project.ttokttok.infrastructure.s3.enums.S3FileDirectory.INTRODUCTION_IMAGE;
 import static org.project.ttokttok.infrastructure.s3.enums.S3FileDirectory.PROFILE_IMAGE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ClubAdminService {
@@ -84,11 +86,13 @@ public class ClubAdminService {
         if (form.isPresent()) {
             // 활성화된 폼이 존재한다면, 모집 상태를 토글함.
             form.get().updateFormStatus();
+            log.info("Current apply form status toggled for club: {}, status: {}", clubId, form.get().getStatus());
         } else if (form.isEmpty()) {
             // 활성화된 폼이 없다면, 가장 최근에 생성된 지원 폼을 찾아 활성화시킴.
             ApplyForm latestForm = applyFormRepository.findTopByClubIdOrderByCreatedAtDesc(clubId)
                     .orElseThrow(ApplyFormNotFoundException::new);
 
+            log.info("No active apply form found for club: {}, activating latest form: {}", clubId, latestForm.getId());
             latestForm.updateFormStatus();
         } else {
             // 지원 폼이 존재하지 않은 경우 예외 처리
