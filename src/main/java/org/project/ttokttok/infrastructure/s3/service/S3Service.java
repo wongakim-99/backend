@@ -65,6 +65,6 @@ public class S3Service {
     }
 
     private String createFileKey(String fileName, String dirName) {
-        return fileCloudUrl + dirName + UUID.randomUUID() + "_" + fileName;
+        return fileCloudUrl + "/" + dirName + UUID.randomUUID() + "_" + fileName;
     }
 }
