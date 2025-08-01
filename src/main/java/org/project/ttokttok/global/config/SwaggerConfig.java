@@ -23,24 +23,40 @@ public class SwaggerConfig {
     public OpenAPI boardAPI() {
         Info info = createSwaggerInfo();
 
-        // 쿠키 기반 인증 설정
-        SecurityScheme cookieAuth = new SecurityScheme()
+        // 관리자용 쿠키 기반 인증 설정
+        SecurityScheme adminCookieAuth = new SecurityScheme()
                 .type(SecurityScheme.Type.APIKEY)
                 .in(SecurityScheme.In.COOKIE)
-                .name("ttac") // Access Token 쿠키
-                .description("로그인 후 자동으로 설정되는 액세스 토큰 쿠키");
+                .name("ttac") // 관리자 Access Token 쿠키
+                .description("관리자 로그인 후 자동으로 설정되는 액세스 토큰 쿠키");
 
-        // 리프레시 토큰 쿠키 설정
-        SecurityScheme refreshCookieAuth = new SecurityScheme()
+        // 관리자용 리프레시 토큰 쿠키 설정
+        SecurityScheme adminRefreshCookieAuth = new SecurityScheme()
                 .type(SecurityScheme.Type.APIKEY)
                 .in(SecurityScheme.In.COOKIE)
-                .name("ttref") // Refresh Token 쿠키
-                .description("로그인 후 자동으로 설정되는 리프레시 토큰 쿠키");
+                .name("ttref") // 관리자 Refresh Token 쿠키
+                .description("관리자 로그인 후 자동으로 설정되는 리프레시 토큰 쿠키");
+
+        // 사용자용 쿠키 기반 인증 설정
+        SecurityScheme userCookieAuth = new SecurityScheme()
+                .type(SecurityScheme.Type.APIKEY)
+                .in(SecurityScheme.In.COOKIE)
+                .name("ttac_user") // 사용자 Access Token 쿠키
+                .description("사용자 로그인 후 자동으로 설정되는 액세스 토큰 쿠키");
+
+        // 사용자용 리프레시 토큰 쿠키 설정
+        SecurityScheme userRefreshCookieAuth = new SecurityScheme()
+                .type(SecurityScheme.Type.APIKEY)
+                .in(SecurityScheme.In.COOKIE)
+                .name("ttref_user") // 사용자 Refresh Token 쿠키
+                .description("사용자 로그인 후 자동으로 설정되는 리프레시 토큰 쿠키");
 
         // 보안 요구사항 설정
         SecurityRequirement securityRequirement = new SecurityRequirement()
-                .addList("cookieAuth")
-                .addList("refreshCookieAuth");
+                .addList("adminCookieAuth")
+                .addList("adminRefreshCookieAuth")
+                .addList("userCookieAuth")
+                .addList("userRefreshCookieAuth");
 
         // 환경별 서버 설정
         List<Server> servers = createServersByEnvironment();
@@ -49,8 +65,10 @@ public class SwaggerConfig {
                 .info(info)
                 .servers(servers)
                 .components(new Components()
-                        .addSecuritySchemes("cookieAuth", cookieAuth)
-                        .addSecuritySchemes("refreshCookieAuth", refreshCookieAuth))
+                        .addSecuritySchemes("adminCookieAuth", adminCookieAuth)
+                        .addSecuritySchemes("adminRefreshCookieAuth", adminRefreshCookieAuth)
+                        .addSecuritySchemes("userCookieAuth", userCookieAuth)
+                        .addSecuritySchemes("userRefreshCookieAuth", userRefreshCookieAuth))
                 .security(Collections.singletonList(securityRequirement));
     }
 
@@ -91,9 +109,13 @@ public class SwaggerConfig {
                         2. 응답으로 받은 토큰을 브라우저 콘솔에서 쿠키로 설정합니다:
                         
                         ```javascript
-                        // 로그인 응답에서 토큰 복사 후 실행
+                        // 관리자 로그인 응답에서 토큰 복사 후 실행
                         document.cookie = "ttac=액세스토큰; path=/; max-age=900; SameSite=Lax";
                         document.cookie = "ttref=리프레시토큰; path=/; max-age=604800; SameSite=Lax";
+                        
+                        // 사용자 로그인 응답에서 토큰 복사 후 실행
+                        document.cookie = "ttac_user=액세스토큰; path=/; max-age=900; SameSite=Lax";
+                        document.cookie = "ttref_user=리프레시토큰; path=/; max-age=604800; SameSite=Lax";
                         ```
                         
                         3. 이후 API 호출 시 자동으로 쿠키가 전송됩니다

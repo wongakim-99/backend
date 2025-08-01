@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.*;
 
 import static org.project.ttokttok.global.auth.jwt.TokenExpiry.ACCESS_TOKEN_EXPIRY_TIME;
 import static org.project.ttokttok.global.auth.jwt.TokenExpiry.REFRESH_TOKEN_EXPIRY_TIME;
-import static org.project.ttokttok.global.auth.jwt.TokenProperties.REFRESH_KEY;
-import static org.project.ttokttok.global.auth.jwt.TokenProperties.ACCESS_TOKEN_COOKIE;
+import static org.project.ttokttok.global.auth.jwt.TokenProperties.USER_REFRESH_KEY;
+import static org.project.ttokttok.global.auth.jwt.TokenProperties.USER_ACCESS_TOKEN_COOKIE;
 
 import java.time.Duration;
 import jakarta.servlet.http.Cookie;
@@ -184,16 +184,16 @@ public class UserAuthController {
         LoginServiceResponse serviceResponse = userAuthService.login(request.toServiceRequest());
         LoginResponse loginResponse = LoginResponse.from(serviceResponse);
 
-        // 액세스 토큰 쿠키 생성
+        // 액세스 토큰 쿠키 생성 (사용자용)
         ResponseCookie accessCookie = cookieUtil.createResponseCookie(
-                ACCESS_TOKEN_COOKIE.getValue(),
+                USER_ACCESS_TOKEN_COOKIE.getValue(),
                 serviceResponse.accessToken(),
                 Duration.ofMillis(ACCESS_TOKEN_EXPIRY_TIME.getExpiry())
         );
 
-        // 리프레시 토큰 쿠키 생성 (항상 설정)
+        // 리프레시 토큰 쿠키 생성 (사용자용)
         ResponseCookie refreshCookie = cookieUtil.createResponseCookie(
-                REFRESH_KEY.getValue(),
+                USER_REFRESH_KEY.getValue(),
                 serviceResponse.refreshToken(),
                 Duration.ofMillis(REFRESH_TOKEN_EXPIRY_TIME.getExpiry())
         );
@@ -320,12 +320,12 @@ public class UserAuthController {
     })
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(@AuthUserInfo String userEmail, HttpServletRequest request) {
-        // 쿠키에서 액세스 토큰 추출
+        // 쿠키에서 액세스 토큰 추출 (사용자용)
         String accessToken = null;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (ACCESS_TOKEN_COOKIE.getValue().equals(cookie.getName())) {
+                if (USER_ACCESS_TOKEN_COOKIE.getValue().equals(cookie.getName())) {
                     accessToken = cookie.getValue();
                     log.info("로그아웃 - 액세스 토큰 추출: {}", accessToken);
                     break;
@@ -337,9 +337,9 @@ public class UserAuthController {
 
         userAuthService.logout(userEmail, accessToken);
 
-        // 두 쿠키 모두 만료시키기
-        ResponseCookie[] expiredCookies = cookieUtil.expireBothTokenCookies();
-        log.info("로그아웃 - 쿠키 만료 설정: {}", expiredCookies[0].toString());
+        // 사용자용 쿠키 모두 만료시키기
+        ResponseCookie[] expiredCookies = cookieUtil.expireUserTokenCookies();
+        log.info("로그아웃 - 사용자 쿠키 만료 설정: {}", expiredCookies[0].toString());
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, expiredCookies[0].toString())
