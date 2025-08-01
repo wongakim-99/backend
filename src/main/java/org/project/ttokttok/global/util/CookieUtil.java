@@ -8,6 +8,8 @@ import java.time.Duration;
 
 import static org.project.ttokttok.global.auth.jwt.TokenProperties.ACCESS_TOKEN_COOKIE;
 import static org.project.ttokttok.global.auth.jwt.TokenProperties.REFRESH_KEY;
+import static org.project.ttokttok.global.auth.jwt.TokenProperties.USER_ACCESS_TOKEN_COOKIE;
+import static org.project.ttokttok.global.auth.jwt.TokenProperties.USER_REFRESH_KEY;
 
 @Component
 public class CookieUtil {
@@ -41,10 +43,18 @@ public class CookieUtil {
                 .build();
     }
 
-    // 액세스 토큰과 리프레시 토큰을 모두 만료시키는 메서드
+    // 액세스 토큰과 리프레시 토큰을 모두 만료시키는 메서드 (관리자용)
     public ResponseCookie[] expireBothTokenCookies() {
         ResponseCookie expiredAccessCookie = expireResponseCookie(ACCESS_TOKEN_COOKIE.getValue());
         ResponseCookie expiredRefreshCookie = expireResponseCookie(REFRESH_KEY.getValue());
+
+        return new ResponseCookie[] { expiredAccessCookie, expiredRefreshCookie };
+    }
+
+    // 사용자용 쿠키를 모두 만료시키는 메서드
+    public ResponseCookie[] expireUserTokenCookies() {
+        ResponseCookie expiredAccessCookie = expireResponseCookie(USER_ACCESS_TOKEN_COOKIE.getValue());
+        ResponseCookie expiredRefreshCookie = expireResponseCookie(USER_REFRESH_KEY.getValue());
 
         return new ResponseCookie[] { expiredAccessCookie, expiredRefreshCookie };
     }
