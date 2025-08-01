@@ -15,7 +15,6 @@ import org.project.ttokttok.domain.club.repository.ClubRepository;
 import org.project.ttokttok.domain.club.service.dto.request.ClubContentUpdateServiceRequest;
 import org.project.ttokttok.domain.club.service.dto.request.MarkdownImageUpdateRequest;
 import org.project.ttokttok.domain.club.service.dto.response.ClubDetailAdminServiceResponse;
-import org.project.ttokttok.domain.club.service.mapper.ClubMapper;
 import org.project.ttokttok.infrastructure.s3.service.S3Service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +34,6 @@ public class ClubAdminService {
 
     private final ClubRepository clubRepository;
     private final ApplyFormRepository applyFormRepository;
-    private final ClubMapper mapper;
 
     private final S3Service s3Service;
 
@@ -55,7 +53,7 @@ public class ClubAdminService {
             updateApplyForm(club, request);
         }
 
-        mapper.updateClubFromRequest(club, request);
+        club.updateFrom(request.toClubPatchRequest());
     }
 
     @Transactional
@@ -132,7 +130,7 @@ public class ClubAdminService {
         String profileImgKey = s3Service.uploadFile(profileImage, PROFILE_IMAGE.getDirectoryName());
         validateProfileImgExist(club, profileImgKey);
 
-        club.setProfileImageUrl(profileImgKey);
+        club.updateProfileImgUrl(profileImgKey);
     }
 
     // 요청에 지원 폼 업데이트 요청이 있는지 확인
