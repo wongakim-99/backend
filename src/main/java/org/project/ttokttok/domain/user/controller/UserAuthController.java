@@ -37,7 +37,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Slf4j
-@Tag(name = "사용자 인증", description = "회원가입, 로그인, 이메일 인증 등 사용자 인증 관련 API")
+@Tag(name = "[사용자] 사용자 인증", description = "회원가입, 로그인, 이메일 인증 등 사용자 인증 관련 API")
 @RestController
 @RequestMapping("/api/user/auth")
 @RequiredArgsConstructor

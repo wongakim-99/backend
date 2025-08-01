@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
  * 사용자의 즐겨찾기 추가/제거 및 조회 기능을 제공합니다.
  */
 @Slf4j
-@Tag(name = "즐겨찾기", description = "동아리 즐겨찾기 관련 API")
+@Tag(name = "[사용자] 즐겨찾기", description = "동아리 즐겨찾기 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/favorites")

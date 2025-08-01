@@ -33,7 +33,7 @@ import java.util.HashMap;
  * 사용자가 동아리 정보를 조회할 수 있는 API들을 제공합니다.
  */
 @Slf4j
-@Tag(name="동아리 조회", description = "사용자가 동아리 정보를 조회하는 API")
+@Tag(name="[사용자] 동아리 조회", description = "사용자가 동아리 정보를 조회하는 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/clubs")
