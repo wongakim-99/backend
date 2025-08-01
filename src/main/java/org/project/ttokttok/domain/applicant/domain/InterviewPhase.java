@@ -2,6 +2,7 @@ package org.project.ttokttok.domain.applicant.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.project.ttokttok.domain.applicant.domain.enums.PhaseStatus;
 import org.project.ttokttok.global.entity.BaseTimeEntity;
@@ -9,6 +10,7 @@ import org.project.ttokttok.global.entity.BaseTimeEntity;
 import java.time.LocalDate;
 
 @Entity
+@Getter
 @Table(name = "interview_phases")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InterviewPhase extends BaseTimeEntity {
