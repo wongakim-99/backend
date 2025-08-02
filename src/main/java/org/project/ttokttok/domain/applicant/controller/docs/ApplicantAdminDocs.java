@@ -273,7 +273,8 @@ public interface ApplicantAdminDocs {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "평가 상태 업데이트 성공"
+                    description = "평가 상태 업데이트 성공",
+                    content = @Content(schema = @Schema(implementation = Map.class, example = "{\"message\", \"지원자 상태가 성공적으로 업데이트되었습니다.\"}"))
             ),
             @ApiResponse(
                     responseCode = "400",

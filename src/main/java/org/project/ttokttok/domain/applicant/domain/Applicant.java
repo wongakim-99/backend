@@ -62,47 +62,33 @@ public class Applicant extends BaseTimeEntity {
     private InterviewPhase interviewPhase;
 
     // 비즈니스 메서드
+    // 초기 상태이거나, 재지원 가능한 상태인지 확인
     public void submitDocument(List<Answer> answers) {
-        // 초기 상태이거나, 재지원 가능한 상태인지 확인
-        if (this.currentPhase != null && !isEvaluatingDocument()) {
+
+        if (this.currentPhase != null && isInInterviewPhase()) {
             throw new InvalidPhaseTransitionException();
         }
 
-        this.currentPhase = ApplicantPhase.DOCUMENT_EVALUATING;
+        this.currentPhase = ApplicantPhase.DOCUMENT;
         this.documentPhase = DocumentPhase.create(this, answers);
     }
 
     // 서류 상태 합격 설정
-    public void passDocumentEvaluation() {
-        //validateCurrentPhase(ApplicantPhase.DOCUMENT_EVALUATING);
-        this.currentPhase = ApplicantPhase.DOCUMENT_PASS;
+    public void passDocumentEvaluation(LocalDate interviewDate) {
         this.documentPhase.updateStatus(PhaseStatus.PASS);
+        this.interviewPhase = InterviewPhase.create(this, interviewDate);
+
+        this.currentPhase = ApplicantPhase.INTERVIEW;
     }
 
     // 서류 상태 불합격 설정
     public void failDocumentEvaluation() {
-        //validateCurrentPhase(ApplicantPhase.DOCUMENT_EVALUATING);
-        this.currentPhase = ApplicantPhase.DOCUMENT_FAIL;
         this.documentPhase.updateStatus(PhaseStatus.FAIL);
-    }
-
-    // 서류 합격자 -> 면접 단계로 전환
-    public void setInterviewPlan(LocalDate interviewDate) {
-        validateCurrentPhase(ApplicantPhase.DOCUMENT_PASS);
-        this.currentPhase = ApplicantPhase.INTERVIEW_EVALUATING;
-        this.interviewPhase = InterviewPhase.create(this, interviewDate);
     }
 
     // 면접에 따라 합격 설정
     public void completeInterview(PhaseStatus result) {
         this.interviewPhase.updateStatus(result);
-
-        // 면접 결과에 따라 최종 단계 결정
-        if (result == PhaseStatus.PASS) {
-            this.currentPhase = ApplicantPhase.INTERVIEW_PASS;
-        } else if (result == PhaseStatus.FAIL) {
-            this.currentPhase = ApplicantPhase.INTERVIEW_FAIL;
-        }
     }
 
     // ----- 생성자 ----- //
@@ -126,7 +112,7 @@ public class Applicant extends BaseTimeEntity {
         this.studentStatus = studentStatus;
         this.grade = grade;
         this.gender = gender;
-        this.currentPhase = ApplicantPhase.DOCUMENT_EVALUATING; // 기본 상태는 대기
+        this.currentPhase = ApplicantPhase.DOCUMENT; // 기본 상태는 서류 단계
         this.applyForm = applyForm;
     }
 
@@ -154,43 +140,16 @@ public class Applicant extends BaseTimeEntity {
                 .build();
     }
 
-    private void validateCurrentPhase(ApplicantPhase expectedPhase) {
-        if (this.currentPhase != expectedPhase) {
-            throw new InvalidPhaseTransitionException();
-        }
-    }
-
-    public boolean canScheduleInterview() {
-        return this.currentPhase == ApplicantPhase.DOCUMENT_PASS;
-    }
-
-    public boolean canEvaluateDocument() {
-        return this.currentPhase == ApplicantPhase.DOCUMENT_EVALUATING;
-    }
-
-    public boolean canEvaluateInterview() {
-        return this.currentPhase == ApplicantPhase.INTERVIEW_EVALUATING;
-    }
-
-    public boolean isEvaluatingDocument() {
-        // 서류 평가 중이거나, 서류 불합격 상태에서 재지원 가능
-        return this.currentPhase == ApplicantPhase.DOCUMENT_EVALUATING;
-    }
-
     // 편의 메서드들
     public boolean isInDocumentPhase() {
-        return currentPhase == ApplicantPhase.DOCUMENT_EVALUATING
-                || currentPhase == ApplicantPhase.DOCUMENT_FAIL
-                || currentPhase == ApplicantPhase.DOCUMENT_PASS;
+        return currentPhase == ApplicantPhase.DOCUMENT;
     }
 
     public boolean isInInterviewPhase() {
-        return currentPhase == ApplicantPhase.INTERVIEW_EVALUATING
-                || currentPhase == ApplicantPhase.INTERVIEW_FAIL
-                || currentPhase == ApplicantPhase.INTERVIEW_PASS;
+        return currentPhase == ApplicantPhase.INTERVIEW;
     }
 
     public boolean hasInterviewPhase() {
-        return interviewPhase != null;
+        return this.applyForm.isHasInterview();
     }
 }

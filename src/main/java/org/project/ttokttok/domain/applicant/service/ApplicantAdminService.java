@@ -239,8 +239,8 @@ public class ApplicantAdminService {
             if (isDocument) {
                 // 서류 합격자들을 면접 단계로 전환
                 passedApplicants.forEach(applicant -> {
-                    if (!applicant.hasInterviewPhase()) {
-                        applicant.setInterviewPlan(null); // 면접 날짜는 나중에 설정
+                    if (applicant.hasInterviewPhase()) {
+                        applicant.passDocumentEvaluation(null); // 면접 날짜는 나중에 설정
                     }
                 });
             } else {
@@ -355,7 +355,7 @@ public class ApplicantAdminService {
         switch (status) {
             case PASS:
                 if (isDocument) {
-                    applicant.passDocumentEvaluation();
+                    applicant.passDocumentEvaluation(null);
                 } else {
                     applicant.completeInterview(PASS);
                 }

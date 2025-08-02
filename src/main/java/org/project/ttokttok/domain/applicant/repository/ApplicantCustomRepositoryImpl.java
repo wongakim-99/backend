@@ -12,6 +12,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.domain.applicant.domain.dto.ApplicantSimpleInfoDto;
+import org.project.ttokttok.domain.applicant.domain.enums.ApplicantPhase;
 import org.project.ttokttok.domain.applicant.domain.enums.PhaseStatus;
 import org.project.ttokttok.domain.applicant.repository.dto.response.ApplicantPageQueryResponse;
 import org.springframework.stereotype.Repository;
@@ -31,7 +32,7 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
 
     private final JPAQueryFactory queryFactory;
 
-    private static final String INTERVIEW = "INTERVIEW";
+    private static final String INTERVIEW_STRING = "INTERVIEW";
     private static final String SUBMIT = "SUBMIT";
 
     @Override
@@ -123,12 +124,14 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
         List<ApplicantSimpleInfoDto> applicants = baseQuery
                 .where(
                         applicant.applyForm.id.eq(applyFormId),
-                        kind.equalsIgnoreCase(INTERVIEW) ?
+                        kind.equalsIgnoreCase(INTERVIEW_STRING) ?
                                 interviewPhase.applicant.eq(applicant) :
                                 documentPhase.applicant.eq(applicant),
                         containsName(searchKeyword),
-                        isEvaluating(evaluating),
-                        kind.equalsIgnoreCase(INTERVIEW) ?
+                        kind.equalsIgnoreCase(INTERVIEW_STRING) ?
+                                interviewEvaluatingCheck(evaluating) :
+                                documentEvaluatingCheck(evaluating),
+                        kind.equalsIgnoreCase(INTERVIEW_STRING) ?
                                 interviewStatusCheck(status) :
                                 documentStatusCheck(status)
                 )
@@ -153,7 +156,7 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
                                    boolean evaluating,
                                    String kind,
                                    PhaseStatus statusFilter) {
-        boolean isInterview = INTERVIEW.equalsIgnoreCase(kind);
+        boolean isInterview = INTERVIEW_STRING.equalsIgnoreCase(kind);
 
         JPAQuery<Long> query = queryFactory
                 .select(applicant.count())
@@ -168,12 +171,14 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
         return query
                 .where(
                         applicant.applyForm.id.eq(applyFormId),
-                        kind.equalsIgnoreCase(INTERVIEW) ?
+                        kind.equalsIgnoreCase(INTERVIEW_STRING) ?
                                 interviewPhase.applicant.eq(applicant) :
                                 documentPhase.applicant.eq(applicant),
                         containsName(searchKeyword),
-                        isEvaluating(evaluating),
-                        kind.equalsIgnoreCase(INTERVIEW) ?
+                        kind.equalsIgnoreCase(INTERVIEW_STRING) ?
+                                interviewEvaluatingCheck(evaluating) :
+                                documentEvaluatingCheck(evaluating),
+                        kind.equalsIgnoreCase(INTERVIEW_STRING) ?
                                 interviewStatusCheck(statusFilter) :
                                 documentStatusCheck(statusFilter)
                 ).fetchOne();
@@ -195,7 +200,7 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
     }
 
     private JPAQuery<ApplicantSimpleInfoDto> createBaseQuery(String kind) {
-        boolean isInterview = INTERVIEW.equalsIgnoreCase(kind);
+        boolean isInterview = INTERVIEW_STRING.equalsIgnoreCase(kind);
 
         // IF문으로 안전하게 분기처리
         if (isInterview) {
@@ -230,24 +235,25 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
     }
 
     // ---- BOOLEAN EXPRESSION METHODS ---- //
-    // 검색 키워드가 있는 경우 이름에 포함되는지 조건 추가
     private BooleanExpression containsName(String searchKeyword) {
         return searchKeyword != null ? applicant.name.contains(searchKeyword) : null;
     }
 
-    //FIXME: 서류 면접 구분 로직 추가 필요
-    // 평가 중 여부 확인
-    private BooleanExpression isEvaluating(boolean evaluating) {
-        return evaluating ? applicant.currentPhase.in(DOCUMENT_EVALUATING, INTERVIEW_EVALUATING) : null;
+    private BooleanExpression documentEvaluatingCheck(boolean evaluating) {
+        return evaluating ? applicant.documentPhase.status.eq(EVALUATING) : null;
+    }
+
+    private BooleanExpression interviewEvaluatingCheck(boolean evaluating) {
+        return evaluating ? applicant.interviewPhase.status.eq(EVALUATING) : null;
     }
 
     private BooleanExpression documentStatusCheck(PhaseStatus status) {
         if (status == null) return null;
 
         return switch (status) {
-            case EVALUATING -> applicant.currentPhase.eq(DOCUMENT_EVALUATING);
-            case PASS -> applicant.currentPhase.eq(DOCUMENT_PASS);
-            case FAIL -> applicant.currentPhase.eq(DOCUMENT_FAIL);
+            case EVALUATING -> applicant.documentPhase.status.eq(EVALUATING);
+            case PASS -> applicant.documentPhase.status.eq(PASS);
+            case FAIL -> applicant.documentPhase.status.eq(FAIL);
             default -> null;
         };
     }
@@ -256,9 +262,9 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
         if (status == null) return null;
 
         return switch (status) {
-            case EVALUATING -> applicant.currentPhase.eq(INTERVIEW_EVALUATING);
-            case PASS -> applicant.currentPhase.eq(INTERVIEW_PASS);
-            case FAIL -> applicant.currentPhase.eq(INTERVIEW_FAIL);
+            case EVALUATING -> applicant.interviewPhase.status.eq(EVALUATING);
+            case PASS -> applicant.interviewPhase.status.eq(PASS);
+            case FAIL -> applicant.interviewPhase.status.eq(FAIL);
             default -> null;
         };
     }
@@ -273,9 +279,9 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
     // 서류 상태
     private StringExpression/*<PhaseStatus>*/ getDocumentStatus() {
         return new CaseBuilder()
-                .when(applicant.currentPhase.eq(DOCUMENT_EVALUATING))
+                .when(applicant.documentPhase.status.eq(EVALUATING))
                 .then("EVALUATING")
-                .when(applicant.currentPhase.eq(DOCUMENT_PASS))
+                .when(applicant.documentPhase.status.eq(PASS))
                 .then("PASS")
                 .otherwise("FAIL");
     }
@@ -283,9 +289,9 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
     // 면접 상태
     private StringExpression/*<PhaseStatus>*/ getInterviewStatus() {
         return new CaseBuilder()
-                .when(applicant.currentPhase.in(INTERVIEW_EVALUATING))
+                .when(applicant.interviewPhase.status.eq(EVALUATING))
                 .then("EVALUATING")
-                .when(applicant.currentPhase.eq(INTERVIEW_PASS))
+                .when(applicant.interviewPhase.status.eq(PASS))
                 .then("PASS")
                 .otherwise("FAIL");
     }
