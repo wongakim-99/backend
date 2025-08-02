@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import static org.project.ttokttok.global.auth.jwt.TokenProperties.ACCESS_TOKEN_COOKIE;
+import static org.project.ttokttok.global.auth.jwt.TokenProperties.USER_ACCESS_TOKEN_COOKIE;
 import static org.project.ttokttok.global.auth.security.SecurityWhiteList.ALLOW_URLS;
 import static org.project.ttokttok.global.auth.security.SecurityWhiteList.SWAGGER_URLS;
 
@@ -55,12 +56,24 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    // 쿠키에서 액세스 토큰 추출
+    // 쿠키에서 액세스 토큰 추출 (관리자용 또는 사용자용)
     private String getAccessTokenFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
-            return Arrays.stream(cookies)
+            // 먼저 관리자용 쿠키 확인
+            String adminToken = Arrays.stream(cookies)
                     .filter(cookie -> ACCESS_TOKEN_COOKIE.getValue().equals(cookie.getName()))
+                    .map(Cookie::getValue)
+                    .findFirst()
+                    .orElse(null);
+            
+            if (adminToken != null) {
+                return adminToken;
+            }
+            
+            // 관리자용 쿠키가 없으면 사용자용 쿠키 확인
+            return Arrays.stream(cookies)
+                    .filter(cookie -> USER_ACCESS_TOKEN_COOKIE.getValue().equals(cookie.getName()))
                     .map(Cookie::getValue)
                     .findFirst()
                     .orElse(null);
