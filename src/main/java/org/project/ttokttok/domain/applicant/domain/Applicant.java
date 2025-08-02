@@ -127,8 +127,11 @@ public class Applicant extends BaseTimeEntity {
         this.documentPhase.updateStatus(PhaseStatus.PASS);
     }
 
-    // 이건 최종 결정 시에 생성하기.`
-    //this.interviewPhase = InterviewPhase.create(this, interviewDate);
+    // 최종 합격 처리 -> 면접 단계 생성
+    public void updateToInterviewPhase(LocalDate interviewDate) {
+        this.interviewPhase = InterviewPhase.create(this, interviewDate);
+        this.currentPhase = ApplicantPhase.INTERVIEW;
+    }
 
     // 서류 상태 불합격 설정
     public void failDocumentEvaluation() {
