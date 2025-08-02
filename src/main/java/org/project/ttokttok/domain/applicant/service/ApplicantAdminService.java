@@ -240,7 +240,7 @@ public class ApplicantAdminService {
                 // 서류 합격자들을 면접 단계로 전환
                 passedApplicants.forEach(applicant -> {
                     if (applicant.hasInterviewPhase()) {
-                        applicant.passDocumentEvaluation(null); // 면접 날짜는 나중에 설정
+                        applicant.passDocumentEvaluation(); // 면접 날짜는 나중에 설정
                     }
                 });
             } else {
@@ -337,74 +337,31 @@ public class ApplicantAdminService {
         }
     }
 
+    // todo: 추후 리팩토링
     // 사용자 지원 상태를 업데이트하는 로직 메서드
     private void updateApplicantPhaseStatus(Applicant applicant, PhaseStatus status, String kind) {
 
         boolean isDocument = Kind.isDocument(kind);
 
-        // 1. 서류 상태에서 면접 합격 바로는 불가능.
-        validateDocumentToInterviewTransition(applicant, isDocument);
-
-        // 2. 면접의 경우 면접 단계 존재 여부 확인
-        validateInterviewPhaseExistence(applicant, isDocument);
-
-        // 3. 면접 상태에서 서류로 넘어가기는 불가능.
-        validateInterviewToDocumentTransition(applicant, isDocument);
-
-        // 상태에 따른 비즈니스 로직 실행
         switch (status) {
             case PASS:
-                if (isDocument) {
-                    applicant.passDocumentEvaluation(null);
-                } else {
-                    applicant.completeInterview(PASS);
-                }
+                if (isDocument)
+                    applicant.passDocumentEvaluation(); // 면접 날짜는 나중에 설정
+                else
+                    applicant.completeInterview();
                 break;
-
             case FAIL:
-                if (isDocument) {
+                if (isDocument)
                     applicant.failDocumentEvaluation();
-                } else {
-                    applicant.completeInterview(PhaseStatus.FAIL);
-                }
+                else
+                    applicant.completeInterview();
                 break;
-
             case EVALUATING:
-                // Phase의 상태만 업데이트 (Applicant의 currentPhase는 이미 EVALUATING 상태)
-                if (isDocument && applicant.getDocumentPhase() != null) {
-                    applicant.getDocumentPhase().updateStatus(PhaseStatus.EVALUATING);
-                } else if (!isDocument && applicant.getInterviewPhase() != null) {
-                    applicant.getInterviewPhase().updateStatus(PhaseStatus.EVALUATING);
-                }
+                if (isDocument)
+                    applicant.setDocumentEvaluating();
+                else
+                    applicant.setInterviewEvaluating();
                 break;
-
-            default:
-                throw new InvalidPhaseStatusException();
-        }
-    }
-
-    private void validateDocumentToInterviewTransition(Applicant applicant, boolean isDocument) {
-        // 1. 서류 상태에서 면접 합격 바로는 불가능.
-        if (applicant.isInDocumentPhase() && !isDocument) {
-            // 서류 평가에서 바로 면접 로직 처리 시도 시
-            log.warn("사용자가 서류 상태에서 면접 로직 처리 시도: {}", applicant.getName());
-            throw new InvalidPhaseTransitionException();
-        }
-    }
-
-    private void validateInterviewPhaseExistence(Applicant applicant, boolean isDocument) {
-        // 2. 면접의 경우 면접 단계 존재 여부 확인
-        if (!isDocument && !applicant.hasInterviewPhase()) {
-            throw new NoInterviewPhaseException();
-        }
-    }
-
-    private void validateInterviewToDocumentTransition(Applicant applicant, boolean isDocument) {
-        // 3. 면접 상태에서 서류로 넘어가기는 불가능.
-        if (applicant.isInInterviewPhase() && isDocument) {
-            // 면접 평가에서 서류 로직으로 처리 시도 시
-            log.warn("면접 평가에서 서류 로직으로 처리 시도: {}", applicant.getName());
-            throw new InvalidPhaseTransitionException();
         }
     }
 }
