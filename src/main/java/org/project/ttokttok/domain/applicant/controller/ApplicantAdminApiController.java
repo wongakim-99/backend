@@ -144,7 +144,7 @@ public class ApplicantAdminApiController implements ApplicantAdminDocs {
     public ResponseEntity<Map<String, String>> updateApplicantEvaluation(@AuthUserInfo String username,
                                                                          @PathVariable String applicantId,
                                                                          @RequestBody PhaseStatus status,
-                                                                         @RequestParam Kind kind) {
+                                                                         @RequestParam(required = false) Kind kind) {
 
         StatusUpdateServiceRequest request = StatusUpdateServiceRequest.of(
                 username,
