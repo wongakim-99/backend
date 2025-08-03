@@ -133,7 +133,10 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
                                 interviewStatusCheck(status) :
                                 documentStatusCheck(status)
                 )
-                .orderBy(getSortCriteria(sortCriteria))
+                .orderBy(
+                        getSortCriteria(sortCriteria),
+                        applicant.id.asc() // 기본적으로 ID로 정렬하여 일관성 유지
+                )
                 .limit(size)
                 .offset((long) size * (cursor - 1))
                 .fetch();
