@@ -1,36 +1,35 @@
 package org.project.ttokttok.domain.user.service;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.project.ttokttok.domain.user.service.dto.request.SignupServiceRequest;
-
-import org.project.ttokttok.domain.user.service.dto.request.LoginServiceRequest;
-import org.project.ttokttok.domain.user.service.dto.request.ResetPasswordServiceRequest;
-import org.project.ttokttok.domain.user.service.dto.response.LoginServiceResponse;
-import org.project.ttokttok.domain.user.service.dto.response.UserServiceResponse;
-
 import org.project.ttokttok.domain.user.domain.EmailVerification;
 import org.project.ttokttok.domain.user.domain.User;
 import org.project.ttokttok.domain.user.repository.EmailVerificationRepository;
 import org.project.ttokttok.domain.user.repository.UserRepository;
+import org.project.ttokttok.domain.user.service.dto.request.LoginServiceRequest;
+import org.project.ttokttok.domain.user.service.dto.request.ResetPasswordServiceRequest;
+import org.project.ttokttok.domain.user.service.dto.request.SignupServiceRequest;
+import org.project.ttokttok.domain.user.service.dto.response.LoginServiceResponse;
+import org.project.ttokttok.domain.user.service.dto.response.UserReissueServiceResponse;
+import org.project.ttokttok.domain.user.service.dto.response.UserServiceResponse;
 import org.project.ttokttok.global.auth.jwt.dto.request.TokenRequest;
 import org.project.ttokttok.global.auth.jwt.dto.response.TokenResponse;
+import org.project.ttokttok.global.auth.jwt.exception.InvalidRefreshTokenException;
+import org.project.ttokttok.global.auth.jwt.exception.InvalidTokenFromCookieException;
 import org.project.ttokttok.global.auth.jwt.service.TokenProvider;
-import org.project.ttokttok.global.entity.Role;
 import org.project.ttokttok.infrastructure.email.service.EmailService;
 import org.project.ttokttok.infrastructure.redis.service.RefreshTokenRedisService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import static org.project.ttokttok.global.entity.Role.ROLE_USER;
 
 @Slf4j
 @Service
@@ -164,7 +163,7 @@ public class UserAuthService {
         }
 
         // 4-4. JWT 토큰 발급
-        TokenRequest tokenRequest = TokenRequest.of(user.getEmail(), Role.ROLE_USER);
+        TokenRequest tokenRequest = TokenRequest.of(user.getEmail(), ROLE_USER);
         TokenResponse tokens = tokenProvider.generateToken(tokenRequest);
 
         // 4-5. 리프레시 토큰 Redis 저장 (항상 저장)
@@ -190,7 +189,7 @@ public class UserAuthService {
         }
 
         // 5-2. 인증코드 검증
-        verifyEmail(request.email(), request.verificationCode());
+        checkVerificationCode(request.email(), request.verificationCode());
 
         // 5-3. 사용자 조회 및 비밀번호 업데이트
         User user = userRepository.findByEmail(request.email())
@@ -279,5 +278,39 @@ public class UserAuthService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public UserReissueServiceResponse reissue(String userEmail, String refreshToken) {
+        reissueValidate(userEmail, refreshToken);
+
+        TokenResponse tokens = tokenProvider.reissueToken(userEmail, ROLE_USER);
+        Long ttl = refreshTokenRedisService.updateRefreshToken(userEmail, tokens.refreshToken());
+
+        return UserReissueServiceResponse.of(tokens, ttl);
+    }
+
+    private void reissueValidate(String username, String refreshToken) {
+        validateTokenFromCookie(refreshToken);
+        isRefreshSame(username, refreshToken);
+    }
+
+    private void isRefreshSame(String username, String refreshToken) {
+        String targetRefresh = refreshTokenRedisService.getRefreshToken(username);
+
+        if (!refreshToken.equals(targetRefresh)) {
+            throw new InvalidRefreshTokenException();
+        }
+    }
+
+    private void validateTokenFromCookie(String refreshToken) {
+        if (refreshToken == null) {
+            throw new InvalidTokenFromCookieException();
+        }
+    }
+
+    private void checkVerificationCode(String email, String code) {
+        if (!emailVerificationRepository.existsByEmailAndCodeAndIsVerifiedTrue(email, code)) {
+            throw new IllegalArgumentException("인증 코드 성공 여부가 존재하지 않습니다.");
+        }
     }
 }

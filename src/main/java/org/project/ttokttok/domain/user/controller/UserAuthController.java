@@ -2,7 +2,6 @@ package org.project.ttokttok.domain.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -15,9 +14,10 @@ import org.project.ttokttok.domain.user.controller.dto.response.LoginResponse;
 import org.project.ttokttok.domain.user.controller.dto.response.UserResponse;
 import org.project.ttokttok.domain.user.service.UserAuthService;
 import org.project.ttokttok.domain.user.service.dto.response.LoginServiceResponse;
+import org.project.ttokttok.domain.user.service.dto.response.UserReissueServiceResponse;
 import org.project.ttokttok.domain.user.service.dto.response.UserServiceResponse;
 import org.project.ttokttok.global.annotation.auth.AuthUserInfo;
-import org.project.ttokttok.global.util.CookieUtil;
+import org.project.ttokttok.global.util.cookie.CookieUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +31,7 @@ import static org.project.ttokttok.global.auth.jwt.TokenExpiry.ACCESS_TOKEN_EXPI
 import static org.project.ttokttok.global.auth.jwt.TokenExpiry.REFRESH_TOKEN_EXPIRY_TIME;
 import static org.project.ttokttok.global.auth.jwt.TokenProperties.USER_REFRESH_KEY;
 import static org.project.ttokttok.global.auth.jwt.TokenProperties.USER_ACCESS_TOKEN_COOKIE;
+import static org.project.ttokttok.global.util.cookie.CookieExpiry.TOKEN_COOKIE_EXPIRY_TIME;
 
 import java.time.Duration;
 import jakarta.servlet.http.Cookie;
@@ -188,14 +189,14 @@ public class UserAuthController {
         ResponseCookie accessCookie = cookieUtil.createResponseCookie(
                 USER_ACCESS_TOKEN_COOKIE.getValue(),
                 serviceResponse.accessToken(),
-                Duration.ofMillis(ACCESS_TOKEN_EXPIRY_TIME.getExpiry())
+                Duration.ofMillis(TOKEN_COOKIE_EXPIRY_TIME.getExpiry())
         );
 
         // 리프레시 토큰 쿠키 생성 (사용자용)
         ResponseCookie refreshCookie = cookieUtil.createResponseCookie(
                 USER_REFRESH_KEY.getValue(),
                 serviceResponse.refreshToken(),
-                Duration.ofMillis(REFRESH_TOKEN_EXPIRY_TIME.getExpiry())
+                Duration.ofMillis(TOKEN_COOKIE_EXPIRY_TIME.getExpiry())
         );
 
         return ResponseEntity.ok()
@@ -203,6 +204,75 @@ public class UserAuthController {
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(
                         ApiResponse.success("로그인 성공", loginResponse)
+                );
+    }
+
+    /**
+     * 토큰 재발급 API
+     * 리프레시 토큰으로 새로운 액세스 토큰을 발급받습니다.
+     *
+     * @param userEmail 인증된 사용자 이메일 (쿠키에서 추출)
+     * @param refreshToken 인증된 사용자 이메일 (쿠키에서 추출)
+     * @return 로그인 결과 및 토큰 정보
+     */
+    @Operation(
+            summary = "토큰 재발급",
+            description = """
+                    토큰 재발급을 진행합니다.
+                    액세스 토큰이 만료되었거나 유효하지 않은 경우 리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급받습니다.
+                    리프레시 토큰이 만료되면, 다시 로그인해야 합니다.
+                    테스트 로그인 계정:
+                    - 이메일: test@sangmyung.kr
+                    - 비밀번호 : TestPass123!
+                    """
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "로그인 성공, 액세스 토큰 쿠키로 반환"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 이메일 또는 비밀번호"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "인증 실패 (유효하지 않은 토큰 또는 만료된 토큰)"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 사용자"
+            )
+    })
+    @PostMapping("/re-issue")
+    public ResponseEntity<ApiResponse<LoginResponse>> reIssue(
+            @Parameter(description = "액세스 토큰에서 추출한 사용자 이메일", hidden = true)
+            @AuthUserInfo String userEmail,
+            @Parameter(description = "쿠키에 포함된 리프레시 토큰", hidden = true)
+            @CookieValue(value = "ttref_user", required = false) String refreshToken
+    ) {
+
+        UserReissueServiceResponse serviceResponse = userAuthService.reissue(userEmail, refreshToken);
+
+        // 액세스 토큰 쿠키 생성 (사용자용)
+        ResponseCookie accessCookie = cookieUtil.createResponseCookie(
+                USER_ACCESS_TOKEN_COOKIE.getValue(),
+                serviceResponse.accessToken(),
+                Duration.ofMillis(TOKEN_COOKIE_EXPIRY_TIME.getExpiry())
+        );
+
+        // 리프레시 토큰 쿠키 생성 (사용자용)
+        ResponseCookie refreshCookie = cookieUtil.createResponseCookie(
+                USER_REFRESH_KEY.getValue(),
+                serviceResponse.refreshToken(),
+                Duration.ofMillis(TOKEN_COOKIE_EXPIRY_TIME.getExpiry())
+        );
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .body(
+                        ApiResponse.success("토큰 재발급 성공")
                 );
     }
 

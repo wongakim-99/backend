@@ -1,4 +1,4 @@
-package org.project.ttokttok.global.util;
+package org.project.ttokttok.global.util.cookie;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
