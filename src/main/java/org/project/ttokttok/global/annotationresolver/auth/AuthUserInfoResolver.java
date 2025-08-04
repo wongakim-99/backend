@@ -15,14 +15,13 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import java.util.Arrays;
 
 import static org.project.ttokttok.global.auth.jwt.TokenProperties.*;
+import static org.project.ttokttok.global.auth.security.RootApiEndpoint.API_ADMIN;
 
 @Configuration
 @RequiredArgsConstructor
 public class AuthUserInfoResolver implements HandlerMethodArgumentResolver {
 
     private final TokenProvider tokenProvider;
-
-    private static final String ADMIN_API_PREFIX = "/api/admin";
 
     // AuthUserInfo 라는 어노테이션이 파라미터에 달려있는지 확인하는 메서드.
     // spring Mvc 기능이다.
@@ -65,7 +64,7 @@ public class AuthUserInfoResolver implements HandlerMethodArgumentResolver {
     }
 
     private String getTokenFromCookie(HttpServletRequest request) {
-        return request.getRequestURI().contains(ADMIN_API_PREFIX) ?
+        return request.getRequestURI().contains(API_ADMIN.getValue()) ?
                 ACCESS_TOKEN_COOKIE.getValue()
                 : USER_ACCESS_TOKEN_COOKIE.getValue();
     }
