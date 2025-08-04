@@ -18,6 +18,8 @@ import java.util.Arrays;
 
 import static org.project.ttokttok.global.auth.jwt.TokenProperties.ACCESS_TOKEN_COOKIE;
 import static org.project.ttokttok.global.auth.jwt.TokenProperties.USER_ACCESS_TOKEN_COOKIE;
+import static org.project.ttokttok.global.auth.security.RootApiEndpoint.API_ADMIN;
+import static org.project.ttokttok.global.auth.security.RootApiEndpoint.API_USER;
 import static org.project.ttokttok.global.auth.security.SecurityWhiteList.ALLOW_URLS;
 import static org.project.ttokttok.global.auth.security.SecurityWhiteList.SWAGGER_URLS;
 
@@ -60,23 +62,23 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private String getAccessTokenFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
-            // 먼저 관리자용 쿠키 확인
-            String adminToken = Arrays.stream(cookies)
-                    .filter(cookie -> ACCESS_TOKEN_COOKIE.getValue().equals(cookie.getName()))
-                    .map(Cookie::getValue)
-                    .findFirst()
-                    .orElse(null);
-            
-            if (adminToken != null) {
-                return adminToken;
+            String requestURI = request.getRequestURI();
+
+            // URI에 "/api/admin"이 포함된 경우 관리자용 쿠키에서 추출
+            if (requestURI.contains(API_ADMIN.getValue())) {
+                return Arrays.stream(cookies)
+                        .filter(cookie -> ACCESS_TOKEN_COOKIE.getValue().equals(cookie.getName()))
+                        .map(Cookie::getValue)
+                        .findFirst()
+                        .orElse(null);
+            } else if (requestURI.contains(API_USER.getValue())) {
+                // 그렇지 않은 경우 사용자용 쿠키에서 추출
+                return Arrays.stream(cookies)
+                        .filter(cookie -> USER_ACCESS_TOKEN_COOKIE.getValue().equals(cookie.getName()))
+                        .map(Cookie::getValue)
+                        .findFirst()
+                        .orElse(null);
             }
-            
-            // 관리자용 쿠키가 없으면 사용자용 쿠키 확인
-            return Arrays.stream(cookies)
-                    .filter(cookie -> USER_ACCESS_TOKEN_COOKIE.getValue().equals(cookie.getName()))
-                    .map(Cookie::getValue)
-                    .findFirst()
-                    .orElse(null);
         }
         return null;
     }
