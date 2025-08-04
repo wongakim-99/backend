@@ -11,7 +11,7 @@ import org.project.ttokttok.domain.admin.service.AdminAuthService;
 import org.project.ttokttok.domain.admin.service.dto.response.AdminLoginServiceResponse;
 import org.project.ttokttok.domain.admin.service.dto.response.ReissueServiceResponse;
 import org.project.ttokttok.global.annotation.auth.AuthUserInfo;
-import org.project.ttokttok.global.util.CookieUtil;
+import org.project.ttokttok.global.util.cookie.CookieUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
 import java.util.Map;
 
-import static org.project.ttokttok.global.auth.jwt.TokenExpiry.ACCESS_TOKEN_EXPIRY_TIME;
-import static org.project.ttokttok.global.auth.jwt.TokenExpiry.REFRESH_TOKEN_EXPIRY_TIME;
 import static org.project.ttokttok.global.auth.jwt.TokenProperties.ACCESS_TOKEN_COOKIE;
 import static org.project.ttokttok.global.auth.jwt.TokenProperties.REFRESH_KEY;
+import static org.project.ttokttok.global.util.cookie.CookieExpiry.TOKEN_COOKIE_EXPIRY_TIME;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,14 +40,14 @@ public class AdminAuthApiController implements AdminAuthDocs {
         ResponseCookie accessCookie = cookieUtil.createResponseCookie(
                 ACCESS_TOKEN_COOKIE.getValue(),
                 response.accessToken(),
-                Duration.ofMillis(ACCESS_TOKEN_EXPIRY_TIME.getExpiry())
+                Duration.ofMillis(TOKEN_COOKIE_EXPIRY_TIME.getExpiry())
         );
 
         // 리프레시 토큰 쿠키 생성
         ResponseCookie refreshCookie = cookieUtil.createResponseCookie(
                 REFRESH_KEY.getValue(),
                 response.refreshToken(),
-                Duration.ofMillis(REFRESH_TOKEN_EXPIRY_TIME.getExpiry())
+                Duration.ofMillis(TOKEN_COOKIE_EXPIRY_TIME.getExpiry())
         );
 
         return ResponseEntity.ok()
@@ -85,7 +84,8 @@ public class AdminAuthApiController implements AdminAuthDocs {
         ResponseCookie accessCookie = cookieUtil.createResponseCookie(
                 ACCESS_TOKEN_COOKIE.getValue(),
                 response.accessToken(),
-                Duration.ofMillis(ACCESS_TOKEN_EXPIRY_TIME.getExpiry())
+                // 일단, 리프레시 토큰 만료와 함께 사라지도록 설정.
+                Duration.ofMillis(response.refreshTTL())
         );
 
         // 새 리프레시 토큰 쿠키 생성 (남은 TTL 사용)

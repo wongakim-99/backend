@@ -22,6 +22,8 @@ public class AuthUserInfoResolver implements HandlerMethodArgumentResolver {
 
     private final TokenProvider tokenProvider;
 
+    private static final String ADMIN_API_PREFIX = "/api/admin";
+
     // AuthUserInfo 라는 어노테이션이 파라미터에 달려있는지 확인하는 메서드.
     // spring Mvc 기능이다.
     @Override
@@ -45,10 +47,12 @@ public class AuthUserInfoResolver implements HandlerMethodArgumentResolver {
             return null;
         }
 
+        // 쿠키 값 토큰 분기 처리 추가
+        String tokenFromCookie = getTokenFromCookie(request);
+
         // "Authorization" 헤더 값 받아옴.
         String token = Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals(ACCESS_TOKEN_COOKIE.getValue())||
-                        cookie.getName().equals(USER_ACCESS_TOKEN_COOKIE.getValue()))
+                .filter(cookie -> cookie.getName().equals(tokenFromCookie))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
@@ -58,5 +62,11 @@ public class AuthUserInfoResolver implements HandlerMethodArgumentResolver {
         }
 
         return null;
+    }
+
+    private String getTokenFromCookie(HttpServletRequest request) {
+        return request.getRequestURI().contains(ADMIN_API_PREFIX) ?
+                ACCESS_TOKEN_COOKIE.getValue()
+                : USER_ACCESS_TOKEN_COOKIE.getValue();
     }
 }
