@@ -76,7 +76,7 @@ public class ApplyFormAdminService {
     }
 
     private void validateActiveFormExists(String clubId) {
-        if (applyFormRepository.existByClubIdAndStatus(clubId, ACTIVE)) {
+        if (applyFormRepository.existsByClubIdAndStatus(clubId, ACTIVE)) {
             throw new AlreadyActiveApplyFormExistsException();
         }
     }
