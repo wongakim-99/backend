@@ -1,6 +1,5 @@
 package org.project.ttokttok.global.annotationresolver.auth;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.project.ttokttok.global.annotation.auth.AuthUserInfo;
@@ -11,11 +10,6 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import java.util.Arrays;
-
-import static org.project.ttokttok.global.auth.jwt.TokenProperties.*;
-import static org.project.ttokttok.global.auth.security.RootApiEndpoint.API_ADMIN;
 
 @Configuration
 @RequiredArgsConstructor
@@ -40,21 +34,13 @@ public class AuthUserInfoResolver implements HandlerMethodArgumentResolver {
         // web 기본 요청 획득
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
-        // Cookies null 체크 추가
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return null;
+        // Authorization 헤더에서 토큰 추출
+        String authorization = request.getHeader("Authorization");
+        String token = null;
+        
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            token = authorization.substring(7); // "Bearer " 제거
         }
-
-        // 쿠키 값 토큰 분기 처리 추가
-        String tokenFromCookie = getTokenFromCookie(request);
-
-        // "Authorization" 헤더 값 받아옴.
-        String token = Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals(tokenFromCookie))
-                .map(Cookie::getValue)
-                .findFirst()
-                .orElse(null);
 
         if (token != null) {
             try {
@@ -69,9 +55,5 @@ public class AuthUserInfoResolver implements HandlerMethodArgumentResolver {
         return null;
     }
 
-    private String getTokenFromCookie(HttpServletRequest request) {
-        return request.getRequestURI().contains(API_ADMIN.getValue()) ?
-                ACCESS_TOKEN_COOKIE.getValue()
-                : USER_ACCESS_TOKEN_COOKIE.getValue();
-    }
+
 }
