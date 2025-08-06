@@ -127,8 +127,7 @@ public class ApplyForm extends BaseTimeEntity {
     public void updateApplyInfo(LocalDate applyStartDate,
                                 LocalDate applyDeadline,
                                 Integer maxApplyCount,
-                                Set<ApplicableGrade> grades,
-                                Boolean isRecruiting) {
+                                Set<ApplicableGrade> grades) {
 
         this.applyStartDate = applyStartDate != null ? applyStartDate : this.applyStartDate;
         this.applyEndDate = applyDeadline != null ? applyDeadline : this.applyEndDate;
@@ -136,10 +135,6 @@ public class ApplyForm extends BaseTimeEntity {
         if (grades != null) {
             this.grades.clear();
             this.grades.addAll(grades);
-        }
-
-        if (isRecruiting != null) {
-            this.status = isRecruiting ? ApplyFormStatus.ACTIVE : ApplyFormStatus.INACTIVE;
         }
     }
 
