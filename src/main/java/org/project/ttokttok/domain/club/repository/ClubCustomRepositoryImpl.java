@@ -28,6 +28,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.project.ttokttok.domain.applyform.domain.QApplyForm.applyForm;
@@ -478,7 +479,8 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
                 .selectFrom(applyForm)
                 .leftJoin(applyForm.grades).fetchJoin()
                 .where(applyForm.club.id.eq(clubId)
-                        .and(applyForm.status.eq(ACTIVE)))
+                        .and(applyForm.status.eq(ACTIVE))
+                        .and(applyForm.isRecruiting.eq(true)))
                 .fetchOne();
 
         return new ClubDetailAdminQueryResponse(
@@ -486,7 +488,8 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
                 clubResult.get(1, ClubType.class),         // clubType
                 clubResult.get(2, ClubCategory.class),     // clubCategory
                 clubResult.get(3, String.class),           // customCategory
-                activeForm != null, // ApplyForm이 존재하면 모집중 (recruiting)
+                //activeForm != null, // ApplyForm이 존재하면 모집중 (recruiting)
+                activeForm != null && activeForm.isRecruiting(),
                 clubResult.get(4, String.class),           // summary
                 clubResult.get(5, String.class),           // profileImageUrl
                 clubResult.get(6, Integer.class) != null ? clubResult.get(6, Integer.class) : 0, // clubMemberCount
