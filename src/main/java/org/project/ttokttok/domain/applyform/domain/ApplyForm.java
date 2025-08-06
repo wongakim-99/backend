@@ -50,6 +50,9 @@ public class ApplyForm extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer maxApplyCount;
 
+    @Column(nullable = false)
+    private boolean isRecruiting;
+
     @ElementCollection
     @Enumerated(EnumType.STRING)
     @CollectionTable(
@@ -91,6 +94,7 @@ public class ApplyForm extends BaseTimeEntity {
         this.subTitle = subTitle;
         this.status = ApplyFormStatus.ACTIVE;
         this.formJson = formJson;
+        this.isRecruiting = true; // 기본값은 true로 설정
     }
 
     public static ApplyForm createApplyForm(Club club,
@@ -123,8 +127,7 @@ public class ApplyForm extends BaseTimeEntity {
     public void updateApplyInfo(LocalDate applyStartDate,
                                 LocalDate applyDeadline,
                                 Integer maxApplyCount,
-                                Set<ApplicableGrade> grades,
-                                Boolean isRecruiting) {
+                                Set<ApplicableGrade> grades) {
 
         this.applyStartDate = applyStartDate != null ? applyStartDate : this.applyStartDate;
         this.applyEndDate = applyDeadline != null ? applyDeadline : this.applyEndDate;
@@ -132,10 +135,6 @@ public class ApplyForm extends BaseTimeEntity {
         if (grades != null) {
             this.grades.clear();
             this.grades.addAll(grades);
-        }
-
-        if (isRecruiting != null) {
-            this.status = isRecruiting ? ApplyFormStatus.ACTIVE : ApplyFormStatus.INACTIVE;
         }
     }
 
@@ -159,5 +158,9 @@ public class ApplyForm extends BaseTimeEntity {
         } else if (this.status == ApplyFormStatus.INACTIVE) {
             this.status = ApplyFormStatus.ACTIVE;
         }
+    }
+
+    public void toggleRecruiting() {
+        this.isRecruiting = !this.isRecruiting;
     }
 }

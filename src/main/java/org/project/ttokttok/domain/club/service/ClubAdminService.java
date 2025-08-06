@@ -83,7 +83,8 @@ public class ClubAdminService {
 
         if (form.isPresent()) {
             // 활성화된 폼이 존재한다면, 모집 상태를 토글함.
-            form.get().updateFormStatus();
+            //form.get().updateFormStatus();
+            form.get().toggleRecruiting();
             log.info("Current apply form status toggled for club: {}, status: {}", clubId, form.get().getStatus());
         } else if (form.isEmpty()) {
             // 활성화된 폼이 없다면, 가장 최근에 생성된 지원 폼을 찾아 활성화시킴.
@@ -122,7 +123,9 @@ public class ClubAdminService {
 
     // 요청에 프로필 이미지 업데이트 요청이 있는지 확인
     private boolean hasProfileImage(ClubContentUpdateServiceRequest request) {
-        return request.profileImage() != null && request.profileImage().isPresent();
+        Optional<MultipartFile> profileImage = Optional.ofNullable(request.profileImage().get());
+
+        return profileImage.isPresent();
     }
 
     // 프로필 이미지 업데이트 로직
@@ -135,10 +138,9 @@ public class ClubAdminService {
 
     // 요청에 지원 폼 업데이트 요청이 있는지 확인
     private boolean hasApplyFormUpdate(ClubContentUpdateServiceRequest request) {
+        // request.recruiting().isPresent(); - ApplyForm에서 관리하므로 제거
         return request.applyStartDate().isPresent() || request.applyEndDate().isPresent() ||
-                request.grades().isPresent() || request.maxApplyCount().isPresent() ||
-                // request.recruiting().isPresent(); - ApplyForm에서 관리하므로 제거
-                false;
+                request.grades().isPresent() || request.maxApplyCount().isPresent();
     }
 
     // 지원 폼 업데이트 로직
@@ -155,9 +157,8 @@ public class ClubAdminService {
                 request.applyStartDate().orElse(null),
                 request.applyEndDate().orElse(null),
                 request.maxApplyCount().orElse(null),
-                request.grades().orElse(null),
+                request.grades().orElse(null)
                 // request.recruiting().orElse(null) - ApplyForm에서 관리
-                null
         );
     }
 

@@ -37,7 +37,8 @@ public class ClubMemberCustomRepositoryImpl implements ClubMemberCustomRepositor
                 .where(clubMember.club.id.eq(clubId))
                 .orderBy(
                         orderByRoleAsc(),
-                        clubMember.grade.asc()
+                        clubMember.grade.asc(),
+                        clubMember.id.asc()
                 )
                 .offset((long) (pageNum - 1) * pageSize)
                 .limit(pageSize)
