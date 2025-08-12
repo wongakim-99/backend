@@ -82,7 +82,6 @@ public class ApplyFormAdminService {
     }
 
     // 지원 폼 수정 메서드
-    // todo: 이미 지원한 사용자가 있는 경우, 수정 불가능하도록 예외 처리 필요.
     @Transactional
     public void updateApplyForm(ApplyFormUpdateServiceRequest request) {
         ApplyForm applyForm = applyFormRepository.findById(request.applyFormId())
