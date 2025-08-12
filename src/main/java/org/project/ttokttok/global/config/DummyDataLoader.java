@@ -68,37 +68,37 @@ public class DummyDataLoader implements ApplicationRunner {
             loadAdminData();
 
             // 2. User 데이터
-            loadUserData();
+//            loadUserData();
 
             // 3. Club 데이터
             loadClubData();
 
             // 4. ClubMember 데이터
-            loadClubMemberData();
-
-            // 5. Favorite 데이터
-            loadFavoriteData();
-
-            // 6. ClubBoard 데이터
-            loadClubBoardData();
-
-            // 7. ApplyForm 데이터
-            loadApplyFormData();
-
-            // 8. 테스트용 ApplyForm 데이터 (확실히 들어가도록)
-            loadTestApplyFormData();
-
-            // 9. 추가 엣지 케이스 ApplyForm 데이터
-            loadEdgeCaseApplyFormData();
-
-            // 10. 지원자 데이터 로딩
-            loadApplicantData();
-
-            // 11. DocumentPhase 데이터 로딩
-            loadDocumentPhaseData();
-
-            // 12. InterviewPhase 데이터 로딩
-            loadInterviewPhaseData();
+//            loadClubMemberData();
+//
+//            // 5. Favorite 데이터
+//            loadFavoriteData();
+//
+//            // 6. ClubBoard 데이터
+//            loadClubBoardData();
+//
+//            // 7. ApplyForm 데이터
+//            loadApplyFormData();
+//
+//            // 8. 테스트용 ApplyForm 데이터 (확실히 들어가도록)
+//            loadTestApplyFormData();
+//
+//            // 9. 추가 엣지 케이스 ApplyForm 데이터
+//            loadEdgeCaseApplyFormData();
+//
+//            // 10. 지원자 데이터 로딩
+//            loadApplicantData();
+//
+//            // 11. DocumentPhase 데이터 로딩
+//            loadDocumentPhaseData();
+//
+//            // 12. InterviewPhase 데이터 로딩
+//            loadInterviewPhaseData();
         } catch (Exception e) {
             log.error("더미 데이터 로딩 중 오류 발생", e);
         }
