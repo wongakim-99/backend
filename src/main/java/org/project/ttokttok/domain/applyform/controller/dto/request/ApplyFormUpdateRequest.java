@@ -15,7 +15,7 @@ public record ApplyFormUpdateRequest(
         JsonNullable<String> subtitle,
 
         @Schema(description = "선택적 필드 (null 가능)", nullable = true, example = "값 또는 null")
-        JsonNullable<List<Question>> questions
+        JsonNullable<List<QuestionRequestDto>> questions
 ) {
     public ApplyFormUpdateServiceRequest toServiceRequest(String username, String formId) {
         return ApplyFormUpdateServiceRequest.builder()
@@ -23,7 +23,17 @@ public record ApplyFormUpdateRequest(
                 .applyFormId(formId)
                 .title(title)
                 .subtitle(subtitle)
-                .questions(questions)
+                .questions(questionRequestPresent(questions))
                 .build();
+    }
+
+    private JsonNullable<List<Question>> questionRequestPresent(JsonNullable<List<QuestionRequestDto>> questions) {
+        if (questions.isPresent()) {
+            return JsonNullable.of(questions.get().stream()
+                    .map(QuestionRequestDto::toQuestion)
+                    .toList());
+        }
+
+        return JsonNullable.undefined();
     }
 }
