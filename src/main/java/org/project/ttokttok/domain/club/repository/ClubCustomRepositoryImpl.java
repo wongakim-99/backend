@@ -278,13 +278,13 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
                 .select(favorite.count())
                 .from(favorite)
                 .where(favorite.club.id.eq(club.id));
-        JPQLQuery<Long> viewCountQuery = JPAExpressions
-                .select(club.viewCount)
-                .from(club)
-                .where(club.id.eq(club.id));
+//        JPQLQuery<Long> viewCountQuery = JPAExpressions
+//                .select(club.viewCount)
+//                .from(club)
+//                .where(club.id.eq(club.id));
         NumberExpression<Double> popularityScore = Expressions.numberTemplate(Double.class,
                 "({0}) * 0.7 + ({1}) * 1.0 + ({2}) * 0.3",
-                memberCountSubQuery, favoriteCountSubQuery, viewCountQuery);
+                memberCountSubQuery, favoriteCountSubQuery, club.viewCount);
         JPQLQuery<Boolean> bookmarkedSubQuery = (userEmail == null) ?
                 JPAExpressions.select(Expressions.constant(false)) :
                 JPAExpressions.select(favorite.count().gt(0))
@@ -335,13 +335,13 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
                 .select(favorite.count())
                 .from(favorite)
                 .where(favorite.club.id.eq(club.id));
-        JPQLQuery<Long> viewCountQuery = JPAExpressions
-                .select(club.viewCount)
-                .from(club)
-                .where(club.id.eq(club.id));
+//        JPQLQuery<Long> viewCountQuery = JPAExpressions
+//                .select(club.viewCount)
+//                .from(club)
+//                .where(club.id.eq(club.id));
         NumberExpression<Double> popularityScore = Expressions.numberTemplate(Double.class,
                 "({0}) * 0.7 + ({1}) * 1.0 + ({2}) * 0.3",
-                memberCountSubQuery, favoriteCountSubQuery, viewCountQuery);
+                memberCountSubQuery, favoriteCountSubQuery, club.viewCount);
         JPQLQuery<Boolean> bookmarkedSubQuery = (userEmail == null) ?
                 JPAExpressions.select(Expressions.constant(false)) :
                 JPAExpressions.select(favorite.count().gt(0))
@@ -432,13 +432,13 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
                         .select(favorite.count())
                         .from(favorite)
                         .where(favorite.club.id.eq(club.id));
-                JPQLQuery<Long> viewCountQuery = JPAExpressions
-                        .select(club.viewCount)
-                        .from(club)
-                        .where(club.id.eq(club.id));
+//                JPQLQuery<Long> viewCountQuery = JPAExpressions
+//                        .select(club.viewCount)
+//                        .from(club)
+//                        .where(club.id.eq(club.id));
                 NumberExpression<Double> popularityScore = Expressions.numberTemplate(Double.class,
                         "({0}) * 0.7 + ({1}) * 1.0 + ({2}) * 0.3",
-                        memberCountSubQuery, favoriteCountSubQuery, viewCountQuery);
+                        memberCountSubQuery, favoriteCountSubQuery, club.viewCount);
                 query.orderBy(popularityScore.desc(), club.id.desc());
                 break;
             case "member_count":
