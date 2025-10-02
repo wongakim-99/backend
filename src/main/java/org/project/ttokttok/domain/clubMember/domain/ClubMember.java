@@ -26,9 +26,9 @@ public class ClubMember extends BaseTimeEntity {
     @JoinColumn(name = "club_id", nullable = false)
     private Club club;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private User user;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "member_id", nullable = false)
+//    private User user;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -42,6 +42,9 @@ public class ClubMember extends BaseTimeEntity {
     private String major;
 
     // ---- 추가된 필드 ----
+    @Column(name = "member_name", nullable =  false)
+    private String memberName;
+
     @Column(nullable = false)
     private String email; // 부원 추가 시 입력한 이메일
 
