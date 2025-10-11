@@ -3,6 +3,8 @@ package org.project.ttokttok.domain.club.repository.dto;
 import org.project.ttokttok.domain.club.domain.enums.ClubCategory;
 import org.project.ttokttok.domain.club.domain.enums.ClubType;
 
+import java.time.LocalDate;
+
 public record ClubCardQueryResponse(
         String id,
         String name,
@@ -13,6 +15,7 @@ public record ClubCardQueryResponse(
         String profileImageUrl,
         int clubMemberCount,
         boolean recruiting,
-        boolean bookmarked
+        boolean bookmarked,
+        LocalDate applyDeadLine  // applyDeadLine -> applyEndDate로 변경
 ) {
 }

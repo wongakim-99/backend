@@ -47,11 +47,11 @@ public class ClubUserApiController {
      * 
      * @param username 인증된 사용자 이메일
      * @param clubId 조회할 동아리 ID
-     * @return 동아리 상세 정보 (소개, 지원 정보, 멤버 수 등)
+     * @return 동아리 상세 정보 (소개, 지원 정보, 멤버 수 등, 마감 임박 여부 포함)
      */
     @Operation(
             summary = "동아리 소개글 조회",
-            description = "동아리 타고 들어갔을때의 소개글과 모집인원, 지원가능 학년 등을 조회합니다."
+            description = "동아리 타고 들어갔을때의 소개글과 모집인원, 지원가능 학년 등을 조회합니다. 마감 임박 여부(일주일 이내)도 포함됩니다."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -80,6 +80,7 @@ public class ClubUserApiController {
      * @param sort 정렬 방식 (latest: 최신순, popular: 인기순) - 기본값: latest
      * @return 필터링된 동아리 목록과 페이징 정보
      */
+    //FIXME - 마감 임박 추가 (지원 마감기간이 일주일 이내로 남은 동아리 boolean 필드 추가)
     @Operation(
             summary = "동아리 목록 조회",
             description = "메인 화면 동아리 목록을 무한스크롤로 조회합니다. 카테고리, 분류, 모집여부 필터링 가능."
@@ -167,6 +168,7 @@ public class ClubUserApiController {
      *
      * @return (멤버수 x 0.7) + (즐겨찾기 수 x 0.3) 기준으로 정렬된 인기 동아리 목록
      * */
+    //FIXME - 마감 임박 추가 (지원 마감기간이 일주일 이내로 남은 동아리 boolean 필드 추가)
     @Operation(
             summary = "메인 배너 인기 동아리 조회",
             description = "메인 화면 상단 배너에 표시될 모든 인기 동아리를 한번에 조회합니다."
@@ -192,6 +194,7 @@ public class ClubUserApiController {
      * @param sort 정렬 방식 (popular : 인기도순, member_count : 멤버많은 순, latest : 최신등록 순) - 기본값 : popular
      * @return 멤버수 기준으로 정렬된 인기 동아리 목록
      * */
+    //FIXME - 마감 임박 추가 (지원 마감기간이 일주일 이내로 남은 동아리 boolean 필드 추가)
     @Operation(
             summary = "전체 인기 동아리 목록 조회",
             description = "전체 인기 동아리를 조회합니다. '인기도순', '멤버많은순', '최신등록순' 정렬 및 무한스크롤을 지원합니다."
@@ -277,6 +280,7 @@ public class ClubUserApiController {
      * @param cursor 커서 기반 페이지네이션을 위한 기준 ID
      * @param size 페이지당 로드할 개수 (기본값 20)
      */
+    //FIXME - 마감 임박 추가 (지원 마감기간이 일주일 이내로 남은 동아리 boolean 필드 추가)
     @Operation(
             summary = "동아리 검색",
             description = "동아리 이름을 기준으로 검색합니다."

@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -261,6 +262,15 @@ public class ApplicantUserService {
      * UserApplicationHistoryQueryResponse를 ClubCardServiceResponse로 변환
      */
     private ClubCardServiceResponse toClubCardServiceResponse(UserApplicationHistoryQueryResponse queryResponse) {
+        // 마감 임박 여부 계산 (지원 마감일이 일주일 이내인지 확인)
+        boolean isDeadlineImminent = false;
+        if (queryResponse.applyEndDate() != null) {
+            LocalDate today = LocalDate.now();
+            LocalDate deadline = queryResponse.applyEndDate();
+            long daysUntilDeadline = today.until(deadline, java.time.temporal.ChronoUnit.DAYS);
+            isDeadlineImminent = daysUntilDeadline >= 0 && daysUntilDeadline <= 7;
+        }
+
         return new ClubCardServiceResponse(
                 queryResponse.clubId(),
                 queryResponse.clubName(),
@@ -271,7 +281,8 @@ public class ApplicantUserService {
                 queryResponse.profileImageUrl(),
                 queryResponse.clubMemberCount(),
                 queryResponse.recruiting(),
-                queryResponse.bookmarked()
+                queryResponse.bookmarked(),
+                isDeadlineImminent
         );
     }
 
