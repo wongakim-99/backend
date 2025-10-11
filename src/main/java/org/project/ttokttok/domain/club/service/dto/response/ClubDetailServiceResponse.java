@@ -18,18 +18,28 @@ public record ClubDetailServiceResponse(
         String customCategory,
         boolean bookmarked, // 사용자 즐겨찾기 여부
         boolean recruiting,
+        boolean isDeadlineImminent, // 마감 임박 여부 (일주일 이내)
         String summary, // 한줄 소개
         String profileImageUrl, // 동아리 프로필 이미지 URL,
         int clubMemberCount,
 
         LocalDateTime applyStartDate,
-        LocalDateTime applyDeadLine,
+        LocalDateTime applyDeadLine,  // applyDeadLine -> applyEndDate로 변경
         Set<ApplicableGrade> grades, // 지원 가능한 학년
         int maxApplyCount, // 최대 지원자 수
 
         String content // 동아리 소개 내용
 ) {
     public static ClubDetailServiceResponse from(ClubDetailQueryResponse response) {
+        // 마감 임박 여부 계산 (지원 마감일이 일주일 이내인지 확인)
+        boolean isDeadlineImminent = false;
+        if (response.applyDeadLine() != null) {
+            LocalDate today = LocalDate.now();
+            LocalDate deadline = response.applyDeadLine();
+            long daysUntilDeadline = today.until(deadline, java.time.temporal.ChronoUnit.DAYS);
+            isDeadlineImminent = daysUntilDeadline >= 0 && daysUntilDeadline <= 7;
+        }
+
         return ClubDetailServiceResponse.builder()
                 .name(response.name())
                 .clubType(response.clubType())
@@ -37,6 +47,7 @@ public record ClubDetailServiceResponse(
                 .customCategory(response.customCategory())
                 .bookmarked(response.bookmarked())
                 .recruiting(response.recruiting())
+                .isDeadlineImminent(isDeadlineImminent)
                 .summary(response.summary())
                 .profileImageUrl(response.profileImageUrl())
                 .clubMemberCount(response.clubMemberCount())

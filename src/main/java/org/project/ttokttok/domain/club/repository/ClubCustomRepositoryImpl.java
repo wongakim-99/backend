@@ -152,7 +152,12 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
                                 .where(applyForm.club.id.eq(club.id)
                                         .and(applyForm.status.eq(ACTIVE))
                                         .and(applyForm.isRecruiting.eq(true))),
-                        bookmarkedSubQuery
+                        bookmarkedSubQuery,
+                        JPAExpressions.select(applyForm.applyEndDate)
+                                .from(applyForm)
+                                .where(applyForm.club.id.eq(club.id)
+                                        .and(applyForm.status.eq(ACTIVE)))
+                                .limit(1)
                 ))
                 .from(club)
                 .where(
@@ -305,7 +310,12 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
                                 .where(applyForm.club.id.eq(club.id)
                                         .and(applyForm.status.eq(ACTIVE))
                                         .and(applyForm.isRecruiting.eq(true))),
-                        bookmarkedSubQuery
+                        bookmarkedSubQuery,
+                        JPAExpressions.select(applyForm.applyEndDate)
+                                .from(applyForm)
+                                .where(applyForm.club.id.eq(club.id)
+                                        .and(applyForm.status.eq(ACTIVE)))
+                                .limit(1)
                 ))
                 .from(club)
                 .where(
@@ -359,7 +369,13 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
                                 .where(applyForm.club.id.eq(club.id)
                                         .and(applyForm.status.eq(ACTIVE))
                                         .and(applyForm.isRecruiting.eq(true))),
-                        bookmarkedSubQuery
+                        bookmarkedSubQuery,
+                        // 마감일 정보 추가 (ACTIVE 상태인 ApplyForm의 applyEndDate)
+                        JPAExpressions.select(applyForm.applyEndDate)
+                                .from(applyForm)
+                                .where(applyForm.club.id.eq(club.id)
+                                        .and(applyForm.status.eq(ACTIVE)))
+                                .limit(1)
                 ))
                 .from(club)
                 .where(
@@ -410,7 +426,12 @@ public class ClubCustomRepositoryImpl implements ClubCustomRepository {
                                 .where(applyForm.club.id.eq(club.id)
                                         .and(applyForm.status.eq(ACTIVE))
                                         .and(applyForm.isRecruiting.eq(true))),
-                        bookmarkedSubQuery
+                        bookmarkedSubQuery,
+                        JPAExpressions.select(applyForm.applyEndDate)
+                                .from(applyForm)
+                                .where(applyForm.club.id.eq(club.id)
+                                        .and(applyForm.status.eq(ACTIVE)))
+                                .limit(1)
                 ))
                 .from(club)
                 .where(

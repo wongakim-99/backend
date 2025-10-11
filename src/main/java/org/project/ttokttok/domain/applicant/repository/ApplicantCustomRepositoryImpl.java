@@ -326,7 +326,8 @@ public class ApplicantCustomRepositoryImpl implements ApplicantCustomRepository 
                         // 즐겨찾기 여부 확인 (서브쿼리로 처리)
                         isFavorite(userEmail),
                         applicant.currentPhase,
-                        applicant.createdAt
+                        applicant.createdAt,
+                        applyForm.applyEndDate  // 마감 임박 계산을 위한 지원 마감일 추가
                 ))
                 .from(applicant)
                 .innerJoin(applicant.applyForm, applyForm)

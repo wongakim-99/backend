@@ -17,6 +17,7 @@ public record ClubCardServiceResponse(
         String profileImageUrl,             // 동아리 프로필 이미지 URL
         int clubMemberCount,                // 현재 멤버 수
         boolean recruiting,                 // 모집 여부
-        boolean bookmarked                  // 사용자 즐겨찾기 여부
+        boolean bookmarked,                 // 사용자 즐겨찾기 여부
+        boolean isDeadlineImminent          // 마감 임박 여부 (일주일 이내)
 ) {
-} 
+}

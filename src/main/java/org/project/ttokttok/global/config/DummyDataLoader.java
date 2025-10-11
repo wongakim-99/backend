@@ -26,11 +26,6 @@ public class DummyDataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-         //임시로 더미 데이터 로딩 비활성화
-        // logDatabaseConnectionInfo();
-        log.info("더미 데이터 로딩 비활성화됨");
-        return;
-
         // 개발 또는 운영(테스트용) 환경에서 더미 데이터 로드
 //        if (shouldLoadDummyData()) {
 //            log.info("더미 데이터 로딩 시작 (Profile: {})", String.join(", ", environment.getActiveProfiles()));
@@ -42,7 +37,7 @@ public class DummyDataLoader implements ApplicationRunner {
     private boolean shouldLoadDummyData() {
         String[] activeProfiles = environment.getActiveProfiles();
         for (String profile : activeProfiles) {
-            if ("local".equals(profile) || "dev".equals(profile) || "prod".equals(profile)) {
+            if ("local".equals(profile) || "dev".equals(profile)) {
                 return true;
             }
         }
@@ -69,7 +64,7 @@ public class DummyDataLoader implements ApplicationRunner {
             loadAdminData();
 
             // 2. User 데이터
-//            loadUserData();
+            loadUserData();
 
             // 3. Club 데이터
             loadClubData();
@@ -84,7 +79,7 @@ public class DummyDataLoader implements ApplicationRunner {
 //            loadClubBoardData();
 //
 //            // 7. ApplyForm 데이터
-//            loadApplyFormData();
+            loadApplyFormData();
 //
 //            // 8. 테스트용 ApplyForm 데이터 (확실히 들어가도록)
 //            loadTestApplyFormData();
@@ -93,7 +88,7 @@ public class DummyDataLoader implements ApplicationRunner {
 //            loadEdgeCaseApplyFormData();
 //
 //            // 10. 지원자 데이터 로딩
-//            loadApplicantData();
+            loadApplicantData();
 //
 //            // 11. DocumentPhase 데이터 로딩
 //            loadDocumentPhaseData();

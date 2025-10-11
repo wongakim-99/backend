@@ -49,7 +49,7 @@ public class ApplicantUserApiController implements ApplicantUserDocs {
      * @param size 조회할 개수 (기본값: 20)
      * @param cursor 커서 (무한스크롤용, 선택사항)
      * @param sort 정렬 방식 (latest: 최신순, popular: 인기도순, member_count: 멤버많은순, 기본값: latest)
-     * @return 사용자 지원내역 목록과 페이징 정보
+     * @return 사용자 지원내역 목록과 페이징 정보 (마감 임박 여부 포함)
      */
     @GetMapping("/history")
     public ResponseEntity<ClubListResponse> getUserApplicationHistory(
@@ -58,7 +58,7 @@ public class ApplicantUserApiController implements ApplicantUserDocs {
             @RequestParam(required = false) String cursor,
             @RequestParam(defaultValue = "latest") String sort) {
 
-        ClubListServiceResponse serviceResponse = 
+        ClubListServiceResponse serviceResponse =
                 applicantUserService.getUserApplicationHistory(email, size, cursor, sort);
 
         ClubListResponse response = ClubListResponse.from(serviceResponse);

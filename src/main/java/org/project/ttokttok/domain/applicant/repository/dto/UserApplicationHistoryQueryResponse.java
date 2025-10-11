@@ -4,6 +4,7 @@ import org.project.ttokttok.domain.applicant.domain.enums.ApplicantPhase;
 import org.project.ttokttok.domain.club.domain.enums.ClubCategory;
 import org.project.ttokttok.domain.club.domain.enums.ClubType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -23,6 +24,7 @@ public record UserApplicationHistoryQueryResponse(
         boolean recruiting,
         boolean bookmarked,
         ApplicantPhase currentPhase,
-        LocalDateTime appliedAt
+        LocalDateTime appliedAt,
+        LocalDate applyEndDate  // 마감 임박 계산을 위한 지원 마감일 추가
 ) {
 }

@@ -1,59 +1,58 @@
 -- 7. 지원폼 데이터 (주요 동아리들만)
 INSERT INTO applyforms (id, title, sub_title, status, apply_start_date, apply_end_date,
-                        has_interview, max_apply_count, club_id, form_json, is_recruiting, created_at, updated_at)
+                        has_interview, interview_start_date, interview_end_date, max_apply_count, club_id, form_json, is_recruiting, created_at, updated_at)
 VALUES
-
--- 모집중인 동아리들 (ACTIVE enum 값 사용)
+-- 모집중인 동아리들 (ACTIVE enum 값 사용) - 마감기간을 일주일 이내로 수정
 (gen_random_uuid(), '그림사랑 신입 모집', '미술을 사랑하는 분들을 찾습니다', 'ACTIVE',
- '2025-03-01', '2025-03-15', false, 10, 'club-001',
+ '2025-10-01', '2025-10-15', false, null, null, 10, 'club-001',
  '[{"questionId":"q1","title":"자기소개","subTitle":"간단한 자기소개를 작성해주세요","questionType":"SHORT_ANSWER","isEssential":true,"content":[]},{"questionId":"q2","title":"지원동기","subTitle":"동아리에 지원하는 이유를 작성해주세요","questionType":"LONG_ANSWER","isEssential":true,"content":[]}]',
  true, NOW(), NOW()),
 
 (gen_random_uuid(), '예전 상명축구부 모집', '함께 안 뛸 선수를 찾습니다', 'INACTIVE',
-  '2024-03-01', '2025-03-20', true, 5, 'club-002',
+  '2024-03-01', '2025-03-20', true, '2025-03-25', '2025-03-27', 5, 'club-002',
 '[{"questionId":"q3","title":"예에에에전 지원폼","subTitle":"예전 지원폼","questionType":"RADIO","isEssential":true,"content":["공격수","미드필더","수비수","골키퍼"]},{"questionId":"q4","title":"축구 경력","subTitle":"축구 경험에 대해 작성해주세요","questionType":"LONG_ANSWER","isEssential":false,"content":[]}]',
 false, NOW(), NOW()),
 
 (gen_random_uuid(), '상명축구부 모집', '함께 뛸 선수를 찾습니다', 'ACTIVE',
-'2025-03-01', '2025-03-20', true, 15, 'club-002',
+'2025-10-05', '2025-10-16', true, '2025-10-18', '2025-10-20', 15, 'club-002',
 '[{"questionId":"q3","title":"포지션","subTitle":"선호하는 포지션을 선택해주세요","questionType":"RADIO","isEssential":true,"content":["공격수","미드필더","수비수","골키퍼"]},{"questionId":"q4","title":"축구 경력","subTitle":"축구 경험에 대해 작성해주세요","questionType":"LONG_ANSWER","isEssential":false,"content":[]}]',
 true, NOW(), NOW()),
 
 (gen_random_uuid(), '코딩마스터 모집', '프로그래밍 실력을 키워요', 'ACTIVE',
- '2025-03-05', '2025-03-25', false, 12, 'club-003',
+ '2025-10-08', '2025-10-18', false, null, null, 12, 'club-003',
  '[{"questionId":"q5","title":"프로그래밍 언어","subTitle":"사용 가능한 프로그래밍 언어를 모두 선택해주세요","questionType":"CHECKBOX","isEssential":true,"content":["Java","Python","JavaScript","C++","Go"]},{"questionId":"q6","title":"개발 경험","subTitle":"개발 프로젝트 경험을 작성해주세요","questionType":"LONG_ANSWER","isEssential":false,"content":[]}]',
  true, NOW(), NOW()),
 
 (gen_random_uuid(), '나눔봉사단 모집', '함께 봉사해요', 'ACTIVE',
- '2025-03-01', '2025-03-30', false, 20, 'club-004', '[]', true, NOW(), NOW()),
+ '2025-03-01', '2025-03-30', false, null, null, 20, 'club-004', '[]', true, NOW(), NOW()),
 
 (gen_random_uuid(), '농구동아리 모집', '농구 좋아하세요?', 'ACTIVE',
- '2025-03-10', '2025-03-25', true, 8, 'club-006', '[]', true, NOW(), NOW()),
+ '2025-10-07', '2025-10-14', true, '2025-10-16', '2025-10-17', 8, 'club-006', '[]', true, NOW(), NOW()),
 
 (gen_random_uuid(), '영어회화 모집', '영어 실력 향상하기', 'ACTIVE',
- '2025-03-01', '2025-03-15', false, 15, 'club-007', '[]', true, NOW(), NOW()),
+ '2025-10-02', '2025-10-12', false, null, null, 15, 'club-007', '[]', true, NOW(), NOW()),
 
 (gen_random_uuid(), '포토클럽 모집', '사진 찍는 재미를 느껴보세요', 'ACTIVE',
- '2025-03-05', '2025-03-20', false, 10, 'club-008', '[]', true, NOW(), NOW()),
+ '2025-03-05', '2025-03-20', false, null, null, 10, 'club-008', '[]', true, NOW(), NOW()),
 
 (gen_random_uuid(), '테니스부 모집', '테니스로 건강하게', 'ACTIVE',
- '2025-03-01', '2025-03-18', false, 12, 'club-010', '[]', true, NOW(), NOW()),
+ '2025-03-01', '2025-03-18', false, null, null, 12, 'club-010', '[]', true, NOW(), NOW()),
 
 (gen_random_uuid(), '독서모임 모집', '책을 통한 성장', 'ACTIVE',
- '2025-03-01', '2025-03-12', false, 8, 'club-011', '[]', true, NOW(), NOW()),
+ '2025-03-01', '2025-03-12', false, null, null, 8, 'club-011', '[]', true, NOW(), NOW()),
 
 (gen_random_uuid(), '댄스크루 모집', '춤으로 하나되어요', 'ACTIVE',
- '2025-03-01', '2025-03-22', true, 15, 'club-012', '[]', true, NOW(), NOW()),
+ '2025-10-03', '2025-10-17', true, '2025-10-19', '2025-10-21', 15, 'club-012', '[]', true, NOW(), NOW()),
 
--- ENGINEERING 과동아리 모집 폼 추가 (과동아리 필터링 테스트용)
-(gen_random_uuid(), '기계공학연구회 모집', '기계공학에 관심있는 분들', 'ACTIVE',
- '2025-03-01', '2025-03-20', false, 10, 'club-032', '[]', true, NOW(), NOW()),
+-- 과동아리 대신 실제 존재하는 동아리들로 변경
+(gen_random_uuid(), 'FREEZE 신입 모집', '영상 제작에 관심있는 분들', 'ACTIVE',
+ '2025-03-01', '2025-03-20', false, null, null, 10, 'club-016', '[]', true, NOW(), NOW()),
 
-(gen_random_uuid(), '전자공학동아리 모집', '전자공학 실습 함께해요', 'ACTIVE',
- '2025-03-05', '2025-03-25', true, 12, 'club-033', '[]', true, NOW(), NOW()),
+(gen_random_uuid(), 'MindSet 멤버 모집', '자기계발 함께해요', 'ACTIVE',
+ '2025-03-05', '2025-03-25', true, '2025-03-30', '2025-04-01', 12, 'club-017', '[]', true, NOW(), NOW()),
 
-(gen_random_uuid(), '화학공학연구회 모집', '화학공학 실험 연구', 'ACTIVE',
- '2025-03-01', '2025-03-18', false, 8, 'club-034', '[]', true, NOW(), NOW());
+(gen_random_uuid(), 'ROUTE 등산 동호회 모집', '등산 실습 연구', 'ACTIVE',
+ '2025-03-01', '2025-03-18', false, null, null, 8, 'club-018', '[]', true, NOW(), NOW());
 
 INSERT INTO applyforms (id,
                        title,
@@ -62,6 +61,8 @@ INSERT INTO applyforms (id,
                        apply_start_date,
                        apply_end_date,
                        has_interview,
+                       interview_start_date,
+                       interview_end_date,
                        max_apply_count,
                        club_id,
                        form_json,
@@ -75,8 +76,10 @@ VALUES ('2',
         '2024-08-05',
         '2024-08-20',
         true,
+        '2024-08-25',
+        '2024-08-27',
         15,
-        'club-035',
+        'club-020',
         '[
             {
                 "questionId": "1",
