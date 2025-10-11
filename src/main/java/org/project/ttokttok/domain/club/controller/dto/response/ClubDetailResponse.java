@@ -17,6 +17,7 @@ public record ClubDetailResponse(
         String customCategory,
         boolean bookmarked, // 사용자 즐겨찾기 여부
         boolean recruiting,
+        boolean isDeadlineImminent, // 마감 임박 여부 (일주일 이내)
         String summary, // 한줄 소개
         String profileImageUrl, // 동아리 프로필 이미지 URL
         int clubMemberCount,
@@ -36,6 +37,7 @@ public record ClubDetailResponse(
                 response.customCategory(),
                 response.bookmarked(),
                 response.recruiting(),
+                response.isDeadlineImminent(),
                 response.summary(),
                 response.profileImageUrl(),
                 response.clubMemberCount(),

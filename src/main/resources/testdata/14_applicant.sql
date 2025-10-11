@@ -147,64 +147,64 @@ VALUES
 
 ('applicant-029', 'user29@example.com', '김재훈', 22, '기계공학과', 'applicant29@gmail.com', '010-2904-2345', 'ENROLLED',
  'FOURTH_GRADE', 'MALE', 'INTERVIEW',
- (SELECT id FROM applyforms WHERE club_id = 'club-002' AND status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
+ (SELECT id from applyforms where club_id = 'club-002' and status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
 
 ('applicant-030', 'user30@example.com', '신민호', 20, '전자공학과', 'applicant30@gmail.com', '010-3005-3456', 'ENROLLED',
  'SECOND_GRADE', 'MALE', 'INTERVIEW',
- (SELECT id FROM applyforms WHERE club_id = 'club-002' AND status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
+ (SELECT id from applyforms where club_id = 'club-002' and status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
 
 ('applicant-031', 'user31@example.com', '장진우', 21, '컴퓨터공학과', 'applicant31@gmail.com', '010-3106-4567', 'ENROLLED',
  'THIRD_GRADE', 'MALE', 'DOCUMENT',
- (SELECT id FROM applyforms WHERE club_id = 'club-002' AND status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
+ (SELECT id from applyforms where club_id = 'club-002' and status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
 
 ('applicant-032', 'user32@example.com', '김우빈', 19, '체육학과', 'applicant32@gmail.com', '010-3207-5678', 'ENROLLED',
  'FIRST_GRADE', 'MALE', 'DOCUMENT',
- (SELECT id FROM applyforms WHERE club_id = 'club-002' AND status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
+ (SELECT id from applyforms where club_id = 'club-002' and status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
 
 ('applicant-033', 'user33@example.com', '박동현', 22, '기계공학과', 'applicant33@gmail.com', '010-3308-6789', 'ENROLLED',
  'FOURTH_GRADE', 'MALE', 'INTERVIEW',
- (SELECT id FROM applyforms WHERE club_id = 'club-002' AND status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
+ (SELECT id from applyforms where club_id = 'club-002' and status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
 
 ('applicant-034', 'user34@example.com', '이정훈', 20, '전자공학과', 'applicant34@gmail.com', '010-3409-7890', 'ENROLLED',
  'SECOND_GRADE', 'MALE', 'INTERVIEW',
- (SELECT id FROM applyforms WHERE club_id = 'club-002' AND status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
+ (SELECT id from applyforms where club_id = 'club-002' and status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
 
 ('applicant-035', 'user35@example.com', '윤준호', 21, '컴퓨터공학과', 'applicant35@gmail.com', '010-3501-8901', 'ENROLLED',
  'THIRD_GRADE', 'MALE', 'INTERVIEW',
- (SELECT id FROM applyforms WHERE club_id = 'club-002' AND status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
+ (SELECT id from applyforms where club_id = 'club-002' and status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
 
 ('applicant-036', 'user36@example.com', '최지훈', 23, '체육학과', 'applicant36@gmail.com', '010-3602-9012', 'ENROLLED',
  'FOURTH_GRADE', 'MALE', 'DOCUMENT',
- (SELECT id FROM applyforms WHERE club_id = 'club-002' AND status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
+ (SELECT id from applyforms where club_id = 'club-002' and status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
 
 ('applicant-037', 'user37@example.com', '장민재', 20, '기계공학과', 'applicant37@gmail.com', '010-3703-0123', 'ENROLLED',
  'SECOND_GRADE', 'MALE', 'INTERVIEW',
- (SELECT id FROM applyforms WHERE club_id = 'club-002' AND status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
+ (SELECT id from applyforms where club_id = 'club-002' and status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
 
 ('applicant-038', 'user38@example.com', '김정훈', 19, '전자공학과', 'applicant38@gmail.com', '010-3804-1234', 'ENROLLED',
  'FIRST_GRADE', 'MALE', 'INTERVIEW',
- (SELECT id FROM applyforms WHERE club_id = 'club-002' AND status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
+ (SELECT id from applyforms where club_id = 'club-002' and status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
 
 ('applicant-039', 'user39@example.com', '박현수', 22, '컴퓨터공학과', 'applicant39@gmail.com', '010-3905-2345', 'ENROLLED',
  'FOURTH_GRADE', 'MALE', 'INTERVIEW',
- (SELECT id FROM applyforms WHERE club_id = 'club-002' AND status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
+ (SELECT id from applyforms where club_id = 'club-002' and status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
 
 ('applicant-040', 'user40@example.com', '오지훈', 21, '체육학과', 'applicant40@gmail.com', '010-4006-3456', 'ENROLLED',
  'THIRD_GRADE', 'MALE', 'DOCUMENT',
- (SELECT id FROM applyforms WHERE club_id = 'club-002' AND status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
+ (SELECT id from applyforms where club_id = 'club-002' and status = 'ACTIVE' LIMIT 1), NOW(), NOW()),
 
 -- 테스트 사용자(test@sangmyung.kr)의 지원 내역 추가
-('test-applicant-001', 'test@sangmyung.kr', '테스트 사용자', 22, '컴퓨터공학과', 'test@sangmyung.kr', '010-1234-5678',
+('test-applicant-001', 'test@sangmyung.kr', '테스트유저', 22, '컴퓨터공학과', 'test@sangmyung.kr', '010-1234-5678',
  'ENROLLED', 'THIRD_GRADE', 'MALE', 'DOCUMENT',
- (SELECT id FROM applyforms WHERE club_id = 'club-030' AND status = 'ACTIVE' LIMIT 1),
- '2024-08-04 10:00:00', '2024-08-04 10:00:00'),
+ (SELECT id FROM applyforms WHERE club_id = 'club-003' AND status = 'ACTIVE' LIMIT 1),
+ '2025-10-10 14:30:00', '2025-10-10 14:30:00'),
 
-('test-applicant-002', 'test@sangmyung.kr', '테스트 사용자', 22, '컴퓨터공학과', 'test@sangmyung.kr', '010-1234-5678',
+('test-applicant-002', 'test@sangmyung.kr', '테스트유저', 22, '컴퓨터공학과', 'test@sangmyung.kr', '010-1234-5678',
  'ENROLLED', 'THIRD_GRADE', 'MALE', 'DOCUMENT',
- (SELECT id FROM applyforms WHERE club_id = 'club-034' AND status = 'ACTIVE' LIMIT 1),
- '2024-08-03 15:30:00', '2024-08-03 15:30:00'),
+ (SELECT id FROM applyforms WHERE club_id = 'club-001' AND status = 'ACTIVE' LIMIT 1),
+ '2025-10-09 09:15:00', '2025-10-09 09:15:00'),
 
-('test-applicant-003', 'test@sangmyung.kr', '테스트 사용자', 22, '컴퓨터공학과', 'test@sangmyung.kr', '010-1234-5678',
- 'ENROLLED', 'THIRD_GRADE', 'MALE', 'DOCUMENT',
- (SELECT id FROM applyforms WHERE club_id = 'club-033' AND status = 'ACTIVE' LIMIT 1),
- '2024-08-02 09:15:00', '2024-08-02 09:15:00');
+('test-applicant-003', 'test@sangmyung.kr', '테스트유저', 22, '컴퓨터공학과', 'test@sangmyung.kr', '010-1234-5678',
+ 'ENROLLED', 'THIRD_GRADE', 'MALE', 'INTERVIEW',
+ (SELECT id FROM applyforms WHERE club_id = 'club-002' AND status = 'ACTIVE' LIMIT 1),
+ '2025-10-08 16:45:00', '2025-10-08 16:45:00');

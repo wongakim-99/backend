@@ -19,7 +19,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.*;
 
 /**
  * 동아리 서비스 클래스
@@ -31,7 +34,7 @@ public class ClubUserService {
 
     // 소개글 조회
     private final ClubRepository clubRepository;
-    private final S3Service s3Service;  // Optional 제거 (develop 방식 적용)
+    private final S3Service s3Service;
 
     // 동아리 인기글 조회
     private final ClubPopularityConfig popularityConfig;
@@ -104,28 +107,21 @@ public class ClubUserService {
     }
 
     /**
-     * 현재 인증된 사용자의 이메일 조회
-     *
-     * @return 사용자 이메일
-     * */
-    private String getCurrentUserEmail() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.isAuthenticated()) {
-            return authentication.getName();    // 실제 사용자 이메일 반환
-        }
-
-        // 개발/테스트 환경에서는 임시 사용자 이메일 반환
-        return "test@sangmyung.kr";
-    }
-
-    /**
      * ClubCardQueryResponse 를 ClubCardServiceResponse 로 변환
      *
      * @param queryResponse Repository 에서 조회한 결과
      * @return Service 레이어 응답 DTO
      * */
     private ClubCardServiceResponse toServiceResponse(ClubCardQueryResponse queryResponse) {
+        // 마감 임박 여부 계산 (지원 마감일이 일주일 이내인지 확인)
+        boolean isDeadlineImminent = false;
+        if (queryResponse.applyDeadLine() != null) {
+            LocalDate today = LocalDate.now();
+            LocalDate deadline = queryResponse.applyDeadLine();
+            long daysUntilDeadline = today.until(deadline, DAYS);
+            isDeadlineImminent = daysUntilDeadline >= 0 && daysUntilDeadline <= 7;
+        }
+
         return new ClubCardServiceResponse(
                 queryResponse.id(),
                 queryResponse.name(),
@@ -136,7 +132,8 @@ public class ClubUserService {
                 queryResponse.profileImageUrl(),
                 queryResponse.clubMemberCount(),
                 queryResponse.recruiting(),
-                queryResponse.bookmarked()
+                queryResponse.bookmarked(),
+                isDeadlineImminent
         );
     }
 
