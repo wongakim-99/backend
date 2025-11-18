@@ -34,3 +34,12 @@
 ### 🛡️ 사용자 및 데이터 관리
 * **이중 권한 관리 시스템:** `ROOT_ADMIN`(총동아리연합회) > `CLUB_ADMIN`(동아리 회장) > `USER`(학생) 계층형 권한 설계 (`Spring Security`)
 * **데이터 엑셀 추출:** 운영진의 편의를 위해 지원자 명단 및 정보를 엑셀(`Apache POI`)로 변환하여 다운로드 제공
+
+### 👨‍💻 Maintainers
+| Role | Name | GitHub |
+|:---:|:---:|:---:|
+| **Backend (Lead)** | **김가원** | [@wongakim-99](https://github.com/wongakim-99) |
+| Backend | 김수민 | [@codemaker-kim](https://github.com/) |
+| Frontend | 임형준 | [@hyeongjun6364](https://github.com/) |
+| Frontend | 차현우 | [@chahyunwoo00](https://github.com/) |
+| Designer | 남현지 | - |
