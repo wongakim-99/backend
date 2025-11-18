@@ -38,8 +38,8 @@
 ### 👨‍💻 Maintainers
 | Role | Name | GitHub |
 |:---:|:---:|:---:|
-| **Backend (Lead)** | **김가원** | [@wongakim-99](https://github.com/wongakim-99) |
-| Backend | 김수민 | [@codemaker-kim](https://github.com/) |
-| Frontend | 임형준 | [@hyeongjun6364](https://github.com/) |
-| Frontend | 차현우 | [@chahyunwoo00](https://github.com/) |
+| Backend | 김가원 | [@wongakim-99](https://github.com/wongakim-99) |
+| Backend | 김수민 | [@codemaker-kim](https://github.com/codemaker-kim) |
+| Frontend | 임형준 | [@hyeongjun6364](https://github.com/hyeongjun6364) |
+| Frontend | 차현우 | [@chahyunwoo00](https://github.com/chahyunwoo00) |
 | Designer | 남현지 | - |
