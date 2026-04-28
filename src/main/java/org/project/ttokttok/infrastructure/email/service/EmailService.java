@@ -8,30 +8,29 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
+
 import java.util.List;
 
 @Slf4j
 @Service
-@EnableAsync
 @RequiredArgsConstructor
 public class EmailService {
 
     private final JavaMailSender mailSender;
-    
+    private final AsyncEmailSender asyncEmailSender;
+
     @Value("${email.from.address}")
     private String fromAddress;
-    
+
     @Value("${email.from.name}")
     private String fromName;
-    
+
     @Value("${email.reply-to}")
     private String replyTo;
     private static final String CHARACTERS = "0123456789";
@@ -121,7 +120,7 @@ public class EmailService {
 
             try {
                 EmailRequest emailRequest = EmailRequest.createResultEmail(email, request.title(), request.body());
-                sendEmailAsync(emailRequest);
+                asyncEmailSender.send(emailRequest);
                 successCount++;
                 log.info("지원 결과 안내 이메일 발송 완료: {}", email);
             } catch (Exception e) {
@@ -131,31 +130,6 @@ public class EmailService {
         }
 
         log.info("지원 결과 안내 이메일 발송 완료 - 성공: {}건, 실패: {}건", successCount, failureCount);
-    }
-
-    // 비동기 이메일 발송 - TODO: 추후 리팩토링
-    @Async
-    protected void sendEmailAsync(EmailRequest emailRequest) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-            helper.setFrom(fromAddress, fromName); // 발신자 주소와 이름 설정
-            helper.setReplyTo(replyTo);
-            helper.setTo(emailRequest.getTo());
-            helper.setSubject(emailRequest.getSubject());
-            helper.setText(emailRequest.getContent(), emailRequest.isHtml());
-
-            mailSender.send(message);
-            log.info("이메일 발송 성공: {}", emailRequest.getTo());
-
-        } catch (MessagingException e) {
-            log.error("이메일 메시지 생성 실패: {} - {}", emailRequest.getTo(), e.getMessage());
-        } catch (UnsupportedEncodingException e) {
-            log.error("이메일 인코딩 실패: {} - {}", emailRequest.getTo(), e.getMessage());
-        } catch (MailException e) {
-            log.error("이메일 발송 실패: {} - {}", emailRequest.getTo(), e.getMessage());
-        }
     }
 
     // 순수 이메일 주소 검증 메서드
